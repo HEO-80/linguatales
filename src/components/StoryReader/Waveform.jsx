@@ -9,11 +9,11 @@ const BARS = Array.from({ length: 34 }, (_, i) =>
   Math.round(4 + Math.abs(Math.sin(i * 0.55) * Math.cos(i * 0.21)) * 34)
 );
 
-export default function Waveform() {
+export default function Waveform({ recording = false }) {
   const { accent } = useTheme();
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 38 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 2, height: 38 }}>
       {BARS.map((h, i) => (
         <div
           key={i}
@@ -21,7 +21,14 @@ export default function Waveform() {
             width: 3,
             height: h,
             borderRadius: 1.5,
-            background: i < 22 ? accent.secondary : '#c9c3b7'
+            background: recording || i < 22 ? accent.secondary : '#c9c3b7',
+            // Propiedades sueltas, no el shorthand `animation`: mezclarlo
+            // con animationDelay aparte hace que una pise a la otra.
+            animationName: recording ? 'wavePulse' : 'none',
+            animationDuration: `${0.5 + (i % 5) * 0.08}s`,
+            animationTimingFunction: 'ease-in-out',
+            animationIterationCount: 'infinite',
+            animationDelay: recording ? `${(i % 7) * 0.05}s` : '0s'
           }}
         />
       ))}

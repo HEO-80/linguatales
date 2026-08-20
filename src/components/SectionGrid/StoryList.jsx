@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { pastel, fg } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAppState } from '@/state/AppStateContext';
 import { getLanguageData } from '@/data';
+import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/localProgress';
+
+const STATUS_LABEL = { nuevo: 'Nuevo', en_curso: 'En curso', leido: 'Leído' };
 
 function StatusTag({ status, langAccent }) {
   const { font } = useTheme();
@@ -42,7 +45,15 @@ export default function StoryList() {
   const [hovered, setHovered] = useState(null);
   const { storyList } = getLanguageData(lang);
 
-  const rows = storyList.filter((s) => s.level === level);
+  const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
+  const progressMap = progress.storyProgress;
+
+  const rows = storyList
+    .filter((s) => s.level === level)
+    .map((s) => {
+      const persisted = progressMap[s.id];
+      return persisted ? { ...s, status: STATUS_LABEL[persisted.status] } : s;
+    });
 
   return (
     <div

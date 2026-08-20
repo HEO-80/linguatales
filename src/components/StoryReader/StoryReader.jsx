@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { whiteReadable, NEUTRAL } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAppState } from '@/state/AppStateContext';
 import { getLanguageData } from '@/data';
+import { speakSentence, cancelSpeech, isSpeechSupported, useIsSpeechSupported } from '@/lib/azure/tts';
+import { touchStoryProgress } from '@/lib/storage/localProgress';
 import SentencePair from './SentencePair';
 import PronunciationBar from './PronunciationBar';
 
@@ -14,11 +16,55 @@ export default function StoryReader() {
   const { lang, sentenceIndex, setSentenceIndex } = useAppState();
   const { story } = getLanguageData(lang);
   const [showTranslation, setShowTranslation] = useState(true);
+  const [speaking, setSpeaking] = useState(false);
+  const speechSupported = useIsSpeechSupported();
+  // Evita que un onend de una lectura ya cancelada (p. ej. por cambio de
+  // idioma) siga encadenando frases de una historia que ya no está activa.
+  const readingRef = useRef(false);
 
   const onSolid = whiteReadable(surface.solid) ? '#ffffff' : NEUTRAL.ink;
 
-  const handleReadAloud = () => {
-    setSentenceIndex((i) => (i + 1) % story.sentences.length);
+  // Persiste "por dónde va" en cuanto se activa una frase — la primera vez
+  // marca la historia 'en_curso', y 'leido' al llegar a la última.
+  useEffect(() => {
+    touchStoryProgress(story.id, sentenceIndex, story.sentences.length);
+  }, [story.id, sentenceIndex, story.sentences.length]);
+
+  // Corta cualquier lectura en curso si se cambia de historia/idioma o al desmontar.
+  useEffect(() => {
+    return () => {
+      readingRef.current = false;
+      cancelSpeech();
+    };
+  }, [story.id]);
+
+  const handleReadAloud = async () => {
+    if (speaking) {
+      readingRef.current = false;
+      cancelSpeech();
+      setSpeaking(false);
+      return;
+    }
+    if (!isSpeechSupported()) {
+      // Sin Web Speech API disponible: al menos avanza el marcador de lectura.
+      setSentenceIndex((i) => (i + 1) % story.sentences.length);
+      return;
+    }
+
+    readingRef.current = true;
+    setSpeaking(true);
+    let i = sentenceIndex;
+    while (readingRef.current && i < story.sentences.length) {
+      setSentenceIndex(i);
+      try {
+        await speakSentence(story.sentences[i].text, { lang });
+      } catch {
+        break;
+      }
+      i += 1;
+    }
+    readingRef.current = false;
+    setSpeaking(false);
   };
 
   return (
@@ -75,7 +121,7 @@ export default function StoryReader() {
             {story.title}
           </h2>
 
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <button
               onClick={handleReadAloud}
               style={{
@@ -89,7 +135,7 @@ export default function StoryReader() {
                 boxShadow: shadow.sm
               }}
             >
-              ▶ Leer en voz alta
+              {speaking ? '■ Detener' : '▶ Leer en voz alta'}
             </button>
             <button
               onClick={() => setShowTranslation((v) => !v)}
@@ -106,6 +152,11 @@ export default function StoryReader() {
             >
               ◍ Traducción
             </button>
+            {!speechSupported && (
+              <span style={{ fontFamily: font.body, fontSize: 12, color: text.onTint }}>
+                Tu navegador no soporta lectura en voz alta.
+              </span>
+            )}
           </div>
         </div>
 
