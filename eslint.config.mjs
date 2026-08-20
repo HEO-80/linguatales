@@ -12,7 +12,17 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Staging copy of the files already copied into src/theme — not part of the app.
+    "Light mode design improvement/**",
   ]),
+  {
+    // tokens.js mixes `require()` into an ESM module on purpose (auditContrast()
+    // is meant to run standalone in CI). It's pre-written, don't rewrite it.
+    files: ["src/theme/tokens.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

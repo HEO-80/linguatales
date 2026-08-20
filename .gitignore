@@ -37,6 +37,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# staging copy of pre-written theme files, already copied into src/theme
+/Light mode design improvement/
+/Light mode design improvement.zip
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
