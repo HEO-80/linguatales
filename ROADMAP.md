@@ -56,7 +56,7 @@ de expandir al resto de idiomas.
 
 - [x] Fase 1 — Andamiaje de rutas App Router (`/[lang]`, `/[lang]/[level]`,
       `/[lang]/[level]/story/[id]`, Inglés real en ruta propia)
-- [ ] Fase 2 — Modelo de datos por idioma + nivel (piloto EN A1/A2/B1)
+- [x] Fase 2 — Modelo de datos por idioma + nivel (piloto EN A1/A2/B1)
 - [ ] Fase 3 — Modelo de lema/glosario para tooltips de significado y
       conjugación dentro de la historia
 - [ ] Fase 4 — Juegos y gramática atados al nivel real (no solo al idioma
