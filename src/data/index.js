@@ -24,6 +24,22 @@ import { IDIOM_ENTRIES as DE_IDIOMS } from './idioms.de';
 import { IDIOM_ENTRIES as IT_IDIOMS } from './idioms.it';
 import { IDIOM_ENTRIES as PT_IDIOMS } from './idioms.pt';
 
+import { DIALOGUES as EN_REAL_ENGLISH } from './realEnglish.en';
+
+/**
+ * Diálogos "Inglés real" por idioma. Genérico desde ya: un idioma sin
+ * archivo propio (todavía) simplemente no tiene entrada aquí y
+ * getRealEnglishDialogues devuelve [] — añadir argot de otro idioma es
+ * crear su realEnglish.<lang>.js y una línea aquí, nada más.
+ */
+const REAL_ENGLISH_BY_LANG = {
+  EN: EN_REAL_ENGLISH
+};
+
+export function getRealEnglishDialogues(langCode) {
+  return REAL_ENGLISH_BY_LANG[langCode] || [];
+}
+
 const DATA = {
   EN: { story: EN_STORY, storyList: EN_LIST, grammar: EN_GRAMMAR, idioms: EN_IDIOMS },
   ES: { story: ES_STORY, storyList: ES_LIST, grammar: ES_GRAMMAR, idioms: ES_IDIOMS },

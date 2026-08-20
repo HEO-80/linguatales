@@ -50,12 +50,16 @@ interface ProgressState {
   profile: StoredProfile;
   storyProgress: Record<string, StoredStoryProgress>;
   pronunciationAttempts: StoredPronunciationAttempt[];
+  // Ids de contenido (p. ej. diálogos de "Inglés real") cuyo aviso de
+  // contenido adulto ya se ha confirmado en este dispositivo.
+  acknowledgedWarnings: string[];
 }
 
 const DEFAULT_STATE: ProgressState = {
   profile: { current_level: "A2" },
   storyProgress: {},
   pronunciationAttempts: [],
+  acknowledgedWarnings: [],
 };
 
 function isBrowser(): boolean {
@@ -80,6 +84,7 @@ function parseFromStorage(): ProgressState {
       profile: { ...DEFAULT_STATE.profile, ...parsed.profile },
       storyProgress: parsed.storyProgress || {},
       pronunciationAttempts: parsed.pronunciationAttempts || [],
+      acknowledgedWarnings: parsed.acknowledgedWarnings || [],
     };
   } catch {
     return DEFAULT_STATE;
@@ -189,6 +194,16 @@ export function getPronunciationAttempts(sentenceId?: string): StoredPronunciati
 export function getLatestPronunciationAttempt(sentenceId: string): StoredPronunciationAttempt | undefined {
   const attempts = getPronunciationAttempts(sentenceId);
   return attempts[attempts.length - 1];
+}
+
+export function hasAcknowledgedWarning(contentId: string): boolean {
+  return readState().acknowledgedWarnings.includes(contentId);
+}
+
+export function acknowledgeWarning(contentId: string): void {
+  const state = readState();
+  if (state.acknowledgedWarnings.includes(contentId)) return;
+  writeState({ ...state, acknowledgedWarnings: [...state.acknowledgedWarnings, contentId] });
 }
 
 export function resetProgress(): void {

@@ -3,9 +3,6 @@
 import { useState, useRef, useSyncExternalStore } from 'react';
 import { pastel, fg } from '@/theme/color';
 import { PRONUNCIATION_METRICS } from '@/theme/languages';
-import { useTheme } from '@/theme/ThemeContext';
-import { useAppState } from '@/state/AppStateContext';
-import { getLanguageData } from '@/data';
 import {
   startPronunciationAssessment,
   isPronunciationAssessmentSupported
@@ -43,17 +40,16 @@ function HighlightedExample({ example, phoneme, color }) {
   );
 }
 
-export default function PronunciationBar() {
-  const theme = useTheme();
+/**
+ * Genérico: no lee el contexto global. El llamador decide de qué frase se
+ * practica pronunciación — StoryReader pasa la frase activa del relato
+ * graduado; RealEnglishReader pasa la línea activa del transcript del
+ * diálogo. `sentenceId` es lo único que hace falta para que el intento se
+ * guarde y se recupere bien (mismo store para ambos casos).
+ */
+export default function PronunciationBar({ theme, lang, activeText, sentenceId, hint }) {
   const { surface, accent, text, font, shadow } = theme;
-  const { lang, sentenceIndex } = useAppState();
-  const { story } = getLanguageData(lang);
-  const activeSentence = story.sentences[sentenceIndex] || story.sentences[0];
-  const sentenceId = `${story.id}-${sentenceIndex}`;
 
-  // El último intento se lee en vivo del store (localStorage) — nada de
-  // useState+useEffect: grabar uno nuevo escribe en el store y este mismo
-  // hook vuelve a renderizar con el dato fresco, sin estado duplicado.
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const attemptsForSentence = progress.pronunciationAttempts.filter((a) => a.sentence_id === sentenceId);
   const lastAttempt = attemptsForSentence[attemptsForSentence.length - 1];
@@ -83,7 +79,7 @@ export default function PronunciationBar() {
 
     setError(null);
     setRecording(true);
-    const controller = startPronunciationAssessment({ referenceText: activeSentence.text, lang });
+    const controller = startPronunciationAssessment({ referenceText: activeText, lang });
     controllerRef.current = controller;
 
     controller.result
@@ -125,7 +121,7 @@ export default function PronunciationBar() {
         gap: 18
       }}
     >
-      <p style={{ fontFamily: font.display, fontSize: 20, color: text.ink, margin: 0 }}>“{activeSentence.text}”</p>
+      <p style={{ fontFamily: font.display, fontSize: 20, color: text.ink, margin: 0 }}>“{activeText}”</p>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
         <button
@@ -211,12 +207,13 @@ export default function PronunciationBar() {
         <div style={{ height: 6, borderRadius: 3, background: 'rgba(25,23,19,.08)', overflow: 'hidden' }}>
           <div style={{ height: '100%', width: `${accuracyPct}%`, background: '#0e9f6e' }} />
         </div>
-        <span style={{ fontFamily: font.body, fontSize: 12.5, color: accuracyFg }}>
-          Sonido a practicar:{' '}
-          <HighlightedExample example={story.pronunciation.example} phoneme={story.pronunciation.phoneme} color="#0e9f6e" />
-          {' — '}
-          {story.pronunciation.description}
-        </span>
+        {hint && (
+          <span style={{ fontFamily: font.body, fontSize: 12.5, color: accuracyFg }}>
+            Sonido a practicar: <HighlightedExample example={hint.example} phoneme={hint.phoneme} color="#0e9f6e" />
+            {' — '}
+            {hint.description}
+          </span>
+        )}
       </div>
     </div>
   );

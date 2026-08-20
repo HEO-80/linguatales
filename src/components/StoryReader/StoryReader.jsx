@@ -209,7 +209,13 @@ export default function StoryReader() {
           )}
         </div>
 
-        <PronunciationBar />
+        <PronunciationBar
+          theme={theme}
+          lang={lang}
+          activeText={story.sentences[sentenceIndex]?.text || story.sentences[0].text}
+          sentenceId={`${story.id}-${sentenceIndex}`}
+          hint={story.pronunciation}
+        />
       </div>
     </section>
   );
