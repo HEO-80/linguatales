@@ -19,7 +19,7 @@ const TONE_COLOR = {
 export default function GameShell({
   index,
   title,
-  blurb,
+  prompt,
   level,
   progress,
   accent,
@@ -27,6 +27,8 @@ export default function GameShell({
   onReset,
   canCheck,
   feedback,
+  checkLabel = 'Comprobar',
+  resetLabel = 'Reiniciar',
   children
 }) {
   const { font, shadow } = useTheme();
@@ -70,7 +72,7 @@ export default function GameShell({
           <h3 style={{ fontFamily: font.display, fontSize: 29, fontWeight: 600, color: ink, margin: '4px 0 6px' }}>
             {title}
           </h3>
-          <p style={{ fontFamily: font.body, fontSize: 13, color: soft, margin: 0, maxWidth: 540 }}>{blurb}</p>
+          <p style={{ fontFamily: font.body, fontSize: 13, color: soft, margin: 0, maxWidth: 540 }}>{prompt}</p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8, flexShrink: 0 }}>
           <span
@@ -109,7 +111,7 @@ export default function GameShell({
             cursor: canCheck ? 'pointer' : 'not-allowed'
           }}
         >
-          Comprobar
+          {checkLabel}
         </button>
         <button
           onClick={onReset}
@@ -124,7 +126,7 @@ export default function GameShell({
             padding: '10px 18px'
           }}
         >
-          Reiniciar
+          {resetLabel}
         </button>
         {feedback?.text && (
           <span

@@ -2,9 +2,9 @@
 
 import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAuth } from '@/state/AuthContext';
-import { useIsMobile } from '@/lib/hooks/useIsMobile';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
 import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
@@ -12,7 +12,7 @@ import AuthModal from '../Auth/AuthModal';
 import UserMenu from '../Auth/UserMenu';
 
 const SECTIONS = [
-  { key: 'stories', label: 'Historias', anchor: '#stories' },
+  { key: 'stories', label: 'Historias', anchor: '#reader' },
   { key: 'grammar', label: 'Gramática', anchor: '#grammar' },
   { key: 'idiom', label: null /* dinámico: lang.navIdiom */, anchor: '#idiom' },
   { key: 'games', label: 'Juegos', anchor: '#games' }
@@ -40,19 +40,21 @@ function computeStreakDays(progress) {
   return streak;
 }
 
-export default function AppHeader({ onMenuClick }) {
+export default function AppHeader() {
   const theme = useTheme();
   const { lang, surface, accent, text, font, shadow } = theme;
   const [active, setActive] = useState('stories');
   const [authOpen, setAuthOpen] = useState(false);
   const { user, loading } = useAuth();
-  const isMobile = useIsMobile();
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const streak = user ? computeStreakDays(progress) : 0;
   const langCode = useLangCode();
   const levelCode = useLevelCode();
   const langSlug = toLangSlug(langCode);
   const levelSlug = toLevelSlug(levelCode ?? DEFAULT_LEVEL);
+  const params = useParams();
+  const num = params?.num;
+  const base = num ? `/${langSlug}/${levelSlug}/story/${num}` : `/${langSlug}/${levelSlug}`;
 
   return (
     <header
@@ -79,15 +81,6 @@ export default function AppHeader({ onMenuClick }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-          {isMobile && (
-            <button
-              onClick={onMenuClick}
-              aria-label="Abrir menú de idioma y nivel"
-              style={{ background: 'transparent', border: 'none', fontSize: 22, color: text.ink, cursor: 'pointer', padding: 0, marginRight: 4 }}
-            >
-              ☰
-            </button>
-          )}
           <span style={{ fontFamily: font.display, fontSize: 29, fontWeight: 600, color: text.ink }}>
             LinguaTales
           </span>
@@ -112,7 +105,7 @@ export default function AppHeader({ onMenuClick }) {
             return (
               <Link
                 key={s.key}
-                href={`/${langSlug}/${levelSlug}${s.anchor}`}
+                href={`${base}${s.anchor}`}
                 onClick={() => setActive(s.key)}
                 style={{
                   fontFamily: font.body,

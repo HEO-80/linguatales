@@ -1,73 +1,44 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
-import { getLevelContent } from '@/data';
-import { SECTION } from '@/theme/languages';
+import { useState } from 'react';
 import { pastel } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
+import { useReader } from '@/state/ReaderContext';
 import GameShell from '../GameShell';
-import { seededShuffle } from '../seededShuffle';
 
-function stripPunctuation(word) {
-  return word.replace(/[.,!?¿¡"'“”]/g, '');
-}
-
-/** Palabra más larga de la frase (evitando la primera, que suele ser el
- * sujeto en mayúscula) — heurística simple sin depender de un POS tagger. */
-function pickBlankIndex(words) {
-  let bestIdx = words.length > 1 ? 1 : 0;
-  let bestLen = 0;
-  words.forEach((w, i) => {
-    if (i === 0 && words.length > 1) return;
-    const len = stripPunctuation(w).length;
-    if (len > bestLen) {
-      bestLen = len;
-      bestIdx = i;
-    }
-  });
-  return bestIdx;
-}
-
-/** Distractores: palabras de otras frases del mismo relato, para que las
- * opciones sigan siendo del vocabulario que se acaba de leer. */
-function buildOptions(answer, story, seed) {
-  const answerClean = stripPunctuation(answer);
-  const pool = new Set();
-  story.sentences.forEach((s) => {
-    s.text.split(' ').forEach((w) => {
-      const clean = stripPunctuation(w);
-      if (clean.length >= 3 && clean.toLowerCase() !== answerClean.toLowerCase()) {
-        pool.add(clean);
-      }
-    });
-  });
-  const distractors = seededShuffle([...pool], seed).slice(0, 2);
-  return seededShuffle([answerClean, ...distractors], `${seed}-order`);
-}
-
-/** Juego 02 — frase con un hueco, elige la palabra correcta entre varias. */
+/**
+ * Juego 02 — Elige el hueco. Una ronda por frase de story.gaps; el hueco y
+ * las opciones son literales del dato, sin heurística de blank-picking.
+ */
 export default function GapFillGame() {
-  const lang = useLangCode();
-  const level = useLevelCode();
-  const { featuredStory: story } = getLevelContent(lang, level);
   const { surface, text, font } = useTheme();
+  const { level, story, storyProgress, recordResult } = useReader();
 
-  const targetSentence = story.sentences[1] || story.sentences[0];
-  const words = useMemo(() => targetSentence.text.split(' '), [targetSentence]);
-  const blankIndex = useMemo(() => pickBlankIndex(words), [words]);
-  const answer = stripPunctuation(words[blankIndex]);
-  const options = useMemo(
-    () => buildOptions(words[blankIndex], story, targetSentence.text),
-    [words, blankIndex, story, targetSentence]
-  );
-
+  const [roundIndex, setRoundIndex] = useState(0);
   const [selected, setSelected] = useState(null);
   const [checked, setChecked] = useState(false);
 
+  const gap = story.gaps[roundIndex];
+  const isCorrect = checked && selected?.toLowerCase() === gap.answer.toLowerCase();
+  const isLastRound = roundIndex === story.gaps.length - 1;
+
   const handleCheck = () => {
-    if (!selected) return;
-    setChecked(true);
+    if (!checked) {
+      if (!selected) return;
+      const correct = selected.toLowerCase() === gap.answer.toLowerCase();
+      const solvedCount = new Set([...storyProgress.gap.solved, ...(correct ? [roundIndex] : [])]).size;
+      recordResult('gap', {
+        solvedIndex: correct ? roundIndex : undefined,
+        done: correct && solvedCount === story.gaps.length
+      });
+      setChecked(true);
+      return;
+    }
+    if (isCorrect && !isLastRound) {
+      setRoundIndex((i) => Math.min(i + 1, story.gaps.length - 1));
+      setSelected(null);
+      setChecked(false);
+    }
   };
 
   const handleReset = () => {
@@ -75,34 +46,29 @@ export default function GapFillGame() {
     setChecked(false);
   };
 
-  const isCorrect = checked && selected?.toLowerCase() === answer.toLowerCase();
-
   let feedback;
   if (checked) {
-    feedback = isCorrect
-      ? { text: `✓ Correcto — ${story.subtitle ?? story.grammarNote}.`, tone: 'ok' }
-      : { text: `Casi. La palabra correcta era "${answer}".`, tone: 'error' };
+    feedback = { text: gap.why, tone: isCorrect ? 'ok' : 'error' };
   } else if (selected) {
     feedback = { text: 'Frase completa. Comprueba.', tone: 'ready' };
   } else {
     feedback = { text: 'Elige la palabra que falta.', tone: 'idle' };
   }
 
-  const sentenceWithBlank = words.map((w, i) => (i === blankIndex ? '_____' : w)).join(' ');
-
   return (
     <GameShell
       index="02"
       title="Elige el hueco"
-      blurb={
+      prompt={
         <>
           Completa el hueco con la palabra correcta. Del relato <em>{story.title}</em>.
         </>
       }
-      level={story.level}
-      progress={`${selected ? 1 : 0} / 1`}
-      accent={SECTION.gapFill.color}
-      canCheck={!!selected && !checked}
+      level={level}
+      progress={`${storyProgress.gap.solved.length} / ${story.gaps.length}`}
+      accent="#0891b2"
+      canCheck={checked ? isCorrect && !isLastRound : !!selected}
+      checkLabel={checked ? 'Siguiente frase' : 'Comprobar'}
       onCheck={handleCheck}
       onReset={handleReset}
       feedback={feedback}
@@ -111,22 +77,42 @@ export default function GapFillGame() {
         <p
           style={{
             fontFamily: font.display,
-            fontSize: 19,
+            fontSize: 22,
             color: text.ink,
             background: surface.cream,
             borderRadius: 5,
             padding: '14px 16px',
-            margin: 0
+            margin: 0,
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 8,
+            alignItems: 'center'
           }}
         >
-          {sentenceWithBlank}
+          {gap.s.map((w, i) =>
+            w === '___' ? (
+              <span
+                key={i}
+                style={{
+                  display: 'inline-block',
+                  minWidth: 84,
+                  borderBottom: '2px dashed rgba(25,23,19,.4)',
+                  textAlign: 'center'
+                }}
+              >
+                {selected || ' '}
+              </span>
+            ) : (
+              <span key={i}>{w}</span>
+            )
+          )}
         </p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {options.map((opt) => {
+          {gap.opts.map((opt) => {
             const isSelected = selected === opt;
-            const isAnswer = opt.toLowerCase() === answer.toLowerCase();
+            const isAnswer = opt.toLowerCase() === gap.answer.toLowerCase();
             let bg = surface.cream;
-            let borderColor = pastel(SECTION.gapFill.color, 0.6);
+            let borderColor = pastel('#0891b2', 0.6);
             if (checked && isAnswer) {
               bg = pastel('#0e9f6e', 0.74);
               borderColor = '#0e9f6e';
@@ -134,7 +120,7 @@ export default function GapFillGame() {
               bg = pastel('#e11d48', 0.78);
               borderColor = '#e11d48';
             } else if (isSelected) {
-              borderColor = SECTION.gapFill.color;
+              borderColor = '#0891b2';
             }
             return (
               <button

@@ -1,32 +1,28 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
-import { getLevelContent } from '@/data';
+import { useState } from 'react';
+import { TOKEN } from '@/data/stories';
+import { useReader } from '@/state/ReaderContext';
+import { seededShuffle } from '../seededShuffle';
 import GameShell from '../GameShell';
 import WordBlock from './WordBlock';
 import DropZone from './DropZone';
-import { seededShuffle } from '../seededShuffle';
 
 /**
- * Se monta con una `key` de `lang-level-storyId` desde `page.tsx` — cambiar
- * de idioma, nivel o historia destacada remonta el componente entero, así
- * que todo su estado (banco, huecos, comprobación) arranca limpio sin
- * necesidad de un efecto de sincronización.
+ * Juego 01 — Ordena la frase. Objetivo: el 2º párrafo del relato (índice 1).
+ * La mitad de las palabras arranca ya colocada (semilla estable derivada
+ * del propio relato); el resto se ordena arrastrando/tocando.
  */
 export default function WordOrderGame() {
-  const lang = useLangCode();
-  const level = useLevelCode();
-  const { featuredStory: story } = getLevelContent(lang, level);
+  const { level, story, storyProgress, recordResult } = useReader();
 
-  // Frase objetivo = la frase 3 del relato del idioma activo.
-  const targetSentence = story.sentences[2] || story.sentences[0];
-  const targetWords = useMemo(() => targetSentence.text.split(' '), [targetSentence]);
+  const targetWords = story.paras[1].t.map((t) => t[TOKEN.TEXT]);
+  const half = Math.floor(targetWords.length / 2);
 
+  const [placed, setPlaced] = useState(() => Array.from({ length: half }, (_, i) => i));
   const [available, setAvailable] = useState(() =>
-    seededShuffle(targetWords.map((_, i) => i), targetSentence.text)
+    seededShuffle(targetWords.map((_, i) => i).filter((i) => i >= half), story.paras[1].tr)
   );
-  const [placed, setPlaced] = useState([]);
   const [checked, setChecked] = useState(false);
   const [correctness, setCorrectness] = useState([]);
 
@@ -37,22 +33,23 @@ export default function WordOrderGame() {
   };
 
   const unplaceWord = (idx) => {
-    if (checked || !placed.includes(idx)) return;
+    if (checked || !placed.includes(idx) || idx < half) return;
     setPlaced((p) => p.filter((x) => x !== idx));
     setAvailable((a) => [...a, idx]);
   };
 
   const handleCheck = () => {
     if (placed.length !== targetWords.length) return;
-    setCorrectness(placed.map((wordIdx, pos) => wordIdx === pos));
+    const nextCorrectness = placed.map((wordIdx, pos) => wordIdx === pos);
+    setCorrectness(nextCorrectness);
     setChecked(true);
+    const correctCount = nextCorrectness.filter(Boolean).length;
+    recordResult('order', { done: correctCount === targetWords.length, best: correctCount });
   };
 
   const handleReset = () => {
-    // Solo se llama desde un clic de usuario (nunca en SSR), así que aquí
-    // sí es seguro variar la semilla para que el banco se vea distinto.
-    setAvailable(seededShuffle(targetWords.map((_, i) => i), targetSentence.text + Date.now()));
-    setPlaced([]);
+    setPlaced(Array.from({ length: half }, (_, i) => i));
+    setAvailable(seededShuffle(targetWords.map((_, i) => i).filter((i) => i >= half), story.paras[1].tr + Date.now()));
     setChecked(false);
     setCorrectness([]);
   };
@@ -63,8 +60,8 @@ export default function WordOrderGame() {
   let feedback;
   if (checked) {
     feedback = allCorrect
-      ? { text: `✓ Correcto — ${story.subtitle ?? story.grammarNote}.`, tone: 'ok' }
-      : { text: 'Casi. Revisa dónde va el adverbio.', tone: 'error' };
+      ? { text: '✓ Correcto — así aparece en el relato.', tone: 'ok' }
+      : { text: 'Casi. Fíjate en el orden sujeto + verbo + objeto.', tone: 'error' };
   } else if (missing === 0) {
     feedback = { text: 'Frase completa. Comprueba.', tone: 'ready' };
   } else {
@@ -75,13 +72,13 @@ export default function WordOrderGame() {
     <GameShell
       index="01"
       title="Ordena la frase"
-      blurb={
+      prompt={
         <>
           Arrastra cada palabra a su lugar para reconstruir la frase (o haz clic). Del relato <em>{story.title}</em>.
         </>
       }
-      level={story.level}
-      progress={`${placed.length} / ${targetWords.length}`}
+      level={level}
+      progress={`${storyProgress.order.best} / ${targetWords.length}`}
       accent="#f97316"
       canCheck={missing === 0 && !checked}
       onCheck={handleCheck}

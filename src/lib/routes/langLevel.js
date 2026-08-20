@@ -14,9 +14,6 @@ const LEVEL_CODES = LEVELS.map((lv) => lv.code);
 /** Mismo valor que hoy EMPTY_STATE.profile.current_level en progressStore.ts. */
 export const DEFAULT_LEVEL = 'A2';
 
-export const PILOTED_LANG = 'EN';
-export const PILOTED_LEVELS = ['A1', 'A2', 'B1'];
-
 /** 'en' -> 'EN', o null si no está en LANGUAGE_ORDER. */
 export function parseLangSlug(slug) {
   if (typeof slug !== 'string') return null;
@@ -37,8 +34,4 @@ export function toLangSlug(code) {
 
 export function toLevelSlug(code) {
   return code.toLowerCase();
-}
-
-export function isPilotedLangLevel(langCode, levelCode) {
-  return langCode === PILOTED_LANG && PILOTED_LEVELS.includes(levelCode);
 }
