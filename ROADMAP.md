@@ -54,7 +54,7 @@ pronunciación y el aprendizaje por curiosidad dentro de historias reales.
 De SPA de una sola ruta a rutas reales de App Router, piloto en inglés antes
 de expandir al resto de idiomas.
 
-- [ ] Fase 1 — Andamiaje de rutas App Router (`/[lang]`, `/[lang]/[level]`,
+- [x] Fase 1 — Andamiaje de rutas App Router (`/[lang]`, `/[lang]/[level]`,
       `/[lang]/[level]/story/[id]`, Inglés real en ruta propia)
 - [ ] Fase 2 — Modelo de datos por idioma + nivel (piloto EN A1/A2/B1)
 - [ ] Fase 3 — Modelo de lema/glosario para tooltips de significado y
