@@ -6,10 +6,17 @@ import { createClient } from "@/lib/supabase/server";
  * el login; cambiamos ese code por una sesión real (cookies httpOnly via
  * @supabase/ssr) y volvemos a la home.
  */
+/** Solo rutas relativas propias — nunca "//host" ni una URL absoluta, o
+ * `next` se convierte en un open redirect tras un login real. */
+function safeNextPath(raw: string | null): string {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/";
+  return raw;
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/";
+  const next = safeNextPath(searchParams.get("next"));
 
   if (code) {
     const supabase = await createClient();

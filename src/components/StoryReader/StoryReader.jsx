@@ -1,12 +1,17 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import { whiteReadable, NEUTRAL } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAppState } from '@/state/AppStateContext';
 import { getLanguageData } from '@/data';
 import { speakSentence, cancelSpeech, isSpeechSupported, useIsSpeechSupported } from '@/lib/azure/tts';
-import { touchStoryProgress } from '@/lib/storage/progressStore';
+import {
+  touchStoryProgress,
+  subscribeToProgress,
+  getProgressSnapshot,
+  getProgressServerSnapshot
+} from '@/lib/storage/progressStore';
 import SentencePair from './SentencePair';
 import PronunciationBar from './PronunciationBar';
 
@@ -24,11 +29,22 @@ export default function StoryReader() {
 
   const onSolid = whiteReadable(surface.solid) ? '#ffffff' : NEUTRAL.ink;
 
+  // El estado de sesión tarda un instante en resolverse tras montar
+  // (arranca en 'loading'). Sin `progressStatus` en las deps, un mount con
+  // la sesión todavía cargando dejaría este efecto sin volver a dispararse
+  // cuando la sesión resuelve a 'ready' — la primera frase nunca se
+  // persistiría si el usuario no navega a otra.
+  const progressStatus = useSyncExternalStore(
+    subscribeToProgress,
+    getProgressSnapshot,
+    getProgressServerSnapshot
+  ).status;
+
   // Persiste "por dónde va" en cuanto se activa una frase — la primera vez
   // marca la historia 'en_curso', y 'leido' al llegar a la última.
   useEffect(() => {
     touchStoryProgress(story.id, sentenceIndex, story.sentences.length);
-  }, [story.id, sentenceIndex, story.sentences.length]);
+  }, [story.id, sentenceIndex, story.sentences.length, progressStatus]);
 
   // Corta cualquier lectura en curso si se cambia de historia/idioma o al desmontar.
   useEffect(() => {

@@ -68,6 +68,12 @@ function isBrowser(): boolean {
 }
 
 let cache: ProgressState = LOADING_STATE;
+// Usuario al que pertenece `cache` ahora mismo. Se usa solo para detectar un
+// cambio DIRECTO de sesión (usuario A -> usuario B, sin `null` de por medio)
+// y borrar el cache antes de pedir los datos del nuevo usuario — si no, los
+// datos de A siguen pintados (con la identidad de B ya activa) durante el
+// viaje de red a Supabase.
+let cachedUserId: string | null = null;
 const listeners = new Set<() => void>();
 
 function setCache(next: ProgressState): void {
@@ -115,10 +121,20 @@ async function loadFromSupabase(userId: string): Promise<void> {
 function syncWithSession(): void {
   const session = getSessionSnapshot();
   if (session === undefined) {
+    cachedUserId = null;
     setCache(LOADING_STATE);
   } else if (session === null) {
+    cachedUserId = null;
     setCache(EMPTY_STATE);
   } else {
+    if (session.user.id !== cachedUserId) {
+      // Sesión de A -> sesión de B directamente (p. ej. otra pestaña del
+      // mismo navegador inició sesión con otra cuenta): limpia YA, antes de
+      // pedir los datos de B, para no mostrar el progreso de A bajo la
+      // identidad de B mientras se resuelve la petición.
+      cachedUserId = session.user.id;
+      setCache(LOADING_STATE);
+    }
     loadFromSupabase(session.user.id).catch(() => setCache(EMPTY_STATE));
   }
 }
@@ -172,12 +188,23 @@ export function getAllStoryProgress(): Record<string, StoredStoryProgress> {
   return cache.storyProgress;
 }
 
-/** No hace nada sin sesión — sin inventar "Leído"/"En curso" para nadie que no se ha registrado. */
-export async function touchStoryProgress(
+const storyWriteTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+/**
+ * No hace nada sin sesión — sin inventar "Leído"/"En curso" para nadie que
+ * no se ha registrado. El cache en memoria se actualiza al instante (para
+ * que la UI responda ya), pero el upsert a Supabase se debounce por
+ * historia: navegar rápido por varias frases dispararía upserts
+ * concurrentes que pueden resolver desordenados y hacer retroceder
+ * last_sentence_index — al esperar una pausa de inactividad solo se manda
+ * el estado final, y nunca hay dos peticiones en vuelo para la misma
+ * historia a la vez.
+ */
+export function touchStoryProgress(
   storyId: string,
   sentenceIndex: number,
   totalSentences: number
-): Promise<StoredStoryProgress | null> {
+): StoredStoryProgress | null {
   const userId = currentUserId();
   if (!userId) return null;
 
@@ -193,16 +220,31 @@ export async function touchStoryProgress(
   };
   setCache({ ...cache, storyProgress: { ...cache.storyProgress, [storyId]: next } });
 
-  const supabase = createClient();
-  await supabase.from("story_progress").upsert(
-    {
-      user_id: userId,
-      story_id: storyId,
-      status,
-      last_sentence_index: sentenceIndex,
-      updated_at: next.updated_at,
-    },
-    { onConflict: "user_id,story_id" }
+  const pending = storyWriteTimers.get(storyId);
+  if (pending) clearTimeout(pending);
+  storyWriteTimers.set(
+    storyId,
+    setTimeout(() => {
+      storyWriteTimers.delete(storyId);
+      // Si mientras esperábamos cambió la sesión, no escribas con un
+      // user_id que ya no es el de la sesión activa (RLS lo rechazaría
+      // igualmente, pero evita la petición de más).
+      if (currentUserId() !== userId) return;
+      const supabase = createClient();
+      supabase
+        .from("story_progress")
+        .upsert(
+          {
+            user_id: userId,
+            story_id: storyId,
+            status: next.status,
+            last_sentence_index: next.last_sentence_index,
+            updated_at: next.updated_at,
+          },
+          { onConflict: "user_id,story_id" }
+        )
+        .then();
+    }, 500)
   );
 
   return next;
