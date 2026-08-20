@@ -41,6 +41,9 @@ yarn-error.log*
 /Light mode design improvement/
 /Light mode design improvement.zip
 
+# subagent defs live at user level (~/.claude/agents), not per-project
+/.claude/agents/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
