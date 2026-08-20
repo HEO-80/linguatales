@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 import { getLanguageData } from '@/data';
 import { SECTION } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
@@ -18,7 +18,7 @@ function normalize(sentence) {
 
 /** Juego 03 — escucha la frase (SpeechSynthesis) y escríbela tal cual. */
 export default function DictationGame() {
-  const { lang } = useAppState();
+  const lang = useLangCode();
   const { story } = getLanguageData(lang);
   const { surface, text, font } = useTheme();
   const speechSupported = useIsSpeechSupported();
@@ -56,7 +56,7 @@ export default function DictationGame() {
   let feedback;
   if (checked) {
     feedback = isCorrect
-      ? { text: `✓ Correcto — ${story.grammarNote}.`, tone: 'ok' }
+      ? { text: `✓ Correcto — ${story.subtitle ?? story.grammarNote}.`, tone: 'ok' }
       : { text: `Casi. La frase era: "${targetSentence.text}"`, tone: 'error' };
   } else if (input.trim()) {
     feedback = { text: 'Comprueba lo que has escrito.', tone: 'ready' };

@@ -1,6 +1,8 @@
 'use client';
 
-import { useAppState } from '@/state/AppStateContext';
+import Link from 'next/link';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
+import { toLangSlug } from '@/lib/routes/langLevel';
 import { getRealEnglishDialogues } from '@/data';
 
 const DARK_BG = '#1c1210';
@@ -12,9 +14,10 @@ const WARNING = '#dc2626';
  * No añade un 5º ítem al nav: se llega aquí con este teaser + ancla.
  */
 export default function RealEnglishTeaser() {
-  const { lang } = useAppState();
+  const lang = useLangCode();
   const dialogues = getRealEnglishDialogues(lang);
   const available = dialogues.length > 0;
+  const langSlug = toLangSlug(lang);
 
   return (
     <section style={{ maxWidth: 1440, margin: '20px auto 0', padding: '0 32px' }}>
@@ -54,8 +57,8 @@ export default function RealEnglishTeaser() {
           </p>
         </div>
         {available ? (
-          <a
-            href="#real-english"
+          <Link
+            href={`/${langSlug}/real-english`}
             style={{
               background: '#fffdf7',
               color: DARK_BG,
@@ -69,7 +72,7 @@ export default function RealEnglishTeaser() {
             }}
           >
             Ver diálogo →
-          </a>
+          </Link>
         ) : (
           <span
             style={{

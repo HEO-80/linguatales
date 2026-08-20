@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useSyncExternalStore } from 'react';
+import Link from 'next/link';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAuth } from '@/state/AuthContext';
+import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
+import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
 import AuthModal from '../Auth/AuthModal';
 import UserMenu from '../Auth/UserMenu';
@@ -44,6 +47,10 @@ export default function AppHeader() {
   const { user, loading } = useAuth();
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const streak = user ? computeStreakDays(progress) : 0;
+  const langCode = useLangCode();
+  const levelCode = useLevelCode();
+  const langSlug = toLangSlug(langCode);
+  const levelSlug = toLevelSlug(levelCode ?? DEFAULT_LEVEL);
 
   return (
     <header
@@ -92,9 +99,9 @@ export default function AppHeader() {
             const label = s.key === 'idiom' ? lang.navIdiom : s.label;
             const isActive = active === s.key;
             return (
-              <a
+              <Link
                 key={s.key}
-                href={s.anchor}
+                href={`/${langSlug}/${levelSlug}${s.anchor}`}
                 onClick={() => setActive(s.key)}
                 style={{
                   fontFamily: font.body,
@@ -107,7 +114,7 @@ export default function AppHeader() {
                 }}
               >
                 {label}
-              </a>
+              </Link>
             );
           })}
         </nav>

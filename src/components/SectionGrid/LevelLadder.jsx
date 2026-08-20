@@ -1,17 +1,21 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
+import Link from 'next/link';
 import { pastel, fg } from '@/theme/color';
 import { LEVELS } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
+import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { getLanguageData } from '@/data';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
 
 export default function LevelLadder() {
   const { font } = useTheme();
-  const { lang, level, setLevel } = useAppState();
-  const { storyList } = getLanguageData(lang);
+  const langCode = useLangCode();
+  const level = useLevelCode();
+  const langSlug = toLangSlug(langCode);
+  const { storyList } = getLanguageData(langCode);
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
 
   return (
@@ -28,9 +32,9 @@ export default function LevelLadder() {
         const pct = storiesAtLevel.length > 0 ? Math.round((doneAtLevel / storiesAtLevel.length) * 100) : 0;
 
         return (
-          <button
+          <Link
             key={lv.code}
-            onClick={() => setLevel(lv.code)}
+            href={`/${langSlug}/${toLevelSlug(lv.code)}`}
             title={lv.title}
             style={{
               position: 'relative',
@@ -45,7 +49,8 @@ export default function LevelLadder() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '6px 0 8px'
+              padding: '6px 0 8px',
+              textDecoration: 'none'
             }}
           >
             <span
@@ -66,7 +71,7 @@ export default function LevelLadder() {
             <span style={{ position: 'relative', fontFamily: font.display, fontSize: 13, fontWeight: 600, color: onBg }}>
               {lv.code}
             </span>
-          </button>
+          </Link>
         );
       })}
     </div>

@@ -2,13 +2,13 @@
 
 import { LANGUAGES, LANGUAGE_ORDER } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 
 const TOTAL_STORIES = LANGUAGE_ORDER.reduce((sum, code) => sum + LANGUAGES[code].stories, 0);
 
 export default function AppFooter() {
   const { surface, accent, text, font } = useTheme();
-  const { lang } = useAppState();
+  const lang = useLangCode();
 
   return (
     <footer

@@ -1,6 +1,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
+import Link from 'next/link';
 import { pastel, fg, hue, NEUTRAL } from '@/theme/color';
 import { LANGUAGES } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
@@ -10,9 +11,10 @@ import Motif from './motifs';
 
 /**
  * Cada tarjeta calcula su PROPIO tinte a partir de su propio idioma
- * (no del tema global, que solo refleja el idioma activo).
+ * (no del tema global, que solo refleja el idioma activo). `levelSlug` viene
+ * de LanguageShelf: cambiar de idioma conserva el nivel actual de la URL.
  */
-export default function LanguageCard({ code, active, currentLevel, onSelect }) {
+export default function LanguageCard({ code, active, currentLevel, levelSlug }) {
   const { font, shadow } = useTheme();
   const L = LANGUAGES[code];
   const h = hue(L);
@@ -33,8 +35,8 @@ export default function LanguageCard({ code, active, currentLevel, onSelect }) {
   const stripeHeight = active ? 9 : 6;
 
   return (
-    <button
-      onClick={() => onSelect(code)}
+    <Link
+      href={`/${code.toLowerCase()}/${levelSlug}`}
       style={{
         position: 'relative',
         flex: active ? 1.5 : 1,
@@ -46,7 +48,8 @@ export default function LanguageCard({ code, active, currentLevel, onSelect }) {
         boxShadow: active ? `0 3px 0 ${L.p1}, ${shadow.base}` : shadow.sm,
         minHeight: active ? 148 : 128,
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        textDecoration: 'none'
       }}
     >
       <div style={{ display: 'flex', height: stripeHeight, flexShrink: 0 }}>
@@ -124,6 +127,6 @@ export default function LanguageCard({ code, active, currentLevel, onSelect }) {
           </span>
         )}
       </div>
-    </button>
+    </Link>
   );
 }

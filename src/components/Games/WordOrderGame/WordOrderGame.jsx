@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 import { getLanguageData } from '@/data';
 import GameShell from '../GameShell';
 import WordBlock from './WordBlock';
@@ -9,12 +9,12 @@ import DropZone from './DropZone';
 import { seededShuffle } from '../seededShuffle';
 
 /**
- * Se monta con `key={lang}` desde Home — cambiar de idioma remonta el
- * componente entero, así que todo su estado (banco, huecos, comprobación)
- * arranca limpio sin necesidad de un efecto de sincronización.
+ * Se monta con `key={lang}` desde el layout de nivel — cambiar de idioma
+ * remonta el componente entero, así que todo su estado (banco, huecos,
+ * comprobación) arranca limpio sin necesidad de un efecto de sincronización.
  */
 export default function WordOrderGame() {
-  const { lang } = useAppState();
+  const lang = useLangCode();
   const { story } = getLanguageData(lang);
 
   // Frase objetivo = la frase 3 del relato del idioma activo.
@@ -61,7 +61,7 @@ export default function WordOrderGame() {
   let feedback;
   if (checked) {
     feedback = allCorrect
-      ? { text: `✓ Correcto — ${story.grammarNote}.`, tone: 'ok' }
+      ? { text: `✓ Correcto — ${story.subtitle ?? story.grammarNote}.`, tone: 'ok' }
       : { text: 'Casi. Revisa dónde va el adverbio.', tone: 'error' };
   } else if (missing === 0) {
     feedback = { text: 'Frase completa. Comprueba.', tone: 'ready' };

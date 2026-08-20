@@ -3,14 +3,14 @@
 import { pastel, fg } from '@/theme/color';
 import { SECTION } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 import { getLanguageData } from '@/data';
 
 const GRAMMAR_COLOR = SECTION.grammar.color;
 
 export default function GrammarCard() {
   const { font, shadow } = useTheme();
-  const { lang } = useAppState();
+  const lang = useLangCode();
   const { grammar } = getLanguageData(lang);
 
   const bg = pastel(GRAMMAR_COLOR, SECTION.grammar.tint);

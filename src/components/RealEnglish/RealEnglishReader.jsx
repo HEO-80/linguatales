@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { buildTheme } from '@/theme/tokens';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 import { getRealEnglishDialogues } from '@/data';
 import SentencePair from '../StoryReader/SentencePair';
 import PronunciationBar from '../StoryReader/PronunciationBar';
@@ -129,7 +129,7 @@ function DialogueContent({ dialogue }) {
 }
 
 export default function RealEnglishReader() {
-  const { lang } = useAppState();
+  const lang = useLangCode();
   const dialogues = getRealEnglishDialogues(lang);
   const dialogue = dialogues[0];
 

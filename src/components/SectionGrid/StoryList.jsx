@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useSyncExternalStore } from 'react';
+import Link from 'next/link';
 import { pastel, fg } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
+import { toLangSlug, toLevelSlug, isPilotedLangLevel } from '@/lib/routes/langLevel';
 import { useAuth } from '@/state/AuthContext';
 import { getLanguageData } from '@/data';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
+import ComingSoonPanel from '../ComingSoon/ComingSoonPanel';
 
 const STATUS_LABEL = { nuevo: 'Nuevo', en_curso: 'En curso', leido: 'Leído' };
 
@@ -42,13 +45,32 @@ function StatusTag({ status, langAccent }) {
 export default function StoryList() {
   const theme = useTheme();
   const { surface, accent, text, font } = theme;
-  const { lang, level } = useAppState();
+  const langCode = useLangCode();
+  const level = useLevelCode();
   const { user } = useAuth();
   const [hovered, setHovered] = useState(null);
-  const { storyList } = getLanguageData(lang);
+  const { storyList } = getLanguageData(langCode);
 
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const progressMap = progress.storyProgress;
+
+  if (!isPilotedLangLevel(langCode, level)) {
+    return (
+      <div
+        style={{
+          background: surface.cream,
+          borderRadius: 5,
+          overflow: 'hidden',
+          border: `1px solid ${surface.border}`
+        }}
+      >
+        <ComingSoonPanel />
+      </div>
+    );
+  }
+
+  const langSlug = toLangSlug(langCode);
+  const levelSlug = toLevelSlug(level);
 
   // El status de data/*.js es solo contenido semilla (relleno visual) — el
   // estado real de lectura sale siempre de Supabase. Sin una fila real ahí,
@@ -85,12 +107,13 @@ export default function StoryList() {
       )}
       {rows.length === 0 ? (
         <div style={{ padding: '22px 16px', fontFamily: font.body, fontSize: 13, color: text.onCream }}>
-          Todavía no hay relatos en este nivel para {lang}.
+          Todavía no hay relatos en este nivel para {langCode}.
         </div>
       ) : (
         rows.map((s, i) => (
-          <div
+          <Link
             key={s.id}
+            href={`/${langSlug}/${levelSlug}/story/${s.id}`}
             onMouseEnter={() => setHovered(s.id)}
             onMouseLeave={() => setHovered(null)}
             style={{
@@ -100,7 +123,7 @@ export default function StoryList() {
               padding: '12px 16px',
               background: hovered === s.id ? surface.tintDeep : 'transparent',
               borderTop: i === 0 ? 'none' : `1px solid ${surface.border}`,
-              cursor: 'default'
+              textDecoration: 'none'
             }}
           >
             <span style={{ fontFamily: font.mono, fontSize: 12, color: text.onCream, width: 18 }}>
@@ -125,7 +148,7 @@ export default function StoryList() {
             <span style={{ fontFamily: font.mono, fontSize: 11.5, color: text.onCream, width: 40, textAlign: 'right' }}>
               {s.duration}
             </span>
-          </div>
+          </Link>
         ))
       )}
     </div>

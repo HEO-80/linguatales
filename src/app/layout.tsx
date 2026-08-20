@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AppStateProvider } from "@/state/AppStateContext";
 import { AuthProvider } from "@/state/AuthContext";
 import { ThemeProvider } from "@/theme/ThemeContext";
 
@@ -23,9 +22,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body>
         <AuthProvider>
-          <AppStateProvider>
-            <ThemeProvider>{children}</ThemeProvider>
-          </AppStateProvider>
+          <ThemeProvider>{children}</ThemeProvider>
         </AuthProvider>
       </body>
     </html>

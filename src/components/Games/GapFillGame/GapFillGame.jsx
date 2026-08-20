@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 import { getLanguageData } from '@/data';
 import { SECTION } from '@/theme/languages';
 import { pastel } from '@/theme/color';
@@ -48,7 +48,7 @@ function buildOptions(answer, story, seed) {
 
 /** Juego 02 — frase con un hueco, elige la palabra correcta entre varias. */
 export default function GapFillGame() {
-  const { lang } = useAppState();
+  const lang = useLangCode();
   const { story } = getLanguageData(lang);
   const { surface, text, font } = useTheme();
 
@@ -79,7 +79,7 @@ export default function GapFillGame() {
   let feedback;
   if (checked) {
     feedback = isCorrect
-      ? { text: `✓ Correcto — ${story.grammarNote}.`, tone: 'ok' }
+      ? { text: `✓ Correcto — ${story.subtitle ?? story.grammarNote}.`, tone: 'ok' }
       : { text: `Casi. La palabra correcta era "${answer}".`, tone: 'error' };
   } else if (selected) {
     feedback = { text: 'Frase completa. Comprueba.', tone: 'ready' };

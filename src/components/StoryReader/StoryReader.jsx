@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import { whiteReadable, NEUTRAL } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
-import { useAppState } from '@/state/AppStateContext';
-import { getLanguageData } from '@/data';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 import { speakSentence, cancelSpeech, isSpeechSupported, useIsSpeechSupported } from '@/lib/azure/tts';
 import {
   touchStoryProgress,
+  getStoryProgress,
   subscribeToProgress,
   getProgressSnapshot,
   getProgressServerSnapshot
@@ -15,16 +15,17 @@ import {
 import SentencePair from './SentencePair';
 import PronunciationBar from './PronunciationBar';
 
-export default function StoryReader() {
+/** `story` viene por props (resuelto en app/[lang]/[level]/story/[id]/page.tsx). */
+export default function StoryReader({ story }) {
   const theme = useTheme();
   const { surface, accent, text, font, shadow } = theme;
-  const { lang, sentenceIndex, setSentenceIndex } = useAppState();
-  const { story } = getLanguageData(lang);
+  const lang = useLangCode();
+  const [sentenceIndex, setSentenceIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(true);
   const [speaking, setSpeaking] = useState(false);
   const speechSupported = useIsSpeechSupported();
-  // Evita que un onend de una lectura ya cancelada (p. ej. por cambio de
-  // idioma) siga encadenando frases de una historia que ya no está activa.
+  // Evita que un onend de una lectura ya cancelada (p. ej. al navegar a otra
+  // historia) siga encadenando frases de una historia que ya no está activa.
   const readingRef = useRef(false);
 
   const onSolid = whiteReadable(surface.solid) ? '#ffffff' : NEUTRAL.ink;
@@ -40,13 +41,26 @@ export default function StoryReader() {
     getProgressServerSnapshot
   ).status;
 
+  // En cuanto el progreso resuelve con una fila guardada para esta historia,
+  // retoma por donde iba el usuario en vez de arrancar en la frase 0. Sincroniza
+  // estado local con un store externo asíncrono (Supabase) — no un derivado de
+  // render, de ahí el setState dentro del efecto.
+  useEffect(() => {
+    if (progressStatus !== 'ready') return;
+    const saved = getStoryProgress(story.id)?.last_sentence_index;
+    if (typeof saved === 'number' && saved > 0 && saved < story.sentences.length) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- sincroniza con el store externo de progreso, no hay evento de React que lo dispare
+      setSentenceIndex(saved);
+    }
+  }, [story.id, story.sentences.length, progressStatus]);
+
   // Persiste "por dónde va" en cuanto se activa una frase — la primera vez
   // marca la historia 'en_curso', y 'leido' al llegar a la última.
   useEffect(() => {
     touchStoryProgress(story.id, sentenceIndex, story.sentences.length);
   }, [story.id, sentenceIndex, story.sentences.length, progressStatus]);
 
-  // Corta cualquier lectura en curso si se cambia de historia/idioma o al desmontar.
+  // Corta cualquier lectura en curso si se cambia de historia o al desmontar.
   useEffect(() => {
     return () => {
       readingRef.current = false;
@@ -129,7 +143,7 @@ export default function StoryReader() {
                 color: text.onTint
               }}
             >
-              {story.duration} · {story.grammarNote}
+              {story.duration} · {story.subtitle}
             </span>
           </div>
 

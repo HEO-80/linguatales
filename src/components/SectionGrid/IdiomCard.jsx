@@ -2,12 +2,12 @@
 
 import { fg } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 import { getLanguageData } from '@/data';
 
 export default function IdiomCard() {
   const { lang: langInfo, surface, accent, font, shadow } = useTheme();
-  const { lang } = useAppState();
+  const lang = useLangCode();
   const { idioms } = getLanguageData(lang);
 
   const idiomBg = surface.idiomFlat;

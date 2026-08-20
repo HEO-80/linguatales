@@ -8,12 +8,12 @@
 
 import { createContext, useContext, useMemo } from 'react';
 import { buildTheme } from './tokens';
-import { useAppState } from '@/state/AppStateContext';
+import { useLangCode } from '@/lib/routes/useRouteCodes';
 
 const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
-  const { lang } = useAppState();
+  const lang = useLangCode();
   const theme = useMemo(() => buildTheme(lang), [lang]);
 
   return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
