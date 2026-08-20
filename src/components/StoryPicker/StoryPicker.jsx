@@ -8,7 +8,7 @@ import { LANGUAGES, LEVELS } from '@/theme/languages';
 import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { storiesOf } from '@/data/stories';
 import { useReader } from '@/state/ReaderContext';
-import { getStoryProgress, storyComplete } from '@/state/progress';
+import { getStoryProgress, storyComplete, useProgressSnapshot } from '@/state/progress';
 import { buildWordBank } from '@/components/Games/SelectWordGame/buildWordBank';
 
 /**
@@ -21,6 +21,7 @@ export default function StoryPicker() {
   const { surface, accent, text, font, shadow } = useTheme();
   const { lang, level, story } = useReader();
   const [open, setOpen] = useState(false);
+  const snapshot = useProgressSnapshot();
 
   const L = LANGUAGES[lang];
   const lv = LEVELS.find((l) => l.code === level);
@@ -88,7 +89,7 @@ export default function StoryPicker() {
             }}
           >
             {stories.map((s) => {
-              const sp = getStoryProgress(lang, level, s.num);
+              const sp = getStoryProgress(lang, level, s.num, snapshot);
               const bank = buildWordBank(s);
               const matchApplicable = s.phrasals.length >= 3;
               const wordApplicable = bank.length >= 4;

@@ -12,6 +12,7 @@
  * Envelope guardado: { v: 1, data: { [storyKey]: storyObj } }.
  */
 
+import { useSyncExternalStore } from 'react';
 import { storyKey as buildStoryKey } from '@/lib/routes/storyKey';
 import { storiesOf } from '@/data/stories';
 import { LEVELS } from '@/theme/languages';
@@ -67,8 +68,26 @@ export function getProgressSnapshot() {
   return cache;
 }
 
+// Referencia estable: useSyncExternalStore exige que el snapshot de servidor
+// no cambie de identidad entre llamadas, o React avisa de un bucle infinito.
+const EMPTY_PROGRESS = {};
+
 export function getProgressServerSnapshot() {
-  return {};
+  return EMPTY_PROGRESS;
+}
+
+/**
+ * Hook hidratación-segura: úsalo en CUALQUIER componente que lea progreso
+ * durante el render (para pintar un porcentaje, un estado "Leído", etc).
+ * Devuelve el snapshot completo — pásalo a getStoryProgress/levelProgress/
+ * languageProgress como último argumento en vez de dejar que ellas mismas
+ * llamen a getProgressSnapshot() por su cuenta: si lo hacen por su cuenta,
+ * leen el valor real ya en el primer render del cliente (antes de que React
+ * termine de hidratar), y el texto no coincide con lo que pintó el
+ * servidor — eso es exactamente el error "Hydration failed" que ya dimos.
+ */
+export function useProgressSnapshot() {
+  return useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
 }
 
 /* ── lectura/escritura de localStorage ───────────────────────────────── */
@@ -137,8 +156,13 @@ export function saveProgress(progress) {
 
 /* ── API por relato ──────────────────────────────────────────────────── */
 
-export function getStoryProgress(lang, level, num) {
-  const all = getProgressSnapshot();
+/**
+ * `snapshot`, si se pasa, debe venir de useProgressSnapshot() (hidratación
+ * segura). Si se omite, lee getProgressSnapshot() directamente — válido
+ * fuera de render (handlers, recordGameResult), no dentro de él.
+ */
+export function getStoryProgress(lang, level, num, snapshot) {
+  const all = snapshot ?? getProgressSnapshot();
   const key = buildStoryKey(lang, level, num);
   return all[key] || cloneEmptyStory();
 }
@@ -228,12 +252,12 @@ export function storyComplete(sp, story, { matchApplicable, wordApplicable } = {
   return orderOk && matchOk && gapOk && wordOk;
 }
 
-export function levelProgress(lang, level) {
+export function levelProgress(lang, level, snapshot) {
   const stories = storiesOf(lang, level);
   if (stories.length === 0) return 0;
 
   const done = stories.filter((s) => {
-    const sp = getStoryProgress(lang, level, s.num);
+    const sp = getStoryProgress(lang, level, s.num, snapshot);
     const matchApplicable = s.phrasals.length >= 3;
     const wordApplicable = buildWordBank(s).length >= 4;
     return storyComplete(sp, s, { matchApplicable, wordApplicable });
@@ -242,8 +266,8 @@ export function levelProgress(lang, level) {
   return Math.round((done / stories.length) * 100);
 }
 
-export function languageProgress(lang) {
+export function languageProgress(lang, snapshot) {
   if (LEVELS.length === 0) return 0;
-  const total = LEVELS.reduce((sum, l) => sum + levelProgress(lang, l.code), 0);
+  const total = LEVELS.reduce((sum, l) => sum + levelProgress(lang, l.code, snapshot), 0);
   return Math.round(total / LEVELS.length);
 }

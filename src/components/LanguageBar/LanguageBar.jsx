@@ -7,7 +7,7 @@ import { useTheme } from '@/theme/ThemeContext';
 import { LANGUAGES, LEVELS } from '@/theme/languages';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
 import { storiesOf } from '@/data/stories';
-import { levelProgress } from '@/state/progress';
+import { levelProgress, useProgressSnapshot } from '@/state/progress';
 import Motif from '@/components/LanguageShelf/motifs';
 import FlagMark from './FlagMark';
 import LevelPopover from '@/components/Rail/LevelPopover';
@@ -28,7 +28,8 @@ export default function LanguageBar() {
   const [levelOpen, setLevelOpen] = useState(false);
 
   const stories = storiesOf(langCode, levelCode);
-  const pct = levelProgress(langCode, levelCode);
+  const snapshot = useProgressSnapshot();
+  const pct = levelProgress(langCode, levelCode, snapshot);
 
   return (
     <div

@@ -7,7 +7,7 @@ import { useTheme } from '@/theme/ThemeContext';
 import { LEVELS } from '@/theme/languages';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
 import { storiesOf } from '@/data/stories';
-import { languageProgress } from '@/state/progress';
+import { languageProgress, useProgressSnapshot } from '@/state/progress';
 import LanguagePopover from './LanguagePopover';
 import LevelPopover from './LevelPopover';
 
@@ -29,6 +29,7 @@ export default function Rail() {
 
   const solidFg = whiteReadable(surface.solid) ? '#ffffff' : NEUTRAL.ink;
   const stories = storiesOf(langCode, levelCode);
+  const snapshot = useProgressSnapshot();
 
   const goToStoryPicker = () => {
     document.getElementById('story-picker-trigger')?.click();
@@ -41,15 +42,29 @@ export default function Rail() {
         flexShrink: 0,
         alignSelf: 'stretch',
         background: surface.tintDeep,
-        borderRight: `1px solid ${surface.border}`,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 14,
-        padding: '20px 0'
+        borderRight: `1px solid ${surface.border}`
       }}
     >
+      {/* Envoltorio sticky: el <aside> de fuera da el fondo/borde a todo lo
+          alto de la página (alignSelf:stretch); si el centrado fuera aquí
+          mismo, en una página larga (relato + juegos) el contenido quedaría
+          centrado a mitad del scroll total, invisible la mayor parte del
+          tiempo. Este div interior es el que de verdad hay que ver siempre,
+          así que se pega bajo AppHeader (76px) en vez de centrarse en todo
+          el alto. */}
+      <div
+        style={{
+          position: 'sticky',
+          top: 76,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 14,
+          padding: '20px 0',
+          maxHeight: 'calc(100vh - 76px)',
+          overflowY: 'auto'
+        }}
+      >
       <div style={{ position: 'relative' }}>
         <button
           onClick={() => setLangOpen((o) => !o)}
@@ -79,7 +94,7 @@ export default function Rail() {
           height: 6,
           borderRadius: '50%',
           background: accent.secondary,
-          opacity: 0.15 + (languageProgress(langCode) / 100) * 0.85
+          opacity: 0.15 + (languageProgress(langCode, snapshot) / 100) * 0.85
         }}
       />
 
@@ -151,6 +166,7 @@ export default function Rail() {
       <span style={{ fontFamily: font.mono, fontSize: 10.5, color: text.onTintDeep }}>
         {num ?? '–'} / {stories.length}
       </span>
+      </div>
     </aside>
   );
 }

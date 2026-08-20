@@ -12,15 +12,9 @@
  * num/level/lang distinto. No hace falta lógica de reseteo aquí.
  */
 
-import { createContext, useContext, useState, useEffect, useMemo, useSyncExternalStore } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { storyKey as buildStoryKey } from '@/lib/routes/storyKey';
-import {
-  subscribeToProgress,
-  getProgressSnapshot,
-  getProgressServerSnapshot,
-  getStoryProgress,
-  recordGameResult
-} from '@/state/progress';
+import { useProgressSnapshot, recordGameResult, EMPTY_STORY } from '@/state/progress';
 
 const ReaderContext = createContext(null);
 
@@ -32,8 +26,8 @@ export function ReaderProvider({ story, lang, level, children }) {
 
   const key = useMemo(() => buildStoryKey(lang, level, story.num), [lang, level, story.num]);
 
-  useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
-  const storyProgress = getStoryProgress(lang, level, story.num);
+  const allProgress = useProgressSnapshot();
+  const storyProgress = allProgress[key] || EMPTY_STORY;
 
   const recordResult = (g, result) => recordGameResult(key, g, result);
 

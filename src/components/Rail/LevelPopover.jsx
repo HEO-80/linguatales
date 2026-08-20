@@ -6,7 +6,7 @@ import { useTheme } from '@/theme/ThemeContext';
 import { LEVELS } from '@/theme/languages';
 import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { has, storiesOf } from '@/data/stories';
-import { levelProgress } from '@/state/progress';
+import { levelProgress, useProgressSnapshot } from '@/state/progress';
 
 /**
  * src/components/Rail/LevelPopover.jsx
@@ -16,6 +16,7 @@ import { levelProgress } from '@/state/progress';
  */
 export default function LevelPopover({ langCode, activeLevel, onClose }) {
   const { surface, text, font, shadow } = useTheme();
+  const snapshot = useProgressSnapshot();
 
   return (
     <>
@@ -67,7 +68,7 @@ export default function LevelPopover({ langCode, activeLevel, onClose }) {
               </div>
               {available && (
                 <div style={{ width: 44, height: 4, borderRadius: 2, background: 'rgba(25,23,19,.1)', overflow: 'hidden' }}>
-                  <div style={{ width: `${levelProgress(langCode, lv.code)}%`, height: '100%', background: lv.color }} />
+                  <div style={{ width: `${levelProgress(langCode, lv.code, snapshot)}%`, height: '100%', background: lv.color }} />
                 </div>
               )}
             </>
