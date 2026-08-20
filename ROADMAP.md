@@ -75,8 +75,10 @@ Ideas fichadas que aún no tocan, para no perderlas.
       want, can) con sus radiografías (significados múltiples, conjugación
       por tiempos, truco nativo) como material base para llenar el
       glosario/lema. Introducidos graduados por nivel, paso a paso empezando
-      por lo cotidiano: verbos, phrasal verbs, conectores. *(Hay un documento
-      con este material listo para aportar cuando toque.)*
+      por lo cotidiano: verbos, phrasal verbs, conectores. Material fuente ya
+      recibido y guardado en `content-super-verbs-en.md` (sin procesar
+      todavía — pendiente de extraer a datos de lema cuando toque la Fase 3
+      o posterior).
 - [ ] Misión narrativa: enseñar a contar historias, mantener expectación,
       guiar la atención. Pendiente de aterrizar en mecánicas concretas
       (juegos/herramientas) antes de construirse.
