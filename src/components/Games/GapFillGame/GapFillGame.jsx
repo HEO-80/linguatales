@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useLangCode } from '@/lib/routes/useRouteCodes';
-import { getLanguageData } from '@/data';
+import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
+import { getLevelContent } from '@/data';
 import { SECTION } from '@/theme/languages';
 import { pastel } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
@@ -49,7 +49,8 @@ function buildOptions(answer, story, seed) {
 /** Juego 02 — frase con un hueco, elige la palabra correcta entre varias. */
 export default function GapFillGame() {
   const lang = useLangCode();
-  const { story } = getLanguageData(lang);
+  const level = useLevelCode();
+  const { featuredStory: story } = getLevelContent(lang, level);
   const { surface, text, font } = useTheme();
 
   const targetSentence = story.sentences[1] || story.sentences[0];

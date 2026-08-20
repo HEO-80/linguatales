@@ -1,21 +1,23 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useLangCode } from '@/lib/routes/useRouteCodes';
-import { getLanguageData } from '@/data';
+import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
+import { getLevelContent } from '@/data';
 import GameShell from '../GameShell';
 import WordBlock from './WordBlock';
 import DropZone from './DropZone';
 import { seededShuffle } from '../seededShuffle';
 
 /**
- * Se monta con `key={lang}` desde el layout de nivel — cambiar de idioma
- * remonta el componente entero, así que todo su estado (banco, huecos,
- * comprobación) arranca limpio sin necesidad de un efecto de sincronización.
+ * Se monta con una `key` de `lang-level-storyId` desde `page.tsx` — cambiar
+ * de idioma, nivel o historia destacada remonta el componente entero, así
+ * que todo su estado (banco, huecos, comprobación) arranca limpio sin
+ * necesidad de un efecto de sincronización.
  */
 export default function WordOrderGame() {
   const lang = useLangCode();
-  const { story } = getLanguageData(lang);
+  const level = useLevelCode();
+  const { featuredStory: story } = getLevelContent(lang, level);
 
   // Frase objetivo = la frase 3 del relato del idioma activo.
   const targetSentence = story.sentences[2] || story.sentences[0];

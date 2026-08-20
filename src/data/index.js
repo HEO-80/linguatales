@@ -52,3 +52,84 @@ const DATA = {
 export function getLanguageData(langCode) {
   return DATA[langCode] || DATA.EN;
 }
+
+import { STORIES as EN_A1_STORIES, FEATURED_ID as EN_A1_FEATURED_ID } from './stories/en/a1';
+import { STORIES as EN_A2_STORIES, FEATURED_ID as EN_A2_FEATURED_ID } from './stories/en/a2';
+import { STORIES as EN_B1_STORIES, FEATURED_ID as EN_B1_FEATURED_ID } from './stories/en/b1';
+
+import { GRAMMAR_CHIPS as EN_A1_GRAMMAR } from './grammar/en/a1';
+import { GRAMMAR_CHIPS as EN_A2_GRAMMAR } from './grammar/en/a2';
+import { GRAMMAR_CHIPS as EN_B1_GRAMMAR } from './grammar/en/b1';
+
+import { IDIOM_ENTRIES as EN_A1_IDIOMS } from './idioms/en/a1';
+import { IDIOM_ENTRIES as EN_A2_IDIOMS } from './idioms/en/a2';
+import { IDIOM_ENTRIES as EN_B1_IDIOMS } from './idioms/en/b1';
+
+import { PILOTED_LANG, PILOTED_LEVELS, isPilotedLangLevel } from '@/lib/routes/langLevel';
+
+/** EN A1/A2/B1 — único idioma con contenido partido por nivel en esta fase. */
+const PILOTED_LEVEL_CONTENT = {
+  EN: {
+    A1: { stories: EN_A1_STORIES, featuredId: EN_A1_FEATURED_ID, grammar: EN_A1_GRAMMAR, idioms: EN_A1_IDIOMS },
+    A2: { stories: EN_A2_STORIES, featuredId: EN_A2_FEATURED_ID, grammar: EN_A2_GRAMMAR, idioms: EN_A2_IDIOMS },
+    B1: { stories: EN_B1_STORIES, featuredId: EN_B1_FEATURED_ID, grammar: EN_B1_GRAMMAR, idioms: EN_B1_IDIOMS }
+  }
+};
+
+/**
+ * getLanguageMeta(langCode) => { code, isPiloted, pilotedLevels, allStories }
+ * `allStories` es la unión de TODAS las historias del idioma (todos los
+ * niveles). Para EN: a1+a2+b1 concatenadas (con grammarRefs). Para el
+ * resto: el storyList plano de siempre (sin grammarRefs).
+ */
+export function getLanguageMeta(langCode) {
+  const isPiloted = langCode === PILOTED_LANG;
+  const pilotedLevels = isPiloted ? PILOTED_LEVELS : [];
+  const allStories = isPiloted
+    ? [...EN_A1_STORIES, ...EN_A2_STORIES, ...EN_B1_STORIES]
+    : getLanguageData(langCode).storyList;
+
+  return { code: langCode, isPiloted, pilotedLevels, allStories };
+}
+
+/**
+ * getLevelContent(langCode, levelCode) =>
+ *   { level, isPiloted, stories, featuredStory, grammar, idioms }
+ * Piloted (EN A1/A2/B1): stories/grammar/idioms reales de ese nivel.
+ * No piloted: fallback exacto al comportamiento de hoy (mismo story fijo,
+ * mismo grammar/idioms planos, stories filtradas por s.level === levelCode).
+ */
+export function getLevelContent(langCode, levelCode) {
+  const legacy = getLanguageData(langCode);
+
+  if (isPilotedLangLevel(langCode, levelCode)) {
+    const content = PILOTED_LEVEL_CONTENT[langCode][levelCode];
+    const featuredStory = content.stories.find((s) => s.id === content.featuredId) || content.stories[0];
+    return {
+      level: levelCode,
+      isPiloted: true,
+      stories: content.stories,
+      featuredStory,
+      grammar: content.grammar,
+      idioms: content.idioms
+    };
+  }
+
+  return {
+    level: levelCode,
+    isPiloted: false,
+    stories: legacy.storyList.filter((s) => s.level === levelCode),
+    featuredStory: legacy.story,
+    grammar: legacy.grammar,
+    idioms: legacy.idioms
+  };
+}
+
+/**
+ * getStory(langCode, storyId) => Story | undefined
+ * Busca por id en TODO el idioma (todos los niveles). El caller
+ * (story/[id]/page.tsx) sigue validando aparte `story.level === levelCode`.
+ */
+export function getStory(langCode, storyId) {
+  return getLanguageMeta(langCode).allStories.find((s) => s.id === storyId);
+}

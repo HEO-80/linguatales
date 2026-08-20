@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useLangCode } from '@/lib/routes/useRouteCodes';
-import { getLanguageData } from '@/data';
+import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
+import { getLevelContent } from '@/data';
 import { SECTION } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
 import { speakSentence, isSpeechSupported, useIsSpeechSupported } from '@/lib/azure/tts';
@@ -19,7 +19,8 @@ function normalize(sentence) {
 /** Juego 03 — escucha la frase (SpeechSynthesis) y escríbela tal cual. */
 export default function DictationGame() {
   const lang = useLangCode();
-  const { story } = getLanguageData(lang);
+  const level = useLevelCode();
+  const { featuredStory: story } = getLevelContent(lang, level);
   const { surface, text, font } = useTheme();
   const speechSupported = useIsSpeechSupported();
 

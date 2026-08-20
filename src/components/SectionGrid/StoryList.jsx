@@ -7,7 +7,7 @@ import { useTheme } from '@/theme/ThemeContext';
 import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
 import { toLangSlug, toLevelSlug, isPilotedLangLevel } from '@/lib/routes/langLevel';
 import { useAuth } from '@/state/AuthContext';
-import { getLanguageData } from '@/data';
+import { getLevelContent } from '@/data';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
 import ComingSoonPanel from '../ComingSoon/ComingSoonPanel';
 
@@ -49,7 +49,7 @@ export default function StoryList() {
   const level = useLevelCode();
   const { user } = useAuth();
   const [hovered, setHovered] = useState(null);
-  const { storyList } = getLanguageData(langCode);
+  const { stories } = getLevelContent(langCode, level);
 
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const progressMap = progress.storyProgress;
@@ -75,12 +75,10 @@ export default function StoryList() {
   // El status de data/*.js es solo contenido semilla (relleno visual) — el
   // estado real de lectura sale siempre de Supabase. Sin una fila real ahí,
   // se muestra 'Nuevo', nunca el status inventado del seed.
-  const rows = storyList
-    .filter((s) => s.level === level)
-    .map((s) => {
-      const persisted = progressMap[s.id];
-      return { ...s, status: persisted ? STATUS_LABEL[persisted.status] : 'Nuevo' };
-    });
+  const rows = stories.map((s) => {
+    const persisted = progressMap[s.id];
+    return { ...s, status: persisted ? STATUS_LABEL[persisted.status] : 'Nuevo' };
+  });
 
   return (
     <div

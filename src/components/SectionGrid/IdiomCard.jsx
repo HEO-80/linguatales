@@ -2,13 +2,14 @@
 
 import { fg } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
-import { useLangCode } from '@/lib/routes/useRouteCodes';
-import { getLanguageData } from '@/data';
+import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
+import { getLevelContent } from '@/data';
 
 export default function IdiomCard() {
   const { lang: langInfo, surface, accent, font, shadow } = useTheme();
   const lang = useLangCode();
-  const { idioms } = getLanguageData(lang);
+  const level = useLevelCode();
+  const { idioms } = getLevelContent(lang, level);
 
   const idiomBg = surface.idiomFlat;
   const levelColor = fg(accent.secondary, idiomBg, 4.6);
@@ -44,7 +45,7 @@ export default function IdiomCard() {
           {langInfo.navIdiom}
         </span>
         <h3 style={{ fontFamily: font.display, fontSize: 22, fontWeight: 600, color: '#ffffff', margin: '4px 0 0' }}>
-          Vistos en el relato
+          Vistos en este nivel
         </h3>
       </div>
 

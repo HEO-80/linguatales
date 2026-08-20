@@ -3,15 +3,16 @@
 import { pastel, fg } from '@/theme/color';
 import { SECTION } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
-import { useLangCode } from '@/lib/routes/useRouteCodes';
-import { getLanguageData } from '@/data';
+import { useLangCode, useLevelCode } from '@/lib/routes/useRouteCodes';
+import { getLevelContent } from '@/data';
 
 const GRAMMAR_COLOR = SECTION.grammar.color;
 
 export default function GrammarCard() {
   const { font, shadow } = useTheme();
   const lang = useLangCode();
-  const { grammar } = getLanguageData(lang);
+  const level = useLevelCode();
+  const { grammar } = getLevelContent(lang, level);
 
   const bg = pastel(GRAMMAR_COLOR, SECTION.grammar.tint);
   const ink = fg('#191713', bg, 6);
@@ -49,13 +50,13 @@ export default function GrammarCard() {
           Gramática
         </span>
         <h3 style={{ fontFamily: font.display, fontSize: 22, fontWeight: 600, color: ink, margin: '4px 0 0' }}>
-          En este relato
+          En este nivel
         </h3>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {grammar.map((g) => (
-          <div key={g.label} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <div key={g.id ?? g.label} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <span
               style={{
                 alignSelf: 'flex-start',
