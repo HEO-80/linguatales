@@ -5,10 +5,10 @@ import { pastel, fg } from '@/theme/color';
 import { SECTION } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
 
-const ITEMS = [
-  { title: 'Elige el hueco', icon: '▤', status: 'Pronto', color: SECTION.gapFill.color, tint: SECTION.gapFill.tint },
-  { title: 'Dictado', icon: '✎', status: 'Pronto', color: SECTION.dictation.color, tint: SECTION.dictation.tint }
-];
+// Ordena la frase, Elige el hueco y Dictado ya están implementados como
+// GameShell propios (ver la columna de la izquierda) — el catálogo ya no
+// tiene "próximos" que listar, solo el hueco para el siguiente que se añada.
+const ITEMS = [];
 
 function CatalogueTile({ item }) {
   const { surface, font, shadow } = useTheme();

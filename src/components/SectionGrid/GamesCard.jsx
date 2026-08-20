@@ -8,8 +8,8 @@ const GAMES_COLOR = SECTION.games.color;
 
 const ENTRIES = [
   { title: 'Ordena la frase', status: 'Listo', color: SECTION.games.color },
-  { title: 'Elige el hueco', status: 'Pronto', color: SECTION.gapFill.color },
-  { title: 'Dictado', status: 'Pronto', color: SECTION.dictation.color }
+  { title: 'Elige el hueco', status: 'Listo', color: SECTION.gapFill.color },
+  { title: 'Dictado', status: 'Listo', color: SECTION.dictation.color }
 ];
 
 export default function GamesCard() {
