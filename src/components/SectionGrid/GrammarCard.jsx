@@ -24,8 +24,6 @@ export default function GrammarCard() {
     <div
       id="grammar"
       style={{
-        gridColumn: 2,
-        gridRow: 1,
         background: bg,
         borderTop: `4px solid ${GRAMMAR_COLOR}`,
         borderRadius: 5,

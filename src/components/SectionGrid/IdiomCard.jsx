@@ -18,8 +18,6 @@ export default function IdiomCard() {
     <div
       id="idiom"
       style={{
-        gridColumn: 3,
-        gridRow: 1,
         background: surface.idiom,
         borderTop: `4px solid ${accent.secondary}`,
         borderRadius: 5,

@@ -1,7 +1,6 @@
 'use client';
 
 import { useTheme } from '@/theme/ThemeContext';
-import LevelLadder from './LevelLadder';
 import StoryList from './StoryList';
 
 export default function StoriesCard() {
@@ -11,8 +10,6 @@ export default function StoriesCard() {
     <div
       id="stories"
       style={{
-        gridColumn: 1,
-        gridRow: '1 / span 2',
         background: surface.tint,
         borderTop: `4px solid ${accent.primary}`,
         borderRadius: 5,
@@ -37,11 +34,10 @@ export default function StoriesCard() {
           Historias
         </span>
         <h2 style={{ fontFamily: font.display, fontSize: 29, fontWeight: 600, color: text.ink, margin: '4px 0 0' }}>
-          Escalera de niveles
+          Relatos de este nivel
         </h2>
       </div>
 
-      <LevelLadder />
       <StoryList />
     </div>
   );

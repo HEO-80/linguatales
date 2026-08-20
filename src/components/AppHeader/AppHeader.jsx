@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAuth } from '@/state/AuthContext';
+import { useIsMobile } from '@/lib/hooks/useIsMobile';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
 import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
@@ -39,12 +40,13 @@ function computeStreakDays(progress) {
   return streak;
 }
 
-export default function AppHeader() {
+export default function AppHeader({ onMenuClick }) {
   const theme = useTheme();
   const { lang, surface, accent, text, font, shadow } = theme;
   const [active, setActive] = useState('stories');
   const [authOpen, setAuthOpen] = useState(false);
   const { user, loading } = useAuth();
+  const isMobile = useIsMobile();
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const streak = user ? computeStreakDays(progress) : 0;
   const langCode = useLangCode();
@@ -77,6 +79,15 @@ export default function AppHeader() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+          {isMobile && (
+            <button
+              onClick={onMenuClick}
+              aria-label="Abrir menú de idioma y nivel"
+              style={{ background: 'transparent', border: 'none', fontSize: 22, color: text.ink, cursor: 'pointer', padding: 0, marginRight: 4 }}
+            >
+              ☰
+            </button>
+          )}
           <span style={{ fontFamily: font.display, fontSize: 29, fontWeight: 600, color: text.ink }}>
             LinguaTales
           </span>
