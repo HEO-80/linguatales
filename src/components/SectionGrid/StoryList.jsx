@@ -4,8 +4,9 @@ import { useState, useSyncExternalStore } from 'react';
 import { pastel, fg } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAppState } from '@/state/AppStateContext';
+import { useAuth } from '@/state/AuthContext';
 import { getLanguageData } from '@/data';
-import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/localProgress';
+import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
 
 const STATUS_LABEL = { nuevo: 'Nuevo', en_curso: 'En curso', leido: 'Leído' };
 
@@ -42,17 +43,21 @@ export default function StoryList() {
   const theme = useTheme();
   const { surface, accent, text, font } = theme;
   const { lang, level } = useAppState();
+  const { user } = useAuth();
   const [hovered, setHovered] = useState(null);
   const { storyList } = getLanguageData(lang);
 
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const progressMap = progress.storyProgress;
 
+  // El status de data/*.js es solo contenido semilla (relleno visual) — el
+  // estado real de lectura sale siempre de Supabase. Sin una fila real ahí,
+  // se muestra 'Nuevo', nunca el status inventado del seed.
   const rows = storyList
     .filter((s) => s.level === level)
     .map((s) => {
       const persisted = progressMap[s.id];
-      return persisted ? { ...s, status: STATUS_LABEL[persisted.status] } : s;
+      return { ...s, status: persisted ? STATUS_LABEL[persisted.status] : 'Nuevo' };
     });
 
   return (
@@ -64,6 +69,20 @@ export default function StoryList() {
         border: `1px solid ${surface.border}`
       }}
     >
+      {!user && rows.length > 0 && (
+        <div
+          style={{
+            padding: '9px 16px',
+            fontFamily: font.body,
+            fontSize: 12,
+            color: text.onCream,
+            background: surface.tint,
+            borderBottom: `1px solid ${surface.border}`
+          }}
+        >
+          Regístrate para guardar qué relatos vas leyendo.
+        </div>
+      )}
       {rows.length === 0 ? (
         <div style={{ padding: '22px 16px', fontFamily: font.body, fontSize: 13, color: text.onCream }}>
           Todavía no hay relatos en este nivel para {lang}.

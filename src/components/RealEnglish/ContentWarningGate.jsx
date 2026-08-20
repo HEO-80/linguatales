@@ -6,7 +6,7 @@ import {
   getProgressSnapshot,
   getProgressServerSnapshot,
   acknowledgeWarning
-} from '@/lib/storage/localProgress';
+} from '@/lib/storage/progressStore';
 
 const DARK_BG = '#1c1210';
 const WARNING = '#dc2626';

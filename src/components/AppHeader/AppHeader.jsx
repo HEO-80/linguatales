@@ -1,7 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useTheme } from '@/theme/ThemeContext';
+import { useAuth } from '@/state/AuthContext';
+import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
+import AuthModal from '../Auth/AuthModal';
+import UserMenu from '../Auth/UserMenu';
 
 const SECTIONS = [
   { key: 'stories', label: 'Historias', anchor: '#stories' },
@@ -10,10 +14,36 @@ const SECTIONS = [
   { key: 'games', label: 'Juegos', anchor: '#games' }
 ];
 
+/** Días consecutivos con actividad real (hoy o ayer hacia atrás), a partir
+ * de las fechas de intentos de pronunciación y progreso de historias — no
+ * un contador aparte que se pueda desincronizar de lo que de verdad pasó. */
+function computeStreakDays(progress) {
+  const dates = [
+    ...progress.pronunciationAttempts.map((a) => a.created_at),
+    ...Object.values(progress.storyProgress).map((p) => p.updated_at)
+  ];
+  if (dates.length === 0) return 0;
+
+  const days = new Set(dates.map((d) => new Date(d).toDateString()));
+  const cursor = new Date();
+  if (!days.has(cursor.toDateString())) cursor.setDate(cursor.getDate() - 1);
+
+  let streak = 0;
+  while (days.has(cursor.toDateString())) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
 export default function AppHeader() {
   const theme = useTheme();
   const { lang, surface, accent, text, font, shadow } = theme;
   const [active, setActive] = useState('stories');
+  const [authOpen, setAuthOpen] = useState(false);
+  const { user, loading } = useAuth();
+  const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
+  const streak = user ? computeStreakDays(progress) : 0;
 
   return (
     <header
@@ -83,53 +113,59 @@ export default function AppHeader() {
         </nav>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '6px 12px',
-              borderRadius: 999,
-              background: surface.cream,
-              border: `1px solid ${surface.border}`,
-              boxShadow: shadow.sm
-            }}
-          >
-            <span style={{ fontFamily: font.mono, fontSize: 13, fontWeight: 700, color: text.primaryOnTint }}>
-              🔥 12
-            </span>
-            <span
+          {user && (
+            <div
               style={{
-                fontFamily: font.mono,
-                fontSize: 9.5,
-                letterSpacing: '1.4px',
-                textTransform: 'uppercase',
-                color: text.onCream
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '6px 12px',
+                borderRadius: 999,
+                background: surface.cream,
+                border: `1px solid ${surface.border}`,
+                boxShadow: shadow.sm
               }}
             >
-              días
-            </span>
-          </div>
+              <span style={{ fontFamily: font.mono, fontSize: 13, fontWeight: 700, color: text.primaryOnTint }}>
+                🔥 {streak}
+              </span>
+              <span
+                style={{
+                  fontFamily: font.mono,
+                  fontSize: 9.5,
+                  letterSpacing: '1.4px',
+                  textTransform: 'uppercase',
+                  color: text.onCream
+                }}
+              >
+                días
+              </span>
+            </div>
+          )}
 
-          <div
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: '50%',
-              background: surface.solid,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: font.display,
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#fffdf7'
-            }}
-          >
-            MV
-          </div>
+          {!loading && (user ? (
+            <UserMenu />
+          ) : (
+            <button
+              onClick={() => setAuthOpen(true)}
+              style={{
+                background: surface.solid,
+                color: '#fffdf7',
+                fontFamily: font.body,
+                fontSize: 13,
+                fontWeight: 600,
+                borderRadius: 5,
+                padding: '8px 14px',
+                boxShadow: shadow.sm
+              }}
+            >
+              Iniciar sesión
+            </button>
+          ))}
         </div>
       </div>
+
+      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
     </header>
   );
 }

@@ -12,7 +12,8 @@ import {
   subscribeToProgress,
   getProgressSnapshot,
   getProgressServerSnapshot
-} from '@/lib/storage/localProgress';
+} from '@/lib/storage/progressStore';
+import { useAuth } from '@/state/AuthContext';
 import Waveform from './Waveform';
 
 // Mapeo aproximado a las 3 sub-métricas que calcula el placeholder de
@@ -46,14 +47,34 @@ function HighlightedExample({ example, phoneme, color }) {
  * graduado; RealEnglishReader pasa la línea activa del transcript del
  * diálogo. `sentenceId` es lo único que hace falta para que el intento se
  * guarde y se recupere bien (mismo store para ambos casos).
+ *
+ * Sin sesión el micrófono sigue siendo explorable (para ver cómo funciona),
+ * pero el resultado se queda en estado local — no se guarda, y se avisa.
  */
 export default function PronunciationBar({ theme, lang, activeText, sentenceId, hint }) {
   const { surface, accent, text, font, shadow } = theme;
+  const { user } = useAuth();
 
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const attemptsForSentence = progress.pronunciationAttempts.filter((a) => a.sentence_id === sentenceId);
   const lastAttempt = attemptsForSentence[attemptsForSentence.length - 1];
-  const scores = lastAttempt
+
+  const [recording, setRecording] = useState(false);
+  const [error, setError] = useState(null);
+  const [ephemeralScores, setEphemeralScores] = useState(null);
+  const controllerRef = useRef(null);
+  const supported = isPronunciationAssessmentSupported();
+
+  // Al cambiar de frase, la puntuación de exploración (no guardada) ya no
+  // aplica. Ajuste de estado durante el render (patrón recomendado por
+  // React para "resetear al cambiar una prop"), no un efecto.
+  const [trackedSentenceId, setTrackedSentenceId] = useState(sentenceId);
+  if (sentenceId !== trackedSentenceId) {
+    setTrackedSentenceId(sentenceId);
+    setEphemeralScores(null);
+  }
+
+  const saved = lastAttempt
     ? {
         accuracyScore: lastAttempt.accuracy_score,
         fluencyScore: lastAttempt.fluency_score,
@@ -61,11 +82,7 @@ export default function PronunciationBar({ theme, lang, activeText, sentenceId, 
         pronunciationScore: lastAttempt.pronunciation_score
       }
     : null;
-
-  const [recording, setRecording] = useState(false);
-  const [error, setError] = useState(null);
-  const controllerRef = useRef(null);
-  const supported = isPronunciationAssessmentSupported();
+  const scores = user ? saved : ephemeralScores;
 
   const handleMicClick = () => {
     if (recording) {
@@ -84,13 +101,17 @@ export default function PronunciationBar({ theme, lang, activeText, sentenceId, 
 
     controller.result
       .then((result) => {
-        recordPronunciationAttempt({
-          sentence_id: sentenceId,
-          accuracy_score: result.accuracyScore,
-          fluency_score: result.fluencyScore,
-          completeness_score: result.completenessScore,
-          pronunciation_score: result.pronunciationScore
-        });
+        if (user) {
+          recordPronunciationAttempt({
+            sentence_id: sentenceId,
+            accuracy_score: result.accuracyScore,
+            fluency_score: result.fluencyScore,
+            completeness_score: result.completenessScore,
+            pronunciation_score: result.pronunciationScore
+          });
+        } else {
+          setEphemeralScores(result);
+        }
       })
       .catch((err) => {
         setError(
@@ -153,7 +174,14 @@ export default function PronunciationBar({ theme, lang, activeText, sentenceId, 
       )}
       {!error && !recording && !scores && (
         <span style={{ fontFamily: font.body, fontSize: 12.5, color: text.onCream }}>
-          Graba tu voz leyendo la frase de arriba para ver tu puntuación.
+          {user
+            ? 'Graba tu voz leyendo la frase de arriba para ver tu puntuación.'
+            : 'Prueba a grabarte para ver cómo funciona — inicia sesión para guardar tu progreso.'}
+        </span>
+      )}
+      {!error && !recording && scores && !user && (
+        <span style={{ fontFamily: font.body, fontSize: 12.5, color: '#e0a80c' }}>
+          Esta puntuación no se ha guardado — inicia sesión para guardar tu progreso.
         </span>
       )}
 

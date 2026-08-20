@@ -4,8 +4,9 @@
  * src/state/AppStateContext.jsx
  * Estado global mínimo: { lang, level, sentenceIndex }.
  * `level` no es un useState propio: se lee en vivo del store de progreso
- * (localStorage) vía useSyncExternalStore, así que arranca igual en
- * servidor y cliente y se actualiza solo cuando cambia de verdad.
+ * (Supabase con sesión, efímero sin ella) vía useSyncExternalStore, así
+ * que arranca igual en servidor y cliente y se actualiza solo cuando
+ * cambia de verdad.
  * Cambiar de idioma reinicia sentenceIndex; los componentes que deben
  * reiniciar su propio estado interno al cambiar de idioma (p. ej. los
  * juegos) se montan con `key={lang}` en vez de observar un flag aparte.
@@ -17,7 +18,7 @@ import {
   getProgressSnapshot,
   getProgressServerSnapshot,
   setCurrentLevel
-} from '@/lib/storage/localProgress';
+} from '@/lib/storage/progressStore';
 
 const AppStateContext = createContext(null);
 

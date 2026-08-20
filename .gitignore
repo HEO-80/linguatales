@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Supabase CLI local cache (npx supabase ...)
+/supabase/.temp/
+
 # staging copy of pre-written theme files, already copied into src/theme
 /Light mode design improvement/
 /Light mode design improvement.zip

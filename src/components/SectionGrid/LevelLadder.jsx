@@ -1,13 +1,18 @@
 'use client';
 
+import { useSyncExternalStore } from 'react';
 import { pastel, fg } from '@/theme/color';
 import { LEVELS } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAppState } from '@/state/AppStateContext';
+import { getLanguageData } from '@/data';
+import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
 
 export default function LevelLadder() {
   const { font } = useTheme();
-  const { level, setLevel } = useAppState();
+  const { lang, level, setLevel } = useAppState();
+  const { storyList } = getLanguageData(lang);
+  const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
 
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 7 }}>
@@ -15,6 +20,12 @@ export default function LevelLadder() {
         const active = lv.code === level;
         const bg = pastel(lv.color, active ? 0.74 : 0.86);
         const onBg = fg(lv.color, bg, 6.5);
+
+        // % real de relatos leídos en ESTE nivel (idioma activo), no el
+        // valor de relleno de theme/languages.js — sin sesión da 0%.
+        const storiesAtLevel = storyList.filter((s) => s.level === lv.code);
+        const doneAtLevel = storiesAtLevel.filter((s) => progress.storyProgress[s.id]?.status === 'leido').length;
+        const pct = storiesAtLevel.length > 0 ? Math.round((doneAtLevel / storiesAtLevel.length) * 100) : 0;
 
         return (
           <button
@@ -44,13 +55,13 @@ export default function LevelLadder() {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                height: `${lv.pct}%`,
+                height: `${pct}%`,
                 background: lv.color,
                 opacity: active ? 0.22 : 0.16
               }}
             />
             <span style={{ position: 'relative', fontFamily: font.mono, fontSize: 9.5, fontWeight: 700, color: onBg }}>
-              {lv.pct}%
+              {pct}%
             </span>
             <span style={{ position: 'relative', fontFamily: font.display, fontSize: 13, fontWeight: 600, color: onBg }}>
               {lv.code}

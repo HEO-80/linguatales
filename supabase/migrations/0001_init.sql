@@ -31,7 +31,10 @@ create table if not exists profiles (
 create table if not exists pronunciation_attempts (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references profiles(id) on delete cascade,
-  sentence_id uuid not null references sentences(id) on delete cascade,
+  -- Id sintético del cliente (p.ej. "en-01-0", "re-en-01-3"), no una FK a
+  -- sentences: el contenido real (historias graduadas, Inglés real) vive
+  -- en src/data/*.js, no en las tablas stories/sentences.
+  sentence_id text not null,
   accuracy_score numeric not null,
   fluency_score numeric not null,
   completeness_score numeric not null,

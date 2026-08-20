@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppStateProvider } from "@/state/AppStateContext";
+import { AuthProvider } from "@/state/AuthContext";
 import { ThemeProvider } from "@/theme/ThemeContext";
 
 export const metadata: Metadata = {
@@ -21,9 +22,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body>
-        <AppStateProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </AppStateProvider>
+        <AuthProvider>
+          <AppStateProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </AppStateProvider>
+        </AuthProvider>
       </body>
     </html>
   );

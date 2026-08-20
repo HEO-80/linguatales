@@ -1,9 +1,11 @@
 'use client';
 
+import { useSyncExternalStore } from 'react';
 import { pastel, fg, hue, NEUTRAL } from '@/theme/color';
-import { LANGUAGES, LEVELS } from '@/theme/languages';
+import { LANGUAGES } from '@/theme/languages';
 import { useTheme } from '@/theme/ThemeContext';
 import { getLanguageData } from '@/data';
+import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
 import Motif from './motifs';
 
 /**
@@ -21,9 +23,12 @@ export default function LanguageCard({ code, active, currentLevel, onSelect }) {
   const softColor = fg(NEUTRAL.grey, bg, 4.6);
 
   const { storyList } = getLanguageData(code);
-  const done = storyList.filter((s) => s.status === 'Leído').length;
+  const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
+  // Real, no el status de relleno de data/*.js: sin sesión progress.storyProgress
+  // está vacío, así que esto da honestamente 0/total.
+  const done = storyList.filter((s) => progress.storyProgress[s.id]?.status === 'leido').length;
   const total = storyList.length;
-  const levelInfo = LEVELS.find((lv) => lv.code === currentLevel) || LEVELS[0];
+  const donePct = total > 0 ? Math.round((done / total) * 100) : 0;
 
   const stripeHeight = active ? 9 : 6;
 
@@ -104,7 +109,7 @@ export default function LanguageCard({ code, active, currentLevel, onSelect }) {
               <div
                 style={{
                   height: '100%',
-                  width: `${levelInfo.pct}%`,
+                  width: `${donePct}%`,
                   background: `linear-gradient(90deg, ${L.p1}, ${L.p2})`
                 }}
               />

@@ -6,7 +6,7 @@ import { useTheme } from '@/theme/ThemeContext';
 import { useAppState } from '@/state/AppStateContext';
 import { getLanguageData } from '@/data';
 import { speakSentence, cancelSpeech, isSpeechSupported, useIsSpeechSupported } from '@/lib/azure/tts';
-import { touchStoryProgress } from '@/lib/storage/localProgress';
+import { touchStoryProgress } from '@/lib/storage/progressStore';
 import SentencePair from './SentencePair';
 import PronunciationBar from './PronunciationBar';
 
