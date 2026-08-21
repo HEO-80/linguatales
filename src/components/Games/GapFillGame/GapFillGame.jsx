@@ -5,6 +5,7 @@ import { pastel } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
 import { useReader } from '@/state/ReaderContext';
 import GameShell from '../GameShell';
+import RoundNav from '../RoundNav';
 
 /**
  * Juego 02 — Elige el hueco. Una ronda por frase de story.gaps; el hueco y
@@ -46,6 +47,12 @@ export default function GapFillGame() {
     setChecked(false);
   };
 
+  const handleNavigate = (i) => {
+    setRoundIndex(i);
+    setSelected(null);
+    setChecked(false);
+  };
+
   let feedback;
   if (checked) {
     feedback = { text: gap.why, tone: isCorrect ? 'ok' : 'error' };
@@ -65,7 +72,18 @@ export default function GapFillGame() {
         </>
       }
       level={level}
-      progress={`${storyProgress.gap.solved.length} / ${story.gaps.length}`}
+      progress={
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <RoundNav
+            index={roundIndex}
+            total={story.gaps.length}
+            onNavigate={handleNavigate}
+            resolved={storyProgress.gap.solved.includes(roundIndex)}
+            accent="#0891b2"
+          />
+          <span>{storyProgress.gap.solved.length} / {story.gaps.length}</span>
+        </div>
+      }
       accent="#0891b2"
       canCheck={checked ? isCorrect && !isLastRound : !!selected}
       checkLabel={checked ? 'Siguiente frase' : 'Comprobar'}

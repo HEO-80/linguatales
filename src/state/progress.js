@@ -266,6 +266,39 @@ export function levelProgress(lang, level, snapshot) {
   return Math.round((done / stories.length) * 100);
 }
 
+/**
+ * Progreso fino de UN relato en unidades de ejercicio (§2 del spec de
+ * juegos): 1 (ordenar) + huecos + 1 (emparejar, si aplica) + banco de
+ * palabras (si aplica) + frases habladas. Cada unidad se resuelve una vez
+ * y cuenta para siempre — hablar una frase cuenta a partir del 70%.
+ */
+export function storyExerciseTotals(story) {
+  const bank = buildWordBank(story);
+  const matchApplicable = story.phrasals.length >= 3;
+  const wordApplicable = bank.length >= 4;
+  const total =
+    1 + story.gaps.length + (matchApplicable ? 1 : 0) + (wordApplicable ? bank.length : 0) + story.paras.length;
+  return { total, matchApplicable, wordApplicable };
+}
+
+export function storyExerciseDone(sp, story, { matchApplicable, wordApplicable }) {
+  let done = 0;
+  if (sp.order.done) done += 1;
+  done += Math.min(sp.gap.solved.length, story.gaps.length);
+  if (matchApplicable && sp.match.done) done += 1;
+  if (wordApplicable) done += sp.word.correctIdx.length;
+  done += Object.values(sp.speak.best).filter((score) => score >= 70).length;
+  return done;
+}
+
+/** `snapshot`, si se pasa, debe venir de useProgressSnapshot() — ver getStoryProgress. */
+export function storyExerciseProgress(lang, level, story, snapshot) {
+  const sp = getStoryProgress(lang, level, story.num, snapshot);
+  const { total, matchApplicable, wordApplicable } = storyExerciseTotals(story);
+  const done = storyExerciseDone(sp, story, { matchApplicable, wordApplicable });
+  return { done, total };
+}
+
 export function languageProgress(lang, snapshot) {
   if (LEVELS.length === 0) return 0;
   const total = LEVELS.reduce((sum, l) => sum + levelProgress(lang, l.code, snapshot), 0);

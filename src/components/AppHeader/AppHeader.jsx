@@ -131,7 +131,7 @@ export default function AppHeader() {
                 alignItems: 'center',
                 gap: 6,
                 padding: '6px 12px',
-                borderRadius: 999,
+                borderRadius: 4,
                 background: surface.cream,
                 border: `1px solid ${surface.border}`,
                 boxShadow: shadow.sm

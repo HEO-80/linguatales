@@ -21,7 +21,7 @@ const ReaderContext = createContext(null);
 export function ReaderProvider({ story, lang, level, children }) {
   const [word, setWord] = useState(null);
   const [showTr, setShowTr] = useState(false);
-  const [roleFilter, setRoleFilter] = useState(null);
+  const [roleFilter, setRoleFilter] = useState([]);
   const [game, setGame] = useState(null);
 
   const key = useMemo(() => buildStoryKey(lang, level, story.num), [lang, level, story.num]);

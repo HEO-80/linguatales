@@ -8,6 +8,7 @@ import { useReader } from '@/state/ReaderContext';
 import { buildWordBank, buildAllEntries } from './buildWordBank';
 import { buildDistractors } from './buildDistractors';
 import GameShell from '../GameShell';
+import RoundNav from '../RoundNav';
 
 /**
  * Juego 04 — Selecciona la palabra. Alterna determinista entre modo
@@ -65,6 +66,13 @@ export default function SelectWordGame() {
     setChecked(false);
   };
 
+  const handleNavigate = (i) => {
+    setRoundIndex(i);
+    setSelected(null);
+    setWriteAnswer('');
+    setChecked(false);
+  };
+
   let feedback;
   if (checked) {
     feedback = isCorrect
@@ -90,7 +98,18 @@ export default function SelectWordGame() {
         </>
       }
       level={level}
-      progress={`${storyProgress.word.correct} / ${bank.length}`}
+      progress={
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <RoundNav
+            index={roundIndex}
+            total={bank.length}
+            onNavigate={handleNavigate}
+            resolved={storyProgress.word.correctIdx.includes(roundIndex)}
+            accent="#be185d"
+          />
+          <span>{storyProgress.word.correct} / {bank.length}</span>
+        </div>
+      }
       accent="#be185d"
       canCheck={canCheck}
       checkLabel={checked ? 'Siguiente palabra' : 'Comprobar'}

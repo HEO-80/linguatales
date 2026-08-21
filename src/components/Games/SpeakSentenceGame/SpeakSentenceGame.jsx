@@ -8,6 +8,7 @@ import { useReader } from '@/state/ReaderContext';
 import Waveform from '@/components/StoryReader/Waveform';
 import { startSpeakRound } from './scoreBreakdown';
 import GameShell from '../GameShell';
+import RoundNav from '../RoundNav';
 
 function scoreTone(score) {
   if (score >= 80) return '#0e9f6e';
@@ -68,6 +69,14 @@ export default function SpeakSentenceGame() {
     setError(null);
   };
 
+  const handleNavigate = (i) => {
+    controllerRef.current?.stop();
+    setRecording(false);
+    setParaIndex(i);
+    setScores(null);
+    setError(null);
+  };
+
   let feedback;
   if (error) {
     feedback = { text: error, tone: 'error' };
@@ -91,7 +100,18 @@ export default function SpeakSentenceGame() {
         </>
       }
       level={level}
-      progress={`${Object.keys(storyProgress.speak.best).length} / ${story.paras.length}`}
+      progress={
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <RoundNav
+            index={paraIndex}
+            total={story.paras.length}
+            onNavigate={handleNavigate}
+            resolved={(storyProgress.speak.best[paraIndex] ?? 0) >= 70}
+            accent="#0f766e"
+          />
+          <span>{Object.keys(storyProgress.speak.best).length} / {story.paras.length}</span>
+        </div>
+      }
       accent="#0f766e"
       canCheck={canCheck}
       checkLabel="Siguiente frase"

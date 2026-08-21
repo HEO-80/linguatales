@@ -7,7 +7,7 @@ import { useTheme } from '@/theme/ThemeContext';
 import { LANGUAGES, LEVELS } from '@/theme/languages';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
 import { storiesOf } from '@/data/stories';
-import { levelProgress, useProgressSnapshot } from '@/state/progress';
+import { levelProgress, storyExerciseProgress, useProgressSnapshot } from '@/state/progress';
 import Motif from '@/components/LanguageShelf/motifs';
 import FlagMark from './FlagMark';
 import LevelPopover from '@/components/Rail/LevelPopover';
@@ -31,10 +31,14 @@ export default function LanguageBar() {
   const snapshot = useProgressSnapshot();
   const pct = levelProgress(langCode, levelCode, snapshot);
 
+  const activeStory = num ? stories.find((s) => s.num === num) : null;
+  const exercise = activeStory ? storyExerciseProgress(langCode, levelCode, activeStory, snapshot) : null;
+  const exercisePct = exercise && exercise.total > 0 ? Math.round((exercise.done / exercise.total) * 100) : 0;
+
   return (
     <div
       style={{
-        background: surface.tint,
+        background: surface.cream,
         borderBottom: `1px solid ${surface.border}`
       }}
     >
@@ -83,7 +87,7 @@ export default function LanguageBar() {
               gap: 8,
               background: pastel(lv.color, 0.82),
               border: 'none',
-              borderRadius: 999,
+              borderRadius: 4,
               padding: '6px 12px',
               cursor: 'pointer'
             }}
@@ -95,15 +99,38 @@ export default function LanguageBar() {
           {levelOpen && <LevelPopover onClose={() => setLevelOpen(false)} langCode={langCode} activeLevel={levelCode} />}
         </div>
 
-        <div style={{ width: 84, height: 5, borderRadius: 3, background: 'rgba(25,23,19,.08)', overflow: 'hidden', flexShrink: 0 }}>
-          <div style={{ width: `${pct}%`, height: '100%', background: accent.progress }} />
-        </div>
+        {exercise ? (
+          <div
+            style={{
+              width: 120,
+              height: 6,
+              borderRadius: 3,
+              background: 'rgba(25,23,19,.08)',
+              overflow: 'hidden',
+              flexShrink: 0
+            }}
+          >
+            <div
+              style={{
+                width: `${exercisePct}%`,
+                height: '100%',
+                background: accent.progress,
+                transition: 'width .3s'
+              }}
+            />
+          </div>
+        ) : (
+          <div style={{ width: 84, height: 5, borderRadius: 3, background: 'rgba(25,23,19,.08)', overflow: 'hidden', flexShrink: 0 }}>
+            <div style={{ width: `${pct}%`, height: '100%', background: accent.progress }} />
+          </div>
+        )}
 
         <div style={{ flex: 1 }} />
 
         <span style={{ fontFamily: font.mono, fontSize: 11.5, color: text.onTint }}>
-          {stories.length} relatos en {levelCode}
-          {num ? ` · leyendo el ${num}` : ''}
+          {exercise
+            ? `${exercise.done} de ${exercise.total} ejercicios`
+            : `${stories.length} relatos en ${levelCode}`}
         </span>
       </div>
     </div>

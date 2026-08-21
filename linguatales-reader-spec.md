@@ -188,15 +188,18 @@ Elegir un relato **reinicia todo lo que depende de él**: palabra seleccionada, 
 
 Tarjeta con fondo `tint`, `border-top: 4px solid p1`, radio 6px.
 
-Cabecera: kicker `RELATO 01 · A1`, título en Newsreader 38px, metadatos, y dos botones: **`◍ Ver traducción`** (alterna) y **`▶ Escuchar`** (sólido).
+Cabecera: `display:flex; justify-content:space-between` — a la izquierda el bloque de título (kicker `RELATO 01 · A1`, título en Newsreader 38px, metadatos); a la derecha, con `flex-shrink:0`, los dos botones: **`◍ Ver traducción`** (alterna) y **`▶ Escuchar`** (sólido).
+
+El texto del relato vive dentro de una **`proseBox`**: fondo `cream` (`#fffdf7`), `border-radius: 6px`, `border: 1px solid border`, `padding: 22px 26px 24px`. Es la segunda capa de color: separa el relato de su cabecera y hace que el texto destaque sobre el tinte de la tarjeta.
 
 ### 7.1 `RoleLegend` — y el filtro, que es el detalle que más gustó
 
-Barra con borde discontinuo y las ocho etiquetas de función. **Cada una es un interruptor:**
+Barra con borde discontinuo y las ocho etiquetas de función. **Cada una es un interruptor independiente — el filtro es multi-selección (`roleFilter: clave[]`):**
 
-- Al pulsar `Artículo`, **todos los artículos del texto se resaltan** (fondo `pastel(c,.38)`, borde inferior a color pleno, `box-shadow 0 2px 8px {c}4d`) y **el resto se apaga** (`rgba(255,255,255,.35)`, texto gris, borde casi invisible).
-- La etiqueta activa se oscurece y la cabecera de la barra pasa de "Toca cualquier palabra" a **"Resaltando · Artículo"**, en el color de esa función.
-- Al volver a pulsarla, todo se restablece. Solo un filtro activo a la vez (`roleFilter: clave | null`).
+- Al pulsar `Artículo`, **todos los artículos del texto se resaltan** (fondo `pastel(c,.38)`, borde inferior a color pleno, `box-shadow 0 2px 8px {c}4d`) y **el resto se apaga** (`rgba(255,255,255,.35)`, texto gris, borde casi invisible). Se puede activar `Verbo` a la vez sin desactivar `Artículo` — cada etiqueta se enciende y apaga por separado.
+- Se resalta toda palabra cuya función esté en el array; el resto se apaga. Array vacío = texto normal, nada apagado.
+- La cabecera de la barra: vacío → "Toca cualquier palabra"; un filtro activo → **"Resaltando · Artículo"**, en el color de esa función; varios → **"Resaltando · 3 funciones"**, en el color por defecto.
+- Cuando hay algún filtro activo aparece un botón **`✕ Quitar`** al final de la leyenda que vacía el array de un golpe.
 
 ### 7.2 `WordToken`
 
