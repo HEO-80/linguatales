@@ -1,31 +1,39 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { pastel, fg } from '@/theme/color';
+import { useMemo } from 'react';
 import { useTheme } from '@/theme/ThemeContext';
 import { useReader } from '@/state/ReaderContext';
+import { phrasesOf } from '@/data/phrases';
 import { buildWordBank } from '../SelectWordGame/buildWordBank';
 import WordOrderGame from '../WordOrderGame/WordOrderGame';
 import GapFillGame from '../GapFillGame/GapFillGame';
 import MatchIdiomGame from '../MatchIdiomGame/MatchIdiomGame';
 import SelectWordGame from '../SelectWordGame/SelectWordGame';
 import SpeakSentenceGame from '../SpeakSentenceGame/SpeakSentenceGame';
+import PhraseGame from '../PhraseGame/PhraseGame';
+import ConvoGame from '../ConvoGame/ConvoGame';
+import TabCard from './TabCard';
 
 /**
  * src/components/Games/GameTabs/GameTabs.jsx
- * Barra de pestañas de los 5 juegos. Cada pestaña se oculta si no aplica a
- * este relato (menos de 2 párrafos, sin huecos, menos de 3 phrasal verbs,
- * banco de palabras insuficiente, o sin párrafos que pronunciar).
+ * Dos filas de pestañas: los 5 juegos del relato, y los 2 juegos de frases
+ * (ocupan 2 de las 5 columnas de su fila, alineados con la de arriba). Las
+ * pestañas siempre están visibles — son la navegación de la vista exclusiva
+ * (§4 linguatales-frases-spec.md); el cuerpo del juego activo solo se monta
+ * con view === 'game'.
  */
 export default function GameTabs() {
-  const { surface, font } = useTheme();
-  const { story, game, setGame, storyProgress } = useReader();
+  const { surface, font, accent, text } = useTheme();
+  const { lang, level, story, game, view, openGame, storyProgress, phrBlock, phDoneByBlock, coDoneByBlock } =
+    useReader();
 
   const bank = useMemo(() => buildWordBank(story), [story]);
   const matchApplicable = story.phrasals.length >= 3;
   const wordApplicable = bank.length >= 4;
+  const phraseBlocks = phrasesOf(lang, level);
+  const hasPhrases = phraseBlocks.length > 0;
 
-  const TABS = useMemo(
+  const STORY_TABS = useMemo(
     () =>
       [
         { key: 'order', label: 'Ordena la frase', color: '#f97316', Comp: WordOrderGame, hidden: story.paras.length < 2 },
@@ -37,92 +45,126 @@ export default function GameTabs() {
     [story, matchApplicable, wordApplicable]
   );
 
-  const activeKey = game && TABS.some((t) => t.key === game) ? game : TABS[0]?.key;
+  const PHRASE_TABS = useMemo(
+    () =>
+      [
+        {
+          key: 'phrase',
+          label: 'Elige la frase',
+          subtitle: 'Cómo se dice en inglés',
+          icon: '✦',
+          color: '#b45309',
+          Comp: PhraseGame,
+          hidden: !hasPhrases
+        },
+        {
+          key: 'convo',
+          label: 'Sigue la conversación',
+          subtitle: 'Contesta con la frase justa',
+          icon: '❝',
+          color: '#4338ca',
+          Comp: ConvoGame,
+          hidden: !hasPhrases
+        }
+      ].filter((t) => !t.hidden),
+    [hasPhrases]
+  );
 
-  useEffect(() => {
-    if (!game || !TABS.some((t) => t.key === game)) {
-      setGame(TABS[0]?.key ?? null);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [story.num]);
+  const ALL_TABS = useMemo(() => [...STORY_TABS, ...PHRASE_TABS], [STORY_TABS, PHRASE_TABS]);
+
+  const activeBlockNum = phrBlock != null ? phraseBlocks[phrBlock]?.num : null;
+  const phraseMarker = activeBlockNum ? `${Object.keys(phDoneByBlock[activeBlockNum] || {}).length} / 10` : '0 / 10';
+  const convoMarker = activeBlockNum ? `${Object.keys(coDoneByBlock[activeBlockNum] || {}).length} / 10` : '0 / 10';
 
   const markers = {
-    order: `${storyProgress.order.best} / ${story.paras[1]?.t.length ?? 0}`,
+    order: `${storyProgress.order.solved.length} / ${story.paras.length}`,
     gap: `${storyProgress.gap.solved.length} / ${story.gaps.length}`,
-    match: `${storyProgress.match.pairs} / ${story.phrasals.length}`,
+    match: `${storyProgress.match.solved.length} / 2`,
     word: `${storyProgress.word.correct} / ${bank.length}`,
-    speak: `${Object.keys(storyProgress.speak.best).length} / ${story.paras.length}`
+    speak: `${Object.keys(storyProgress.speak.best).length} / ${story.paras.length}`,
+    phrase: phraseMarker,
+    convo: convoMarker
   };
 
-  const ActiveComp = TABS.find((t) => t.key === activeKey)?.Comp;
+  const activeKey = view === 'game' ? game : null;
+  const ActiveComp = ALL_TABS.find((t) => t.key === activeKey)?.Comp;
 
-  if (TABS.length === 0) return null;
+  if (ALL_TABS.length === 0) return null;
 
   return (
     <>
-      <section style={{ maxWidth: 1440, margin: '20px auto 0', padding: '0 32px' }}>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {TABS.map((t) => {
-            const isActive = t.key === activeKey;
-            const bg = pastel(t.color, isActive ? 0.66 : 0.85);
-            return (
-              <button
-                key={t.key}
-                onClick={() => setGame(t.key)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  flex: '1 1 180px',
-                  background: bg,
-                  border: 'none',
-                  borderRadius: 6,
-                  padding: '12px 14px',
-                  cursor: 'pointer',
-                  boxShadow: isActive ? `0 0 0 1px ${t.color}55, 0 8px 20px ${t.color}33` : 'none',
-                  textAlign: 'left'
-                }}
-              >
-                <span
-                  style={{
-                    width: 30,
-                    height: 30,
-                    flexShrink: 0,
-                    borderRadius: 6,
-                    background: surface.cream,
-                    color: t.color,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 15
-                  }}
-                >
-                  ●
-                </span>
-                <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                  <span
-                    style={{
-                      fontFamily: font.body,
-                      fontSize: 13,
-                      fontWeight: isActive ? 700 : 600,
-                      color: fg(t.color, bg, 5)
-                    }}
-                  >
-                    {t.label}
-                  </span>
-                  <span style={{ fontFamily: font.mono, fontSize: 10.5, color: fg(t.color, bg, 4.6) }}>
-                    {markers[t.key]}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
+      <div
+        style={{
+          maxWidth: 1440,
+          margin: '20px auto 0',
+          padding: '0 32px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 14
+        }}
+      >
+        <span
+          style={{
+            fontFamily: font.mono,
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '1.4px',
+            textTransform: 'uppercase',
+            color: text.onTint,
+            flexShrink: 0
+          }}
+        >
+          Practica este relato
+        </span>
+        <div
+          style={{
+            flex: 1,
+            height: 2,
+            borderRadius: 2,
+            background: `linear-gradient(90deg, ${accent.secondary}66, rgba(25,23,19,.08))`
+          }}
+        />
+      </div>
+
+      <section style={{ maxWidth: 1440, margin: '10px auto 0', padding: '0 32px' }}>
+        <span style={{ fontFamily: font.body, fontSize: 12, fontStyle: 'italic', color: text.onTint }}>
+          Al abrir un juego se esconden el relato y las frases.
+        </span>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginTop: 10 }}>
+          {STORY_TABS.map((t) => (
+            <TabCard
+              key={t.key}
+              tab={{ ...t, marker: markers[t.key] }}
+              isActive={activeKey === t.key}
+              onClick={() => openGame(t.key)}
+              surface={surface}
+              font={font}
+            />
+          ))}
         </div>
+
+        {PHRASE_TABS.length > 0 && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginTop: 10 }}>
+            {PHRASE_TABS.map((t) => (
+              <TabCard
+                key={t.key}
+                tab={{ ...t, marker: markers[t.key] }}
+                isActive={activeKey === t.key}
+                onClick={() => openGame(t.key)}
+                surface={surface}
+                font={font}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
-      <section id="games" style={{ maxWidth: 1440, margin: '16px auto 0', padding: '0 32px 32px' }}>
-        {ActiveComp && <ActiveComp key={activeKey} />}
-      </section>
+      {view === 'game' && ActiveComp && (
+        <section id="games" style={{ maxWidth: 1440, margin: '16px auto 0', padding: '0 32px 32px' }}>
+          <ActiveComp key={activeKey} />
+        </section>
+      )}
     </>
   );
 }

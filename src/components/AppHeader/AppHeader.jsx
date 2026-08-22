@@ -8,6 +8,7 @@ import { useAuth } from '@/state/AuthContext';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
 import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
+import { emitReaderNav } from '@/state/readerNavBus';
 import AuthModal from '../Auth/AuthModal';
 import UserMenu from '../Auth/UserMenu';
 
@@ -106,7 +107,11 @@ export default function AppHeader() {
               <Link
                 key={s.key}
                 href={`${base}${s.anchor}`}
-                onClick={() => setActive(s.key)}
+                onClick={() => {
+                  setActive(s.key);
+                  if (s.key === 'stories') emitReaderNav('story');
+                  if (s.key === 'games') emitReaderNav('games');
+                }}
                 style={{
                   fontFamily: font.body,
                   fontSize: 13.5,

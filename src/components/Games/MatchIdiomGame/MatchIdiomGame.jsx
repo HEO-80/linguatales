@@ -6,67 +6,92 @@ import { useTheme } from '@/theme/ThemeContext';
 import { shuffleSeed } from '@/data/stories';
 import { useReader } from '@/state/ReaderContext';
 import GameShell from '../GameShell';
+import RoundNav from '../RoundNav';
+
+const ROUNDS = [
+  { label: 'Expresiones', prompt: 'Une cada phrasal verb con su significado.' },
+  { label: 'Gramática', prompt: 'Une cada regla gramatical con su ejemplo del relato.' }
+];
 
 /**
- * Juego 03 — Empareja la expresión. Solo se monta cuando story.phrasals
- * tiene 3 o más entradas (GameTabs oculta la pestaña si no). No hay paso de
- * "comprobar" separado: cada click en un significado ya resuelve el par.
+ * Juego 03 — Empareja la expresión. Dos rondas navegables (expresiones y
+ * gramática), cada una con sus propias parejas — solo se monta la pestaña
+ * cuando story.phrasals tiene 3 o más entradas (GameTabs la oculta si no).
+ * No hay paso de "comprobar" separado: cada click en la pareja derecha ya
+ * resuelve el par.
  */
 export default function MatchIdiomGame() {
   const { surface, text, font } = useTheme();
   const { level, story, storyProgress, recordResult } = useReader();
 
-  const pairs = story.phrasals;
-  const meanings = useMemo(() => shuffleSeed(pairs.map((p) => p.mean), story.title), [pairs, story.title]);
+  const [roundIndex, setRoundIndex] = useState(0);
 
-  const [selectedVerb, setSelectedVerb] = useState(null);
+  const pairs = useMemo(
+    () =>
+      roundIndex === 0
+        ? story.phrasals.map((p) => ({ left: p.verb, right: p.mean }))
+        : story.grammar.map((g) => ({ left: g.name, right: g.ex })),
+    [roundIndex, story]
+  );
+  const rightItems = useMemo(
+    () => shuffleSeed(pairs.map((p) => p.right), `${story.title}-${roundIndex}`),
+    [pairs, story.title, roundIndex]
+  );
+
+  const [selectedLeft, setSelectedLeft] = useState(null);
   const [matched, setMatched] = useState(() => new Set());
-  const [wrongFlash, setWrongFlash] = useState(null); // { verb, mean } | null
+  const [wrongFlash, setWrongFlash] = useState(null); // { left, right } | null
   const [resultMsg, setResultMsg] = useState(null);
   const flashTimer = useRef(null);
 
-  const handlePickVerb = (verb) => {
-    if (matched.has(verb)) return;
-    setSelectedVerb(verb);
+  const handlePickLeft = (left) => {
+    if (matched.has(left)) return;
+    setSelectedLeft(left);
     setResultMsg(null);
   };
 
-  const handlePickMeaning = (mean) => {
-    if (!selectedVerb) return;
-    const pair = pairs.find((p) => p.verb === selectedVerb);
+  const handlePickRight = (right) => {
+    if (!selectedLeft) return;
+    const pair = pairs.find((p) => p.left === selectedLeft);
 
-    if (pair.mean === mean) {
+    if (pair.right === right) {
       const nextMatched = new Set(matched);
-      nextMatched.add(selectedVerb);
+      nextMatched.add(selectedLeft);
       setMatched(nextMatched);
-      const done = nextMatched.size === pairs.length;
-      recordResult('match', { pairs: nextMatched.size, done });
+      const roundDone = nextMatched.size === pairs.length;
+      recordResult('match', { index: roundIndex, solved: roundDone });
       setResultMsg(
-        done
-          ? { text: `✓ Los ${pairs.length} phrasal verbs del relato, emparejados.`, tone: 'ok' }
+        roundDone
+          ? { text: `✓ Los ${pairs.length} pares de esta ronda, emparejados.`, tone: 'ok' }
           : { text: '✓ Correcto.', tone: 'ok' }
       );
     } else {
-      setWrongFlash({ verb: selectedVerb, mean });
+      setWrongFlash({ left: selectedLeft, right });
       setResultMsg({ text: 'Ese no. Vuelve a mirar la frase del relato.', tone: 'error' });
       if (flashTimer.current) clearTimeout(flashTimer.current);
       flashTimer.current = setTimeout(() => setWrongFlash(null), 650);
     }
-    setSelectedVerb(null);
+    setSelectedLeft(null);
   };
 
-  const handleReset = () => {
-    setSelectedVerb(null);
+  const resetRound = () => {
+    setSelectedLeft(null);
     setMatched(new Set());
     setResultMsg(null);
     setWrongFlash(null);
   };
 
+  const handleReset = () => resetRound();
+  const handleNavigate = (i) => {
+    setRoundIndex(i);
+    resetRound();
+  };
+
   const feedback =
     resultMsg ??
-    (selectedVerb
-      ? { text: 'Ahora elige su significado.', tone: 'ready' }
-      : { text: 'Toca una expresión de la izquierda.', tone: 'idle' });
+    (selectedLeft
+      ? { text: 'Ahora elige su pareja.', tone: 'ready' }
+      : { text: 'Toca un elemento de la izquierda.', tone: 'idle' });
 
   return (
     <GameShell
@@ -74,11 +99,22 @@ export default function MatchIdiomGame() {
       title="Empareja la expresión"
       prompt={
         <>
-          Une cada phrasal verb con su significado. Del relato <em>{story.title}</em>.
+          {ROUNDS[roundIndex].prompt} Del relato <em>{story.title}</em>.
         </>
       }
       level={level}
-      progress={`${storyProgress.match.pairs} / ${pairs.length}`}
+      progress={
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <RoundNav
+            index={roundIndex}
+            total={ROUNDS.length}
+            onNavigate={handleNavigate}
+            resolved={storyProgress.match.solved.includes(roundIndex)}
+            accent="#7c3aed"
+          />
+          <span>{storyProgress.match.solved.length} / {ROUNDS.length}</span>
+        </div>
+      }
       accent="#7c3aed"
       canCheck={false}
       onCheck={() => {}}
@@ -88,18 +124,18 @@ export default function MatchIdiomGame() {
       <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
         <div style={{ flex: '1 1 240px', display: 'flex', flexDirection: 'column', gap: 8 }}>
           {pairs.map((p) => {
-            const isMatched = matched.has(p.verb);
-            const isSelected = selectedVerb === p.verb;
-            const isWrong = wrongFlash?.verb === p.verb;
+            const isMatched = matched.has(p.left);
+            const isSelected = selectedLeft === p.left;
+            const isWrong = wrongFlash?.left === p.left;
             let bg = surface.cream;
             if (isMatched) bg = pastel('#0e9f6e', 0.72);
             else if (isWrong) bg = pastel('#e11d48', 0.78);
             else if (isSelected) bg = pastel('#7c3aed', 0.68);
             return (
               <button
-                key={p.verb}
+                key={p.left}
                 disabled={isMatched}
-                onClick={() => handlePickVerb(p.verb)}
+                onClick={() => handlePickLeft(p.left)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -117,7 +153,7 @@ export default function MatchIdiomGame() {
                   textAlign: 'left'
                 }}
               >
-                <span>{p.verb}</span>
+                <span>{p.left}</span>
                 {isMatched && <span style={{ color: '#0e9f6e', fontWeight: 700 }}>✓</span>}
               </button>
             );
@@ -125,18 +161,18 @@ export default function MatchIdiomGame() {
         </div>
 
         <div style={{ flex: '1 1 240px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {meanings.map((m) => {
-            const matchedPair = pairs.find((p) => p.mean === m && matched.has(p.verb));
+          {rightItems.map((r) => {
+            const matchedPair = pairs.find((p) => p.right === r && matched.has(p.left));
             const isMatched = !!matchedPair;
-            const isWrong = wrongFlash?.mean === m;
+            const isWrong = wrongFlash?.right === r;
             let bg = surface.cream;
             if (isMatched) bg = pastel('#0e9f6e', 0.72);
             else if (isWrong) bg = pastel('#e11d48', 0.78);
             return (
               <button
-                key={m}
-                disabled={isMatched || !selectedVerb}
-                onClick={() => handlePickMeaning(m)}
+                key={r}
+                disabled={isMatched || !selectedLeft}
+                onClick={() => handlePickRight(r)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -149,12 +185,12 @@ export default function MatchIdiomGame() {
                   border: '2px solid transparent',
                   borderRadius: 5,
                   padding: '10px 14px',
-                  cursor: isMatched || !selectedVerb ? 'default' : 'pointer',
+                  cursor: isMatched || !selectedLeft ? 'default' : 'pointer',
                   textAlign: 'left',
-                  opacity: !isMatched && !selectedVerb ? 0.6 : 1
+                  opacity: !isMatched && !selectedLeft ? 0.6 : 1
                 }}
               >
-                <span>{m}</span>
+                <span>{r}</span>
                 {isMatched && <span style={{ color: '#0e9f6e', fontWeight: 700 }}>✓</span>}
               </button>
             );

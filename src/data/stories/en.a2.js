@@ -390,5 +390,414 @@ export const EN_A2 = [
         why: 'By marca el límite temporal: by the end of.'
       }
     ]
+  },
+
+  {
+    num: '04',
+    title: 'The Slow Bus',
+    sub: 'Past simple · take (tiempo y transporte)',
+    tag: 'Nuevo',
+    meta: '4 min · 58 palabras · 12 nuevas',
+
+    paras: [
+      {
+        tr: 'El lunes pasado, Leo quiso coger el autobús para ir al trabajo.',
+        t: [
+          ['Last', 'adj', 'pasado', 'Adjetivo temporal: periodo inmediatamente anterior.'],
+          ['Monday', 'noun', 'lunes', 'Día de la semana, sustantivo propio.'],
+          ['Leo', 'noun', 'Leo', 'Nombre propio: sujeto de la frase.'],
+          ['wanted', 'verb', 'quiso', 'Pasado regular: want + -ed.'],
+          ['to', 'prep', '(infinitivo)', 'Marca el infinitivo: wanted to take.'],
+          ['take', 'verb', 'coger', 'Infinitivo tras wanted to.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['bus', 'noun', 'autobús', 'Sustantivo contable.'],
+          ['to', 'prep', 'a', 'Preposición de dirección: to work.'],
+          ['work', 'noun', 'trabajo', 'Aquí como destino, sin artículo.']
+        ]
+      },
+      {
+        tr: 'El autobús tardó cuarenta minutos en llegar.',
+        t: [
+          ['The', 'art', 'el', 'Artículo definido.'],
+          ['bus', 'noun', 'autobús', 'Sustantivo contable.'],
+          ['took', 'verb', 'tardó', 'Pasado irregular de take: take + tiempo = cuánto tarda algo.'],
+          ['forty', 'adj', 'cuarenta', 'Numeral.'],
+          ['minutes', 'noun', 'minutos', 'Sustantivo contable, plural.'],
+          ['to', 'prep', 'en', 'Marca el infinitivo de propósito: to arrive.'],
+          ['arrive', 'verb', 'llegar', 'Infinitivo.']
+        ]
+      },
+      {
+        tr: 'Luego tardó otra hora en cruzar la ciudad.',
+        t: [
+          ['Then', 'adv', 'luego', 'Adverbio de secuencia.'],
+          ['it', 'pron', 'eso', 'Pronombre sujeto neutro: se refiere al bus.'],
+          ['took', 'verb', 'tardó', 'Pasado irregular de take: take + tiempo.'],
+          ['another', 'adj', 'otra', 'Determinante: una más.'],
+          ['hour', 'noun', 'hora', 'Sustantivo contable.'],
+          ['to', 'prep', 'en', 'Marca el infinitivo de propósito.'],
+          ['cross', 'verb', 'cruzar', 'Infinitivo.'],
+          ['the', 'art', 'la', 'Artículo definido.'],
+          ['city', 'noun', 'ciudad', 'Sustantivo contable.']
+        ]
+      },
+      {
+        tr: '"¡Esto tarda una eternidad!" pensó Leo. Así que al día siguiente, cogió su bicicleta.',
+        t: [
+          ['This', 'pron', 'esto', 'Pronombre demostrativo.'],
+          ['takes', 'verb', 'tarda', 'Present simple, 3ª persona: take + tiempo, ahora en presente.'],
+          ['forever', 'adv', 'una eternidad', 'Adverbio de duración: mucho, mucho tiempo.'],
+          ['thought', 'verb', 'pensó', 'Pasado irregular de think.'],
+          ['Leo', 'noun', 'Leo', 'Nombre propio.'],
+          ['So', 'adv', 'así que', 'Adverbio de consecuencia: introduce el resultado.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['next', 'adj', 'siguiente', 'Adjetivo, antes del sustantivo.'],
+          ['day', 'noun', 'día', 'Sustantivo contable.'],
+          ['he', 'pron', 'él', 'Pronombre sujeto.'],
+          ['took', 'verb', 'cogió', 'Pasado irregular de take: aquí, coger un medio de transporte.'],
+          ['his', 'adj', 'su', 'Posesivo.'],
+          ['bike', 'noun', 'bicicleta', 'Sustantivo contable.']
+        ]
+      },
+      {
+        tr: 'La bicicleta tardó solo quince minutos.',
+        t: [
+          ['The', 'art', 'la', 'Artículo definido.'],
+          ['bike', 'noun', 'bicicleta', 'Sustantivo contable.'],
+          ['took', 'verb', 'tardó', 'Pasado irregular de take: take + tiempo.'],
+          ['only', 'adv', 'solo', 'Adverbio de restricción.'],
+          ['fifteen', 'adj', 'quince', 'Numeral.'],
+          ['minutes', 'noun', 'minutos', 'Sustantivo contable, plural.']
+        ]
+      },
+      {
+        tr: 'Ahora Leo coge la bicicleta cada día, y se toma un café de camino.',
+        t: [
+          ['Now', 'adv', 'ahora', 'Adverbio de tiempo.'],
+          ['Leo', 'noun', 'Leo', 'Nombre propio.'],
+          ['takes', 'verb', 'coge', 'Present simple, 3ª persona: take + transporte.'],
+          ['the', 'art', 'la', 'Artículo definido.'],
+          ['bike', 'noun', 'bicicleta', 'Sustantivo contable.'],
+          ['every', 'adj', 'cada', 'Determinante de frecuencia.'],
+          ['day', 'noun', 'día', 'Sustantivo contable.'],
+          ['and', 'prep', 'y', 'Conjunción de suma.'],
+          ['he', 'pron', 'él', 'Pronombre sujeto.'],
+          ['takes', 'verb', 'toma', 'Present simple, 3ª persona: take + algo que se consume.'],
+          ['a', 'art', 'un', 'Artículo indefinido.'],
+          ['coffee', 'noun', 'café', 'Aquí como sustantivo contable: una taza de café.'],
+          ['on', 'prep', 'de', 'Preposición de la expresión fija on the way.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['way', 'noun', 'camino', 'Sustantivo contable, en la expresión on the way.']
+        ]
+      }
+    ],
+
+    grammar: [
+      { name: 'Past Simple', hits: '6 usos', ex: 'took forty minutes · took his bike · wanted to take', c: '#0e9f6e' },
+      { name: 'Present Simple', hits: '3 usos', ex: 'takes forever · takes the bike · takes a coffee', c: '#0e9f6e' }
+    ],
+
+    phrasals: [],
+
+    gaps: [
+      {
+        s: ['The', 'bus', '___', 'forty', 'minutes', 'to', 'arrive.'],
+        answer: 'took',
+        opts: ['took', 'takes', 'take'],
+        why: 'Pasado irregular: take → took.'
+      },
+      {
+        s: ['Leo', 'wanted', '___', 'take', 'the', 'bus.'],
+        answer: 'to',
+        opts: ['to', 'for', 'at'],
+        why: 'want + to + infinitivo: wanted to take.'
+      },
+      {
+        s: ['Now', 'Leo', '___', 'the', 'bike', 'every', 'day.'],
+        answer: 'takes',
+        opts: ['takes', 'took', 'take'],
+        why: 'Present simple, 3ª persona: takes, ya en el presente de la rutina nueva.'
+      }
+    ]
+  },
+
+  {
+    num: '05',
+    title: 'The Empty Fridge',
+    sub: 'Past simple · have / had',
+    tag: 'Nuevo',
+    meta: '4 min · 64 palabras · 13 nuevas',
+
+    paras: [
+      {
+        tr: 'Ayer, Sofía tuvo un problema: tenía diez invitados para cenar.',
+        t: [
+          ['Yesterday', 'adv', 'ayer', 'Adverbio de tiempo.'],
+          ['Sofia', 'noun', 'Sofía', 'Nombre propio: sujeto de la frase.'],
+          ['had', 'verb', 'tuvo', 'Pasado irregular de have.'],
+          ['a', 'art', 'un', 'Artículo indefinido.'],
+          ['problem', 'noun', 'problema', 'Sustantivo contable.'],
+          ['she', 'pron', 'ella', 'Pronombre sujeto.'],
+          ['had', 'verb', 'tenía', 'Pasado irregular de have.'],
+          ['ten', 'adj', 'diez', 'Numeral.'],
+          ['guests', 'noun', 'invitados', 'Sustantivo contable, plural.'],
+          ['for', 'prep', 'para', 'Preposición de propósito.'],
+          ['dinner', 'noun', 'cena', 'Sustantivo contable.']
+        ]
+      },
+      {
+        tr: 'Pero abrió la nevera... y estaba casi vacía.',
+        t: [
+          ['But', 'prep', 'pero', 'Conjunción de contraste, abre la frase.'],
+          ['she', 'pron', 'ella', 'Pronombre sujeto.'],
+          ['opened', 'verb', 'abrió', 'Pasado regular: open + -ed.'],
+          ['the', 'art', 'la', 'Artículo definido.'],
+          ['fridge', 'noun', 'nevera', 'Sustantivo contable.'],
+          ['and', 'prep', 'y', 'Conjunción de suma.'],
+          ['it', 'pron', 'eso', 'Pronombre sujeto neutro: se refiere a la nevera.'],
+          ['was', 'verb', 'estaba', 'Pasado de be.'],
+          ['almost', 'adv', 'casi', 'Adverbio de grado.'],
+          ['empty', 'adj', 'vacía', 'Adjetivo tras el verbo be.']
+        ]
+      },
+      {
+        tr: 'Tenía unos huevos, un poco de queso, y pan duro. Nada más.',
+        t: [
+          ['She', 'pron', 'ella', 'Pronombre sujeto.'],
+          ['had', 'verb', 'tenía', 'Pasado irregular de have.'],
+          ['some', 'adj', 'unos', 'Determinante de cantidad indefinida.'],
+          ['eggs', 'noun', 'huevos', 'Sustantivo contable, plural.'],
+          ['a', 'art', 'un', 'Artículo indefinido, en la expresión a bit of.'],
+          ['bit', 'noun', 'poco', 'Cuantificador: a bit of + incontable.'],
+          ['of', 'prep', 'de', 'Preposición partitiva.'],
+          ['cheese', 'noun', 'queso', 'Incontable: sin artículo.'],
+          ['and', 'prep', 'y', 'Conjunción de suma.'],
+          ['old', 'adj', 'duro', 'Adjetivo, antes del sustantivo: literalmente "viejo".'],
+          ['bread', 'noun', 'pan', 'Incontable.'],
+          ['Nothing', 'pron', 'nada', 'Pronombre indefinido negativo.'],
+          ['else', 'adv', 'más', 'Adverbio: nada además de eso.']
+        ]
+      },
+      {
+        tr: '"¡No tengo tiempo para ir de compras!" pensó.',
+        t: [
+          ['I', 'pron', 'yo', 'Pronombre sujeto.'],
+          ["don't", 'verb', 'no', 'Negación en present simple, 1ª persona: do + not.'],
+          ['have', 'verb', 'tengo', 'Tras don\'t, el verbo vuelve al infinitivo: have, no has ni had.'],
+          ['time', 'noun', 'tiempo', 'Sustantivo incontable en esta expresión.'],
+          ['to', 'prep', 'para', 'Marca el infinitivo de propósito: time to go.'],
+          ['go', 'verb', 'ir', 'Infinitivo.'],
+          ['shopping', 'noun', 'de compras', 'Sustantivo en la expresión fija go shopping.'],
+          ['she', 'pron', 'ella', 'Pronombre sujeto.'],
+          ['thought', 'verb', 'pensó', 'Pasado irregular de think.']
+        ]
+      },
+      {
+        tr: 'Así que hizo una gran tortilla de queso y tostadas para todos.',
+        t: [
+          ['So', 'adv', 'así que', 'Adverbio de consecuencia.'],
+          ['she', 'pron', 'ella', 'Pronombre sujeto.'],
+          ['made', 'verb', 'hizo', 'Pasado irregular de make.'],
+          ['a', 'art', 'una', 'Artículo indefinido.'],
+          ['big', 'adj', 'gran', 'Adjetivo de tamaño, antes del sustantivo.'],
+          ['cheese', 'noun', 'queso', 'Sustantivo, aquí como modificador de omelette.'],
+          ['omelette', 'noun', 'tortilla', 'Sustantivo contable.'],
+          ['and', 'prep', 'y', 'Conjunción de suma.'],
+          ['toast', 'noun', 'tostadas', 'Incontable en inglés.'],
+          ['for', 'prep', 'para', 'Preposición de destinatario.'],
+          ['everyone', 'pron', 'todos', 'Pronombre indefinido, singular.']
+        ]
+      },
+      {
+        tr: 'A los invitados les encantó. A veces no tienes mucho, pero tienes suficiente.',
+        t: [
+          ['The', 'art', 'el/los', 'Artículo definido.'],
+          ['guests', 'noun', 'invitados', 'Sustantivo contable, plural.'],
+          ['loved', 'verb', 'encantó', 'Pasado regular: love + -d.'],
+          ['it', 'pron', 'eso', 'Pronombre objeto neutro.'],
+          ['Sometimes', 'adv', 'a veces', 'Adverbio de frecuencia.'],
+          ['you', 'pron', 'tú', 'Pronombre sujeto genérico.'],
+          ["don't", 'verb', 'no', 'Negación en present simple: do + not.'],
+          ['have', 'verb', 'tienes', 'Infinitivo tras don\'t.'],
+          ['much', 'adj', 'mucho', 'Determinante de cantidad, con incontables.'],
+          ['but', 'prep', 'pero', 'Conjunción de contraste.'],
+          ['you', 'pron', 'tú', 'Pronombre sujeto genérico.'],
+          ['have', 'verb', 'tienes', 'Present simple, 2ª persona: sin -s.'],
+          ['enough', 'adj', 'suficiente', 'Determinante de cantidad.']
+        ]
+      }
+    ],
+
+    grammar: [
+      { name: 'Past Simple', hits: '8 usos', ex: 'had a problem · had ten guests · had some eggs', c: '#0e9f6e' },
+      { name: 'Present Simple', hits: '5 usos', ex: "don't have time · don't have much · have enough", c: '#0e9f6e' },
+      { name: 'Adjetivos', hits: '6 usos', ex: 'almost empty · old bread · big cheese omelette', c: '#e11d48' }
+    ],
+
+    phrasals: [],
+
+    gaps: [
+      {
+        s: ['Yesterday,', 'Sofia', '___', 'a', 'problem.'],
+        answer: 'had',
+        opts: ['had', 'has', 'have'],
+        why: 'Pasado irregular: have → had.'
+      },
+      {
+        s: ['I', "don't", '___', 'time', 'to', 'go', 'shopping!'],
+        answer: 'have',
+        opts: ['have', 'has', 'had'],
+        why: 'Tras don\'t, el verbo vuelve al infinitivo: have, no has ni had.'
+      },
+      {
+        s: ['You', "don't", 'have', 'much,', 'but', 'you', '___', 'enough.'],
+        answer: 'have',
+        opts: ['have', 'has', 'had'],
+        why: 'Present simple, 2ª persona: have, sin -s.'
+      }
+    ]
+  },
+
+  {
+    num: '06',
+    title: 'The Little Prince and the Fox',
+    sub: 'Modales · can / could',
+    tag: 'Nuevo',
+    meta: '4 min · 72 palabras · 14 nuevas',
+
+    paras: [
+      {
+        tr: 'En el desierto, el principito conoció a un zorro.',
+        t: [
+          ['In', 'prep', 'en', 'Preposición de lugar.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['desert', 'noun', 'desierto', 'Sustantivo contable.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['little', 'adj', 'pequeño', 'Adjetivo, antes del sustantivo: aquí, "el principito".'],
+          ['prince', 'noun', 'príncipe', 'Sustantivo contable.'],
+          ['met', 'verb', 'conoció', 'Pasado irregular de meet.'],
+          ['a', 'art', 'un', 'Artículo indefinido.'],
+          ['fox', 'noun', 'zorro', 'Sustantivo contable.']
+        ]
+      },
+      {
+        tr: '"No puedo jugar contigo," dijo el zorro. "No estoy domesticado."',
+        t: [
+          ['I', 'pron', 'yo', 'Pronombre sujeto.'],
+          ["can't", 'verb', 'no puedo', 'Negación del modal can: can + not.'],
+          ['play', 'verb', 'jugar', 'Verbo base tras can\'t, sin to.'],
+          ['with', 'prep', 'con', 'Preposición de compañía.'],
+          ['you', 'pron', 'ti', 'Pronombre objeto.'],
+          ['said', 'verb', 'dijo', 'Pasado irregular de say.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['fox', 'noun', 'zorro', 'Sustantivo contable.'],
+          ['I', 'pron', 'yo', 'Pronombre sujeto.'],
+          ['am', 'verb', 'estoy', 'Present simple de be, 1ª persona.'],
+          ['not', 'adv', 'no', 'Adverbio de negación.'],
+          ['tamed', 'adj', 'domesticado', 'Adjetivo (participio con valor adjetivo) tras el verbo be.']
+        ]
+      },
+      {
+        tr: '"¿Qué puedo hacer?" preguntó el principito.',
+        t: [
+          ['What', 'pron', 'qué', 'Pronombre interrogativo, abre la pregunta.'],
+          ['can', 'verb', 'auxiliar modal', 'Pregunta con can: What can + sujeto + verbo base.'],
+          ['I', 'pron', 'yo', 'Pronombre sujeto.'],
+          ['do', 'verb', 'hacer', 'Verbo base tras can, sin to.'],
+          ['asked', 'verb', 'preguntó', 'Pasado regular: ask + -ed.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['little', 'adj', 'pequeño', 'Adjetivo: "el principito".'],
+          ['prince', 'noun', 'príncipe', 'Sustantivo contable.']
+        ]
+      },
+      {
+        tr: '"Puedes sentarte. Cada día, un poco más cerca. Entonces podríamos ser amigos."',
+        t: [
+          ['You', 'pron', 'tú', 'Pronombre sujeto.'],
+          ['can', 'verb', 'puedes', 'Modal can: capacidad/permiso.'],
+          ['sit', 'verb', 'sentarte', 'Verbo base tras can, sin to.'],
+          ['Every', 'adj', 'cada', 'Determinante de frecuencia.'],
+          ['day', 'noun', 'día', 'Sustantivo contable.'],
+          ['a', 'art', 'un', 'Artículo indefinido, en la expresión a little.'],
+          ['little', 'adv', 'un poco', 'Aquí es adverbio, no adjetivo: modifica a closer.'],
+          ['closer', 'adv', 'más cerca', 'Comparativo de close, usado como adverbio.'],
+          ['Then', 'adv', 'entonces', 'Adverbio de secuencia.'],
+          ['we', 'pron', 'nosotros', 'Pronombre sujeto, plural.'],
+          ['could', 'verb', 'podríamos', 'Pasado/condicional del modal can: could.'],
+          ['be', 'verb', 'ser', 'Verbo base tras could, sin to.'],
+          ['friends', 'noun', 'amigos', 'Sustantivo contable, plural.']
+        ]
+      },
+      {
+        tr: 'Así que cada día, el principito volvía. Despacio, el zorro llegó a confiar en él.',
+        t: [
+          ['So', 'adv', 'así que', 'Adverbio de consecuencia.'],
+          ['every', 'adj', 'cada', 'Determinante de frecuencia.'],
+          ['day', 'noun', 'día', 'Sustantivo contable.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['prince', 'noun', 'príncipe', 'Sustantivo contable.'],
+          ['came back', 'phr', 'volvía', 'Phrasal verb: come + back, regresar.'],
+          ['Slowly', 'adv', 'despacio', 'Adverbio de modo: adjetivo + -ly.'],
+          ['the', 'art', 'el', 'Artículo definido.'],
+          ['fox', 'noun', 'zorro', 'Sustantivo contable.'],
+          ['could', 'verb', 'llegó a', 'Pasado/condicional del modal can: could.'],
+          ['trust', 'verb', 'confiar', 'Verbo base tras could, sin to.'],
+          ['him', 'pron', 'él', 'Pronombre objeto.']
+        ]
+      },
+      {
+        tr: 'El zorro dijo: "Ahora puedo ver con el corazón. Y eso... no puedes ver con los ojos."',
+        t: [
+          ['The', 'art', 'el', 'Artículo definido.'],
+          ['fox', 'noun', 'zorro', 'Sustantivo contable.'],
+          ['said', 'verb', 'dijo', 'Pasado irregular de say.'],
+          ['Now', 'adv', 'ahora', 'Adverbio de tiempo.'],
+          ['I', 'pron', 'yo', 'Pronombre sujeto.'],
+          ['can', 'verb', 'puedo', 'Modal can: capacidad.'],
+          ['see', 'verb', 'ver', 'Verbo base tras can, sin to.'],
+          ['with', 'prep', 'con', 'Preposición de instrumento.'],
+          ['my', 'adj', 'mi', 'Posesivo.'],
+          ['heart', 'noun', 'corazón', 'Sustantivo contable.'],
+          ['And', 'prep', 'y', 'Conjunción de suma, abre la frase.'],
+          ['that', 'pron', 'eso', 'Pronombre demostrativo.'],
+          ['you', 'pron', 'tú', 'Pronombre sujeto.'],
+          ["can't", 'verb', 'no puedes', 'Negación del modal can.'],
+          ['see', 'verb', 'ver', 'Verbo base tras can\'t, sin to.'],
+          ['with', 'prep', 'con', 'Preposición de instrumento.'],
+          ['your', 'adj', 'tus', 'Posesivo.'],
+          ['eyes', 'noun', 'ojos', 'Sustantivo contable, plural.']
+        ]
+      }
+    ],
+
+    grammar: [
+      { name: 'Verbo modal CAN', hits: '7 usos', ex: "can't play · what can I do · could be friends", c: '#f97316' },
+      { name: 'Past Simple', hits: '4 usos', ex: 'met a fox · said the fox · asked the little prince', c: '#0e9f6e' }
+    ],
+
+    /* solo una — honesto, no forzado a tres. El juego 03 se oculta para esta
+       historia (ver GameTabs), pero la ficha de StoryFacts sí la muestra. */
+    phrasals: [{ verb: 'come back', mean: 'volver', quote: 'The prince came back.' }],
+
+    gaps: [
+      {
+        s: ['I', '___', 'play', 'with', 'you.'],
+        answer: "can't",
+        opts: ["can't", "don't", "wasn't"],
+        why: 'Negación del modal can: can + not.'
+      },
+      {
+        s: ['What', '___', 'I', 'do?'],
+        answer: 'can',
+        opts: ['can', 'do', 'am'],
+        why: 'Pregunta con el modal can: What can + sujeto + verbo base.'
+      },
+      {
+        s: ['Slowly,', 'the', 'fox', '___', 'trust', 'him.'],
+        answer: 'could',
+        opts: ['could', 'can', 'cans'],
+        why: 'Pasado del modal can: could, una palabra distinta, no "canned".'
+      }
+    ]
   }
 ];

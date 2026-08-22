@@ -5,24 +5,36 @@ import { TOKEN } from '@/data/stories';
 import { useReader } from '@/state/ReaderContext';
 import { seededShuffle } from '../seededShuffle';
 import GameShell from '../GameShell';
+import RoundNav from '../RoundNav';
 import WordBlock from './WordBlock';
 import DropZone from './DropZone';
 
+const halfOf = (len) => Math.floor(len / 2);
+
+const initialPlaced = (len) => Array.from({ length: halfOf(len) }, (_, i) => i);
+
+const initialAvailable = (words, seed) => {
+  const half = halfOf(words.length);
+  return seededShuffle(words.map((_, i) => i).filter((i) => i >= half), seed);
+};
+
 /**
- * Juego 01 — Ordena la frase. Objetivo: el 2º párrafo del relato (índice 1).
- * La mitad de las palabras arranca ya colocada (semilla estable derivada
- * del propio relato); el resto se ordena arrastrando/tocando.
+ * Juego 01 — Ordena la frase. Una ronda por párrafo del relato (`orderIndex`,
+ * navegable libremente como en 02/04/05). La mitad de las palabras arranca
+ * ya colocada (semilla estable derivada del propio párrafo); el resto se
+ * ordena arrastrando/tocando.
  */
 export default function WordOrderGame() {
   const { level, story, storyProgress, recordResult } = useReader();
 
-  const targetWords = story.paras[1].t.map((t) => t[TOKEN.TEXT]);
-  const half = Math.floor(targetWords.length / 2);
+  const paraCount = story.paras.length;
+  const [orderIndex, setOrderIndex] = useState(0);
 
-  const [placed, setPlaced] = useState(() => Array.from({ length: half }, (_, i) => i));
-  const [available, setAvailable] = useState(() =>
-    seededShuffle(targetWords.map((_, i) => i).filter((i) => i >= half), story.paras[1].tr)
-  );
+  const targetWords = story.paras[orderIndex].t.map((t) => t[TOKEN.TEXT]);
+  const half = halfOf(targetWords.length);
+
+  const [placed, setPlaced] = useState(() => initialPlaced(targetWords.length));
+  const [available, setAvailable] = useState(() => initialAvailable(targetWords, story.paras[orderIndex].tr));
   const [checked, setChecked] = useState(false);
   const [correctness, setCorrectness] = useState([]);
 
@@ -43,15 +55,21 @@ export default function WordOrderGame() {
     const nextCorrectness = placed.map((wordIdx, pos) => wordIdx === pos);
     setCorrectness(nextCorrectness);
     setChecked(true);
-    const correctCount = nextCorrectness.filter(Boolean).length;
-    recordResult('order', { done: correctCount === targetWords.length, best: correctCount });
+    recordResult('order', { index: orderIndex, solved: nextCorrectness.every(Boolean) });
   };
 
-  const handleReset = () => {
-    setPlaced(Array.from({ length: half }, (_, i) => i));
-    setAvailable(seededShuffle(targetWords.map((_, i) => i).filter((i) => i >= half), story.paras[1].tr + Date.now()));
+  const resetRound = (idx, reseed) => {
+    const words = story.paras[idx].t.map((t) => t[TOKEN.TEXT]);
+    setPlaced(initialPlaced(words.length));
+    setAvailable(initialAvailable(words, story.paras[idx].tr + (reseed ? Date.now() : '')));
     setChecked(false);
     setCorrectness([]);
+  };
+
+  const handleReset = () => resetRound(orderIndex, true);
+  const handleNavigate = (i) => {
+    setOrderIndex(i);
+    resetRound(i, false);
   };
 
   const missing = targetWords.length - placed.length;
@@ -78,7 +96,18 @@ export default function WordOrderGame() {
         </>
       }
       level={level}
-      progress={`${storyProgress.order.best} / ${targetWords.length}`}
+      progress={
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <RoundNav
+            index={orderIndex}
+            total={paraCount}
+            onNavigate={handleNavigate}
+            resolved={storyProgress.order.solved.includes(orderIndex)}
+            accent="#f97316"
+          />
+          <span>{storyProgress.order.solved.length} / {paraCount}</span>
+        </div>
+      }
       accent="#f97316"
       canCheck={missing === 0 && !checked}
       onCheck={handleCheck}

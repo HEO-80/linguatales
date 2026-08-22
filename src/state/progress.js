@@ -19,13 +19,16 @@ import { LEVELS } from '@/theme/languages';
 import { buildWordBank } from '@/components/Games/SelectWordGame/buildWordBank';
 
 const STORAGE_KEY = 'linguatales.progress.v1';
-const CURRENT_VERSION = 1;
+const CURRENT_VERSION = 2; // v2: order/match pasan a { solved: [] } por ronda (antes done/best/pairs)
 const SAVE_DEBOUNCE_MS = 500;
 
+/** Juego 03 tiene dos rondas fijas: expresiones (phrasals) y gramática. */
+const MATCH_ROUNDS = 2;
+
 export const EMPTY_STORY = Object.freeze({
-  order: { done: false, best: 0, attempts: 0 },
+  order: { solved: [], attempts: 0 },
   gap: { done: false, solved: [], attempts: 0 },
-  match: { done: false, pairs: 0, attempts: 0 },
+  match: { solved: [], attempts: 0 },
   word: { done: false, correct: 0, total: 0, seen: [], correctIdx: [] },
   speak: { best: {} },
   read: { seen: false, translationUsed: false },
@@ -34,9 +37,9 @@ export const EMPTY_STORY = Object.freeze({
 
 function cloneEmptyStory() {
   return {
-    order: { done: false, best: 0, attempts: 0 },
+    order: { solved: [], attempts: 0 },
     gap: { done: false, solved: [], attempts: 0 },
-    match: { done: false, pairs: 0, attempts: 0 },
+    match: { solved: [], attempts: 0 },
     word: { done: false, correct: 0, total: 0, seen: [], correctIdx: [] },
     speak: { best: {} },
     read: { seen: false, translationUsed: false },
@@ -170,9 +173,9 @@ export function getStoryProgress(lang, level, num, snapshot) {
 function mergeGame(prev, game, result) {
   switch (game) {
     case 'order': {
+      const solved = result.solved ? union(prev.solved, [result.index]) : prev.solved;
       return {
-        done: prev.done || !!result.done,
-        best: Math.max(prev.best, result.best ?? 0),
+        solved,
         attempts: prev.attempts + 1
       };
     }
@@ -185,9 +188,9 @@ function mergeGame(prev, game, result) {
       };
     }
     case 'match': {
+      const solved = result.solved ? union(prev.solved, [result.index]) : prev.solved;
       return {
-        done: prev.done || !!result.done,
-        pairs: Math.max(prev.pairs, result.pairs ?? 0),
+        solved,
         attempts: prev.attempts + 1
       };
     }
@@ -245,8 +248,8 @@ export function resetStory(key) {
 /* ── derivados ────────────────────────────────────────────────────────── */
 
 export function storyComplete(sp, story, { matchApplicable, wordApplicable } = {}) {
-  const orderOk = sp.order.done;
-  const matchOk = !matchApplicable || sp.match.done;
+  const orderOk = sp.order.solved.length === story.paras.length;
+  const matchOk = !matchApplicable || sp.match.solved.length === MATCH_ROUNDS;
   const gapOk = sp.gap.solved.length === story.gaps.length;
   const wordOk = !wordApplicable || (sp.word.total > 0 && sp.word.correct === sp.word.total);
   return orderOk && matchOk && gapOk && wordOk;
@@ -268,24 +271,29 @@ export function levelProgress(lang, level, snapshot) {
 
 /**
  * Progreso fino de UN relato en unidades de ejercicio (§2 del spec de
- * juegos): 1 (ordenar) + huecos + 1 (emparejar, si aplica) + banco de
- * palabras (si aplica) + frases habladas. Cada unidad se resuelve una vez
- * y cuenta para siempre — hablar una frase cuenta a partir del 70%.
+ * juegos): una ronda de ordenar por párrafo + huecos + las rondas de
+ * emparejar (si aplica) + banco de palabras (si aplica) + frases habladas.
+ * Cada unidad se resuelve una vez y cuenta para siempre — hablar una frase
+ * cuenta a partir del 70%.
  */
 export function storyExerciseTotals(story) {
   const bank = buildWordBank(story);
   const matchApplicable = story.phrasals.length >= 3;
   const wordApplicable = bank.length >= 4;
   const total =
-    1 + story.gaps.length + (matchApplicable ? 1 : 0) + (wordApplicable ? bank.length : 0) + story.paras.length;
+    story.paras.length +
+    story.gaps.length +
+    (matchApplicable ? MATCH_ROUNDS : 0) +
+    (wordApplicable ? bank.length : 0) +
+    story.paras.length;
   return { total, matchApplicable, wordApplicable };
 }
 
 export function storyExerciseDone(sp, story, { matchApplicable, wordApplicable }) {
   let done = 0;
-  if (sp.order.done) done += 1;
+  done += Math.min(sp.order.solved.length, story.paras.length);
   done += Math.min(sp.gap.solved.length, story.gaps.length);
-  if (matchApplicable && sp.match.done) done += 1;
+  if (matchApplicable) done += Math.min(sp.match.solved.length, MATCH_ROUNDS);
   if (wordApplicable) done += sp.word.correctIdx.length;
   done += Object.values(sp.speak.best).filter((score) => score >= 70).length;
   return done;

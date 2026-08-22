@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { pastel } from '@/theme/color';
+import { pastel, fg } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
 import { LANGUAGES, LEVELS } from '@/theme/languages';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
@@ -26,6 +26,7 @@ export default function LanguageBar() {
   const L = LANGUAGES[langCode];
   const lv = LEVELS.find((l) => l.code === levelCode);
   const [levelOpen, setLevelOpen] = useState(false);
+  const levelBtnRef = useRef(null);
 
   const stories = storiesOf(langCode, levelCode);
   const snapshot = useProgressSnapshot();
@@ -80,6 +81,7 @@ export default function LanguageBar() {
 
         <div style={{ position: 'relative' }}>
           <button
+            ref={levelBtnRef}
             onClick={() => setLevelOpen((o) => !o)}
             style={{
               display: 'flex',
@@ -96,29 +98,52 @@ export default function LanguageBar() {
             <span style={{ fontFamily: font.body, fontSize: 13, fontWeight: 700, color: text.ink }}>{lv.title}</span>
             <span style={{ fontFamily: font.mono, fontSize: 10, color: text.onTint }}>▾</span>
           </button>
-          {levelOpen && <LevelPopover onClose={() => setLevelOpen(false)} langCode={langCode} activeLevel={levelCode} />}
+          {levelOpen && (
+            <LevelPopover
+              onClose={() => setLevelOpen(false)}
+              langCode={langCode}
+              activeLevel={levelCode}
+              anchorRef={levelBtnRef}
+            />
+          )}
         </div>
 
         {exercise ? (
-          <div
-            style={{
-              width: 120,
-              height: 6,
-              borderRadius: 3,
-              background: 'rgba(25,23,19,.08)',
-              overflow: 'hidden',
-              flexShrink: 0
-            }}
-          >
+          <>
             <div
               style={{
-                width: `${exercisePct}%`,
-                height: '100%',
-                background: accent.progress,
-                transition: 'width .3s'
+                width: 120,
+                height: 6,
+                borderRadius: 3,
+                background: 'rgba(25,23,19,.1)',
+                overflow: 'hidden',
+                flexShrink: 0
               }}
-            />
-          </div>
+            >
+              <div
+                style={{
+                  width: `${exercisePct}%`,
+                  height: '100%',
+                  background: `linear-gradient(90deg, ${accent.primary}, ${accent.secondary})`,
+                  transition: 'width .3s'
+                }}
+              />
+            </div>
+            <span
+              style={{
+                fontFamily: font.mono,
+                fontSize: 10.5,
+                fontWeight: 700,
+                color: fg(accent.primary, surface.cream, 4.6),
+                flexShrink: 0
+              }}
+            >
+              {exercisePct}%
+            </span>
+            <span style={{ fontFamily: font.mono, fontSize: 11.5, color: text.onTint, flexShrink: 0 }}>
+              {exercise.done} de {exercise.total} ejercicios
+            </span>
+          </>
         ) : (
           <div style={{ width: 84, height: 5, borderRadius: 3, background: 'rgba(25,23,19,.08)', overflow: 'hidden', flexShrink: 0 }}>
             <div style={{ width: `${pct}%`, height: '100%', background: accent.progress }} />
@@ -127,11 +152,11 @@ export default function LanguageBar() {
 
         <div style={{ flex: 1 }} />
 
-        <span style={{ fontFamily: font.mono, fontSize: 11.5, color: text.onTint }}>
-          {exercise
-            ? `${exercise.done} de ${exercise.total} ejercicios`
-            : `${stories.length} relatos en ${levelCode}`}
-        </span>
+        {!exercise && (
+          <span style={{ fontFamily: font.mono, fontSize: 11.5, color: text.onTint }}>
+            {stories.length} relatos en {levelCode}
+          </span>
+        )}
       </div>
     </div>
   );

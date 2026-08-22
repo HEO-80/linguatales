@@ -107,7 +107,7 @@ export default function StoryReader() {
           gap: 18
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <span
               style={{
@@ -135,9 +135,9 @@ export default function StoryReader() {
                 border: `1px solid ${surface.border}`,
                 color: text.ink,
                 fontFamily: font.body,
-                fontSize: 13.5,
-                fontWeight: 600,
-                borderRadius: 5,
+                fontSize: 12.5,
+                fontWeight: 700,
+                borderRadius: 4,
                 padding: '10px 16px',
                 cursor: 'pointer'
               }}
@@ -150,9 +150,9 @@ export default function StoryReader() {
                 background: surface.solid,
                 color: '#fffdf7',
                 fontFamily: font.body,
-                fontSize: 13.5,
-                fontWeight: 600,
-                borderRadius: 5,
+                fontSize: 12.5,
+                fontWeight: 700,
+                borderRadius: 4,
                 padding: '10px 16px',
                 boxShadow: shadow.sm,
                 cursor: 'pointer'

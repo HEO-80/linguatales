@@ -12,7 +12,9 @@
 export function rgb(color) {
   if (typeof color !== 'string') return color;
   if (color.charAt(0) === '#') {
-    const n = parseInt(color.slice(1), 16);
+    let h = color.slice(1);
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    const n = parseInt(h, 16);
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   }
   return color.replace(/[^0-9,.]/g, '').split(',').map(Number).slice(0, 3);

@@ -16,6 +16,8 @@
  */
 
 import { STORIES } from './index.js';
+import { GRAMMAR_DETAIL } from '../grammar/index.js';
+import { PHRASAL_DETAIL } from '../idioms/index.js';
 
 function normalizeWord(w) {
   return w
@@ -105,15 +107,42 @@ export function validateCatalogue() {
   return errors;
 }
 
+/**
+ * Toda regla de gramática o phrasal verb que un relato dice practicar tiene
+ * que tener ficha en GRAMMAR_DETAIL / PHRASAL_DETAIL (src/data/grammar,
+ * src/data/idioms) — si no, el panel de detalle de StoryFacts no tiene qué
+ * mostrar. En dev, los componentes ya avisan por consola al renderizar; esta
+ * comprobación es la que falla el build si alguien lo pasa por alto.
+ */
+export function checkDetailCoverage() {
+  const errors = [];
+  for (const [key, stories] of Object.entries(STORIES)) {
+    for (const story of stories) {
+      const label = `${key} · "${story.title}"`;
+      (story.grammar || []).forEach((g) => {
+        if (!GRAMMAR_DETAIL[g.name]) {
+          errors.push(`${label} → la regla "${g.name}" no tiene ficha en GRAMMAR_DETAIL (src/data/grammar/index.js).`);
+        }
+      });
+      (story.phrasals || []).forEach((p) => {
+        if (!PHRASAL_DETAIL[p.verb]) {
+          errors.push(`${label} → el phrasal verb "${p.verb}" no tiene ficha en PHRASAL_DETAIL (src/data/idioms/index.js).`);
+        }
+      });
+    }
+  }
+  return errors;
+}
+
 function main() {
-  const errors = validateCatalogue();
+  const errors = [...validateCatalogue(), ...checkDetailCoverage()];
   if (errors.length > 0) {
     console.error(`✗ Validación de relatos: ${errors.length} fallo(s).\n`);
     errors.forEach((e) => console.error(`  - ${e}`));
-    console.error('\nCorrige grammar[].ex / phrasals[].quote o el texto de paras — no pueden divergir.');
+    console.error('\nCorrige grammar[].ex / phrasals[].quote, el texto de paras, o añade la ficha que falte.');
     process.exit(1);
   }
-  console.log('✓ Validación de relatos: grammar[].ex y phrasals[].quote coinciden con paras en todas las historias del catálogo.');
+  console.log('✓ Validación de relatos: citas, textos y fichas de gramática/phrasal verbs coinciden en todas las historias del catálogo.');
 }
 
 main();

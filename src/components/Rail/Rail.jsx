@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { pastel, whiteReadable, NEUTRAL } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
@@ -8,6 +8,7 @@ import { LEVELS } from '@/theme/languages';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
 import { storiesOf } from '@/data/stories';
 import { languageProgress, useProgressSnapshot } from '@/state/progress';
+import { emitReaderNav } from '@/state/readerNavBus';
 import LanguagePopover from './LanguagePopover';
 import LevelPopover from './LevelPopover';
 
@@ -26,6 +27,8 @@ export default function Rail() {
 
   const [langOpen, setLangOpen] = useState(false);
   const [levelOpen, setLevelOpen] = useState(false);
+  const langBtnRef = useRef(null);
+  const levelBtnRef = useRef(null);
 
   const solidFg = whiteReadable(surface.solid) ? '#ffffff' : NEUTRAL.ink;
   const stories = storiesOf(langCode, levelCode);
@@ -67,6 +70,7 @@ export default function Rail() {
       >
       <div style={{ position: 'relative' }}>
         <button
+          ref={langBtnRef}
           onClick={() => setLangOpen((o) => !o)}
           aria-label="Cambiar idioma"
           style={{
@@ -84,7 +88,9 @@ export default function Rail() {
         >
           {langCode}
         </button>
-        {langOpen && <LanguagePopover levelCode={levelCode} onClose={() => setLangOpen(false)} />}
+        {langOpen && (
+          <LanguagePopover levelCode={levelCode} anchorRef={langBtnRef} onClose={() => setLangOpen(false)} />
+        )}
       </div>
 
       <span
@@ -98,8 +104,11 @@ export default function Rail() {
         }}
       />
 
+      <span style={{ width: 30, height: 1, background: surface.border, margin: '2px 0' }} />
+
       <div style={{ position: 'relative' }}>
         <button
+          ref={levelBtnRef}
           onClick={() => setLevelOpen((o) => !o)}
           aria-label="Cambiar nivel"
           style={{
@@ -117,8 +126,17 @@ export default function Rail() {
         >
           {levelCode}
         </button>
-        {levelOpen && <LevelPopover langCode={langCode} activeLevel={levelCode} onClose={() => setLevelOpen(false)} />}
+        {levelOpen && (
+          <LevelPopover
+            langCode={langCode}
+            activeLevel={levelCode}
+            anchorRef={levelBtnRef}
+            onClose={() => setLevelOpen(false)}
+          />
+        )}
       </div>
+
+      <span style={{ width: 30, height: 1, background: surface.border, margin: '2px 0' }} />
 
       <div
         style={{
@@ -138,23 +156,25 @@ export default function Rail() {
         >
           ◫
         </button>
-        <a
-          href="#games"
+        <button
+          onClick={() => emitReaderNav('games')}
           title="Juegos"
           aria-label="Ir a juegos"
           style={{
             width: 34,
             height: 34,
+            border: 'none',
+            background: 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: 16,
             color: text.ink,
-            textDecoration: 'none'
+            cursor: 'pointer'
           }}
         >
           ✎
-        </a>
+        </button>
         <span
           title="Tu progreso"
           style={{ width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: text.ink }}

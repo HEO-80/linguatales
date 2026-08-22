@@ -29,6 +29,7 @@ export default function GameShell({
   feedback,
   checkLabel = 'Comprobar',
   resetLabel = 'Reiniciar',
+  hideReset = false,
   children
 }) {
   const { font, shadow } = useTheme();
@@ -103,31 +104,33 @@ export default function GameShell({
             background: canCheck ? accent : 'rgba(25,23,19,.18)',
             color: '#fffdf7',
             fontFamily: font.body,
-            fontSize: 13.5,
-            fontWeight: 600,
-            borderRadius: 5,
-            padding: '10px 18px',
+            fontSize: 12.5,
+            fontWeight: 700,
+            borderRadius: 4,
+            padding: '10px 20px',
             opacity: canCheck ? 1 : 0.6,
             cursor: canCheck ? 'pointer' : 'not-allowed'
           }}
         >
           {checkLabel}
         </button>
-        <button
-          onClick={onReset}
-          style={{
-            background: 'transparent',
-            border: `1px solid ${accent}`,
-            color: ink,
-            fontFamily: font.body,
-            fontSize: 13.5,
-            fontWeight: 600,
-            borderRadius: 5,
-            padding: '10px 18px'
-          }}
-        >
-          {resetLabel}
-        </button>
+        {!hideReset && (
+          <button
+            onClick={onReset}
+            style={{
+              background: 'transparent',
+              border: `1px solid ${accent}`,
+              color: ink,
+              fontFamily: font.body,
+              fontSize: 12.5,
+              fontWeight: 700,
+              borderRadius: 4,
+              padding: '10px 17px'
+            }}
+          >
+            {resetLabel}
+          </button>
+        )}
         {feedback?.text && (
           <span
             style={{
