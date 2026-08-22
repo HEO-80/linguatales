@@ -25,7 +25,7 @@ export default function PhraseGame() {
   const {
     lang, level,
     phrBlock, phIndex, setPhIndex, phPick, setPhPick,
-    phDoneByBlock, markPhraseDone
+    phDoneByBlock, markPhraseDone, gradeSrs
   } = useReader();
 
   const blocks = phrasesOf(lang, level);
@@ -48,8 +48,16 @@ export default function PhraseGame() {
 
   const handlePick = (opt) => {
     if (phPick != null) return;
+    const correct = opt === current.en;
+    // SRS (§3 linguatales-srs-spec.md): en el momento de responder, antes
+    // del feedback. q=4 acierto, q=0 fallo.
+    gradeSrs(
+      `ph:${block.num}:${phIndex}`,
+      { kind: 'Frase hecha', q: current.es, a: current.en, hint: current.tip },
+      correct ? 4 : 0
+    );
     setPhPick(opt);
-    if (opt === current.en) markPhraseDone(block.num, phIndex);
+    if (correct) markPhraseDone(block.num, phIndex);
   };
 
   const handleNext = () => {
@@ -61,10 +69,12 @@ export default function PhraseGame() {
   if (phPick != null) {
     feedback = isCorrectPick
       ? { text: `✓ Correcto · ${current.en} — ${current.tip}`, tone: 'ok' }
-      : { text: `✕ Era: ${current.en}`, tone: 'error' };
+      : { text: '✕ Incorrecto.', tone: 'error' };
   } else {
     feedback = { text: 'Elige cómo se dice en inglés.', tone: 'idle' };
   }
+  // Feedback del "por qué" (§1, quinta entrega): el tip de la frase.
+  const why = phPick != null && !isCorrectPick ? { label: 'POR QUÉ', text: current.tip } : null;
 
   const enunciadoBg = 'rgba(255,255,255,.7)';
   // Sobre esta caja traslúcida el fondo real compuesto es más claro que el
@@ -108,6 +118,7 @@ export default function PhraseGame() {
       onReset={() => {}}
       hideReset
       feedback={feedback}
+      why={why}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div

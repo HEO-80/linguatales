@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useSyncExternalStore } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTheme } from '@/theme/ThemeContext';
@@ -8,16 +8,34 @@ import { useAuth } from '@/state/AuthContext';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
 import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
-import { emitReaderNav } from '@/state/readerNavBus';
+import { emitReaderNav, subscribeReaderView } from '@/state/readerNavBus';
+import { subscribeToSrs, getSrsSnapshot, getSrsServerSnapshot, cardsOf } from '@/state/srs';
+import { deriveSrsQueue } from '@/lib/srs';
 import AuthModal from '../Auth/AuthModal';
 import UserMenu from '../Auth/UserMenu';
 
 const SECTIONS = [
-  { key: 'stories', label: 'Historias', anchor: '#reader' },
-  { key: 'grammar', label: 'Gramática', anchor: '#grammar' },
-  { key: 'idiom', label: null /* dinámico: lang.navIdiom */, anchor: '#idiom' },
-  { key: 'games', label: 'Juegos', anchor: '#games' }
+  { key: 'stories', label: 'Historias', anchor: '#reader', nav: 'story' },
+  { key: 'phrases', label: 'Frases', anchor: '#reader', nav: 'phrases' },
+  { key: 'grammar', label: 'Gramática', anchor: '#grammar', nav: null },
+  { key: 'idiom', label: null /* dinámico: lang.navIdiom */, anchor: '#idiom', nav: null },
+  { key: 'linkers', label: 'Conectores', anchor: '#reader', nav: 'linkers' },
+  { key: 'games', label: 'Juegos', anchor: '#games', nav: 'games' },
+  { key: 'srs', label: null /* dinámico: Repaso · N */, anchor: '#reader', nav: 'srs' }
 ];
+
+/** `view` del lector ('story'|'phrases'|'linkers'|'game'|'srs') → sección
+ * del nav secundario que debe marcarse (§4 linguatales-conectores-spec.md,
+ * ampliada en linguatales-srs-spec.md). Gramática y Phrasal Verbs/Expresiones
+ * no tienen `view` propio — viven dentro de view === 'story', así que caen
+ * en "Historias", igual que el resto. */
+function sectionForView(view) {
+  if (view === 'phrases') return 'phrases';
+  if (view === 'linkers') return 'linkers';
+  if (view === 'game') return 'games';
+  if (view === 'srs') return 'srs';
+  return 'stories';
+}
 
 /** Días consecutivos con actividad real (hoy o ayer hacia atrás), a partir
  * de las fechas de intentos de pronunciación y progreso de historias — no
@@ -44,13 +62,23 @@ function computeStreakDays(progress) {
 export default function AppHeader() {
   const theme = useTheme();
   const { lang, surface, accent, text, font, shadow } = theme;
+  // Se deriva de `view` (emitido por ReaderProvider vía readerNavBus, ver
+  // §4 linguatales-conectores-spec.md) — no de qué se pulsó por última vez.
+  // Fuera de la página de un relato nadie emite, y se queda en 'stories'.
   const [active, setActive] = useState('stories');
+  useEffect(() => subscribeReaderView((view) => setActive(sectionForView(view))), []);
   const [authOpen, setAuthOpen] = useState(false);
   const { user, loading } = useAuth();
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const streak = user ? computeStreakDays(progress) : 0;
   const langCode = useLangCode();
   const levelCode = useLevelCode();
+  const srsSnapshot = useSyncExternalStore(subscribeToSrs, getSrsSnapshot, getSrsServerSnapshot);
+  const srsDueCount =
+    langCode && levelCode
+      ? deriveSrsQueue(cardsOf(langCode, levelCode, srsSnapshot), srsSnapshot.day).dueCount
+      : 0;
+  const srsLabel = srsDueCount > 0 ? `Repaso · ${srsDueCount}` : 'Repaso';
   const langSlug = toLangSlug(langCode);
   const levelSlug = toLevelSlug(levelCode ?? DEFAULT_LEVEL);
   const params = useParams();
@@ -101,16 +129,14 @@ export default function AppHeader() {
 
         <nav style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           {SECTIONS.map((s) => {
-            const label = s.key === 'idiom' ? lang.navIdiom : s.label;
+            const label = s.key === 'idiom' ? lang.navIdiom : s.key === 'srs' ? srsLabel : s.label;
             const isActive = active === s.key;
             return (
               <Link
                 key={s.key}
                 href={`${base}${s.anchor}`}
                 onClick={() => {
-                  setActive(s.key);
-                  if (s.key === 'stories') emitReaderNav('story');
-                  if (s.key === 'games') emitReaderNav('games');
+                  if (s.nav) emitReaderNav(s.nav);
                 }}
                 style={{
                   fontFamily: font.body,

@@ -4,6 +4,7 @@ import { pastel, fg } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
 import { ROLES, TOKEN } from '@/data/stories';
 import { useReader } from '@/state/ReaderContext';
+import { srsStatus, SRS_STATUS, SRS_STATUS_COLOR } from '@/lib/srs';
 
 /** Padding horizontal de cada palabra — la línea de traducción completa
  * (bajo el párrafo) se alinea a partir de este mismo número, no de uno
@@ -13,7 +14,7 @@ export const WORD_PADDING_X = 7;
 /** Una palabra (o phrasal verb, un solo token) del texto del relato. */
 export default function WordToken({ token, paraIndex, tokenIndex }) {
   const { font } = useTheme();
-  const { roleFilter, word, setWord, showTr } = useReader();
+  const { roleFilter, word, setWord, showTr, srsCards, srsDay } = useReader();
 
   const role = token[TOKEN.ROLE];
   const color = ROLES[role].color;
@@ -33,6 +34,15 @@ export default function WordToken({ token, paraIndex, tokenIndex }) {
     background = 'rgba(255,255,255,.35)';
     borderBottom = '2.5px solid rgba(255,255,255,.4)';
     textColor = '#8d8674';
+  } else {
+    // Marcado SRS (§5 linguatales-srs-spec.md): solo el filete inferior, sin
+    // tocar fondo ni color de rol — y nunca sobre una palabra ya atenuada
+    // por el filtro de rol, para no competir con esa señal. "Sin ver" no
+    // cambia nada (deja el filete pastel del rol tal cual).
+    const status = srsStatus(srsCards[`w:${token[TOKEN.TEXT].toLowerCase()}`], srsDay);
+    if (status === SRS_STATUS.DUE) borderBottom = `2.5px solid ${SRS_STATUS_COLOR.due}`;
+    else if (status === SRS_STATUS.LEARNING) borderBottom = `2.5px solid ${SRS_STATUS_COLOR.learning}`;
+    else if (status === SRS_STATUS.MASTERED) borderBottom = `2.5px dotted ${pastel(SRS_STATUS_COLOR.mastered, 0.45)}`;
   }
 
   const trColor = fg(color, background, 4.6);

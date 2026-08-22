@@ -30,10 +30,9 @@ const TRANSLATION_PADDING_LEFT = WORD_PADDING_X - TRANSLATION_BORDER_WIDTH;
  */
 export default function StoryReader() {
   const { surface, accent, text, font, shadow } = useTheme();
-  const { lang, level, story, showTr, setShowTr } = useReader();
+  const { lang, level, story, showTr, setShowTr, playing, setPlaying } = useReader();
 
   const [speaking, setSpeaking] = useState(false);
-  const [playing, setPlaying] = useState(null); // índice de la frase que suena, o null
   const sessionRef = useRef(0);
 
   useEffect(() => {

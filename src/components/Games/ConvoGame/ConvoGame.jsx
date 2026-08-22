@@ -25,7 +25,7 @@ export default function ConvoGame() {
   const {
     lang, level,
     phrBlock, coIndex, setCoIndex, coPick, setCoPick,
-    coDoneByBlock, markConvoDone
+    coDoneByBlock, markConvoDone, gradeSrs
   } = useReader();
 
   const blocks = phrasesOf(lang, level);
@@ -48,8 +48,16 @@ export default function ConvoGame() {
 
   const handlePick = (opt) => {
     if (coPick != null) return;
+    const correct = opt === current.re[0];
+    // SRS (§3 linguatales-srs-spec.md): en el momento de responder, antes
+    // del feedback. q=4 acierto, q=0 fallo.
+    gradeSrs(
+      `co:${block.num}:${coIndex}`,
+      { kind: 'Contestación', q: current.en, a: current.re[0], hint: current.re[1] },
+      correct ? 4 : 0
+    );
     setCoPick(opt);
-    if (opt === current.re[0]) markConvoDone(block.num, coIndex);
+    if (correct) markConvoDone(block.num, coIndex);
   };
 
   const handleNext = () => {
@@ -61,10 +69,16 @@ export default function ConvoGame() {
   if (coPick != null) {
     feedback = isCorrectPick
       ? { text: `✓ ${current.re[0]} — ${current.re[1]}`, tone: 'ok' }
-      : { text: `✕ Se contesta: ${current.re[0]} — ${current.re[1]}`, tone: 'error' };
+      : { text: '✕ Incorrecto.', tone: 'error' };
   } else {
     feedback = { text: 'Elige la contestación justa.', tone: 'idle' };
   }
+  // Feedback del "por qué" (§1, quinta entrega): la contestación correcta +
+  // su traducción + el tip de la frase.
+  const why =
+    coPick != null && !isCorrectPick
+      ? { label: 'POR QUÉ', text: `${current.re[0]} — ${current.re[1]}. ${current.tip}` }
+      : null;
 
   const enunciadoBg = 'rgba(255,255,255,.7)';
   const composedBg = pastel(INDIGO, 0.94);
@@ -104,6 +118,7 @@ export default function ConvoGame() {
       onReset={() => {}}
       hideReset
       feedback={feedback}
+      why={why}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div

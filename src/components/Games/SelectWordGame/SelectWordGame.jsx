@@ -7,6 +7,7 @@ import { ROLES, TOKEN } from '@/data/stories';
 import { useReader } from '@/state/ReaderContext';
 import { buildWordBank, buildAllEntries } from './buildWordBank';
 import { buildDistractors } from './buildDistractors';
+import { grammarWhy } from '@/lib/whyFeedback';
 import GameShell from '../GameShell';
 import RoundNav from '../RoundNav';
 
@@ -16,7 +17,7 @@ import RoundNav from '../RoundNav';
  */
 export default function SelectWordGame() {
   const { surface, text, font } = useTheme();
-  const { level, story, storyProgress, recordResult } = useReader();
+  const { level, story, storyProgress, recordResult, gradeSrs } = useReader();
 
   const bank = useMemo(() => buildWordBank(story), [story]);
   const allEntries = useMemo(() => buildAllEntries(story), [story]);
@@ -49,6 +50,13 @@ export default function SelectWordGame() {
   const handleCheck = () => {
     if (!checked) {
       const correct = mode === 'choice' ? isCorrectChoice : isCorrectWrite;
+      // SRS (§3 linguatales-srs-spec.md): engancha en el momento de
+      // responder, antes de pintar el feedback. q=4 acierto, q=0 fallo.
+      gradeSrs(
+        `w:${text_.toLowerCase()}`,
+        { kind: 'Palabra', q: `¿Qué significa "${text_}"?`, a: entry.token[TOKEN.TRANSLATION], hint: entry.token[TOKEN.EXPLAIN] },
+        correct ? 4 : 0
+      );
       recordResult('word', { index: roundIndex, correct, total: bank.length });
       setChecked(true);
       return;
@@ -75,9 +83,7 @@ export default function SelectWordGame() {
 
   let feedback;
   if (checked) {
-    feedback = isCorrect
-      ? { text: '✓ Correcto.', tone: 'ok' }
-      : { text: `Casi. Era "${text_}".`, tone: 'error' };
+    feedback = isCorrect ? { text: '✓ Correcto.', tone: 'ok' } : { text: '✕ Incorrecto.', tone: 'error' };
   } else if (mode === 'choice' && selected) {
     feedback = { text: 'Confirma tu respuesta.', tone: 'ready' };
   } else if (mode === 'write' && writeAnswer) {
@@ -87,6 +93,9 @@ export default function SelectWordGame() {
   }
 
   const hint = `${text_[0]}${'_'.repeat(Math.max(text_.length - 1, 0))} (${text_.length} letras)`;
+  // Feedback del "por qué" (§1, quinta entrega): entre las reglas del
+  // relato, la que más comparte con la palabra fallada — heurístico.
+  const why = checked && !isCorrect ? grammarWhy(story, text_) : null;
 
   return (
     <GameShell
@@ -116,6 +125,7 @@ export default function SelectWordGame() {
       onCheck={handleCheck}
       onReset={handleReset}
       feedback={feedback}
+      why={why}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div
@@ -208,6 +218,11 @@ export default function SelectWordGame() {
                 maxWidth: 260
               }}
             />
+            {checked && !isCorrect && (
+              <span style={{ fontFamily: font.body, fontSize: 13, color: text.onCream }}>
+                Era: <strong style={{ color: text.ink }}>{text_}</strong>
+              </span>
+            )}
           </div>
         )}
       </div>

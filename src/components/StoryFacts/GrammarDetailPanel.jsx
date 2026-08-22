@@ -5,6 +5,7 @@ import { useTheme } from '@/theme/ThemeContext';
 import { useReader } from '@/state/ReaderContext';
 import { GRAMMAR_DETAIL } from '@/data/grammar';
 import { TOKEN } from '@/data/stories';
+import WhyBox from '@/components/ui/WhyBox';
 
 /**
  * Panel a todo el ancho de una regla de gramática. Las fichas de "En este
@@ -41,8 +42,6 @@ export default function GrammarDetailPanel() {
       tokensInRole.push(token);
     });
   });
-
-  const cautionBg = pastel('#e0a80c', 0.78);
 
   return (
     <div
@@ -161,24 +160,7 @@ export default function GrammarDetailPanel() {
         </div>
       </div>
 
-      <div style={{ background: cautionBg, borderRadius: 5, padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-        <span style={{ fontSize: 16, lineHeight: 1.4 }}>⚠</span>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <span
-            style={{
-              fontFamily: font.mono,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.8px',
-              textTransform: 'uppercase',
-              color: fg('#e0a80c', cautionBg, 5)
-            }}
-          >
-            Cuidado con esto
-          </span>
-          <span style={{ fontFamily: font.body, fontSize: 13.5, color: text.ink }}>{dict.caution}</span>
-        </div>
-      </div>
+      <WhyBox label="Cuidado con esto" text={dict.caution} />
     </div>
   );
 }

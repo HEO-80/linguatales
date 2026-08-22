@@ -6,15 +6,20 @@ import StoryReader from './StoryReader';
 import StoryStub from './StoryStub';
 import StoryFacts from '@/components/StoryFacts/StoryFacts';
 import PhrasesSection from '@/components/Phrases/PhrasesSection';
+import ConnectorsSection from '@/components/Connectors/ConnectorsSection';
 import GameTabs from '@/components/Games/GameTabs/GameTabs';
+import SrsView from '@/components/Srs/SrsView';
 
 /**
- * Vista exclusiva (§4 linguatales-frases-spec.md): relato, frases y juego no
- * se ven nunca a la vez. `view === 'story'` muestra el relato completo +
- * gramática/phrasal verbs; cualquier otro valor deja en su lugar el
- * muñón clicable (StoryStub). Los chips de PhrasesSection y las pestañas de
- * GameTabs siempre están visibles — son la navegación — pero su contenido
- * (panel de bloque / cuerpo del juego) solo se monta con la vista activa.
+ * Vista exclusiva (§4 linguatales-frases-spec.md, ampliada en
+ * linguatales-conectores-spec.md y linguatales-srs-spec.md): relato, frases,
+ * conectores, juego y repaso no se ven nunca a la vez. `view === 'story'`
+ * muestra el relato completo + gramática/phrasal verbs; cualquier otro valor
+ * deja en su lugar el muñón clicable (StoryStub). Los chips de
+ * PhrasesSection/ConnectorsSection y las pestañas de GameTabs siempre están
+ * visibles — son la navegación — pero su contenido (panel de bloque / grupo /
+ * cuerpo del juego) solo se monta con la vista activa. SrsView no tiene chip
+ * propio: se abre solo desde el nav ("Repaso").
  */
 function StoryReaderBody() {
   const { view } = useReader();
@@ -35,6 +40,8 @@ function StoryReaderBody() {
       )}
 
       <PhrasesSection />
+      <ConnectorsSection />
+      {view === 'srs' && <SrsView />}
       <GameTabs />
     </>
   );

@@ -8,6 +8,7 @@
 
 import { pastel, fg } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
+import WhyBox from '@/components/ui/WhyBox';
 
 const TONE_COLOR = {
   idle: '#8d8674',
@@ -27,6 +28,7 @@ export default function GameShell({
   onReset,
   canCheck,
   feedback,
+  why,
   checkLabel = 'Comprobar',
   resetLabel = 'Reiniciar',
   hideReset = false,
@@ -147,6 +149,8 @@ export default function GameShell({
           </span>
         )}
       </div>
+
+      {why?.text && <WhyBox label={why.label} text={why.text} />}
     </div>
   );
 }
