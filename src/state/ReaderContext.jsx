@@ -54,10 +54,19 @@ export function ReaderProvider({ story, lang, level, children }) {
   const [phPick, setPhPick] = useState(null);
   const [coIndex, setCoIndex] = useState(0);
   const [coPick, setCoPick] = useState(null);
-  // Test del bloque (§1): pregunta actual + mapa de índices revelados —
-  // cíclico con las flechas, ambos se resetean al cambiar de bloque.
+  // Panel del bloque (§1 linguatales-frases-de-uno-en-uno-spec.md): una
+  // frase a la vez, cíclica con las flechas. `phrSeen` es el CONJUNTO de
+  // índices distintos visitados, no el índice más alto — si se mirara el
+  // máximo, un solo clic en "‹" desde la frase 0 daría la vuelta a la 9 y
+  // desbloquearía el test al instante. Arranca con el 0 ya visto porque esa
+  // es la frase que se ve al abrir el bloque.
+  const [phrRow, setPhrRow] = useState(0);
+  const [phrSeen, setPhrSeen] = useState(() => new Set([0]));
+  // Test del bloque (§2-3): pregunta actual + elección de la pregunta activa
+  // (tres opciones, ya no "revelar") — ambos se resetean al cambiar de
+  // bloque, y la elección también al cambiar de pregunta.
   const [phrTIndex, setPhrTIndex] = useState(0);
-  const [phrTests, setPhrTests] = useState({});
+  const [phrTPick, setPhrTPick] = useState(null);
   // Juego 08 — Di la frase en voz alta: ronda actual + estado de grabación.
   const [sphIndex, setSphIndex] = useState(0);
   const [sphState, setSphState] = useState({ recording: false, scores: null });
@@ -73,6 +82,10 @@ export function ReaderProvider({ story, lang, level, children }) {
 
   // ── conectores: grupo abierto + estado del juego 09 ─────────────────
   const [cxGroup, setCxGroup] = useState(null); // índice de grupo abierto en connectorsOf(lang, level).groups
+  // Panel del grupo (§4 linguatales-frases-de-uno-en-uno-spec.md): un
+  // conector a la vez — se resetea al cambiar de grupo o al entrar desde el
+  // nav, nunca acumula estado de un grupo anterior.
+  const [cxRow, setCxRow] = useState(0);
   const [cxIndex, setCxIndex] = useState(0);
   const [cxPick, setCxPick] = useState(null);
   const [cxDone, setCxDone] = useState({}); // { [huecoIndex]: true }, sobre el total de huecos del nivel
@@ -158,11 +171,30 @@ export function ReaderProvider({ story, lang, level, children }) {
     setPhPick(null);
     setCoIndex(0);
     setCoPick(null);
+    setPhrRow(0);
+    setPhrSeen(new Set([0]));
     setPhrTIndex(0);
-    setPhrTests({});
+    setPhrTPick(null);
     setSphIndex(0);
     setSphState({ recording: false, scores: null });
     setBtIndex(0);
+  };
+
+  /** Flechas del panel de frases: navega cíclicamente y añade el índice
+   * destino a `phrSeen` — nunca lo sustituye por "el más alto". */
+  const goPhraseRow = (delta, total) => {
+    setPhrRow((prev) => {
+      const next = ((prev + delta) % total + total) % total;
+      setPhrSeen((seen) => (seen.has(next) ? seen : new Set(seen).add(next)));
+      return next;
+    });
+  };
+
+  /** Flechas del test del bloque: navega cíclicamente y limpia la elección
+   * de la pregunta anterior. */
+  const goPhraseTest = (delta, totalTests) => {
+    setPhrTIndex((prev) => ((prev + delta) % totalTests + totalTests) % totalTests);
+    setPhrTPick(null);
   };
 
   /** Pestaña de juego: alterna si ya era la activa; si no, la abre y cierra
@@ -205,6 +237,7 @@ export function ReaderProvider({ story, lang, level, children }) {
     }
     setWord(null);
     setCxGroup(i);
+    setCxRow(0);
     setView('linkers');
   };
 
@@ -220,6 +253,7 @@ export function ReaderProvider({ story, lang, level, children }) {
   const goToLinkers = () => {
     setWord(null);
     setCxGroup(0);
+    setCxRow(0);
     setView('linkers');
   };
   const goToGames = () => {
@@ -285,8 +319,9 @@ export function ReaderProvider({ story, lang, level, children }) {
     phPick, setPhPick,
     coIndex, setCoIndex,
     coPick, setCoPick,
-    phrTIndex, setPhrTIndex,
-    phrTests, setPhrTests,
+    phrRow, goPhraseRow,
+    phrSeen,
+    phrTIndex, phrTPick, setPhrTPick, goPhraseTest,
     sphIndex, setSphIndex,
     sphState, setSphState,
     btIndex, setBtIndex,
@@ -297,6 +332,7 @@ export function ReaderProvider({ story, lang, level, children }) {
 
     cxGroup, setCxGroup,
     openLinkerGroup,
+    cxRow, setCxRow,
     cxIndex, setCxIndex,
     cxPick, setCxPick,
     cxDone, markLinkerDone,

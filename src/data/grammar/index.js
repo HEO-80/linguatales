@@ -18,6 +18,10 @@
 export const GRAMMAR_DETAIL = {
   'Present Simple': {
     role: 'verb',
+    // Activa la ficha manipulable (§2 linguatales-ficha-manipulable-spec.md).
+    // El interruptor viene de aquí, no de un `if (detail.key === 'Present Simple')`
+    // — cuando otra regla lo necesite, solo hace falta añadirle este campo.
+    conj: 'present-simple',
     intro:
       'Se usa para rutinas, hábitos y hechos generales — la acción no ocurre en este momento, se repite o es siempre así.',
     forms: [

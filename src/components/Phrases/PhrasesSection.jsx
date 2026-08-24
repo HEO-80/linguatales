@@ -90,7 +90,7 @@ export default function PhrasesSection() {
       </div>
 
       {view === 'phrases' && phrBlock != null && blocks[phrBlock] && (
-        <PhraseBlockPanel block={blocks[phrBlock]} blockIndex={phrBlock} />
+        <PhraseBlockPanel block={blocks[phrBlock]} />
       )}
     </section>
   );

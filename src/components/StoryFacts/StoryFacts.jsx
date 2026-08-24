@@ -57,7 +57,7 @@ export default function StoryFacts() {
 
       {detail && (
         <section style={{ maxWidth: 1440, margin: '16px auto 0', padding: '0 32px' }}>
-          {detail.kind === 'g' ? <GrammarDetailPanel /> : <PhrasalDetailPanel />}
+          {detail.kind === 'g' ? <GrammarDetailPanel key={detail.key} /> : <PhrasalDetailPanel />}
         </section>
       )}
     </>
