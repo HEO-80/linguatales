@@ -15,6 +15,13 @@
  * así que este nivel no es alcanzable aún desde ninguna ruta de la app —
  * misma situación que los conectores de B1/B2/C1 añadidos en una sesión
  * anterior. Los datos están listos para cuando exista esa historia.
+ *
+ * Bloques 06-09: gramática intermedia catalogada por TIPO DE FRASE, tomada
+ * del tercer curso de Cale Anders ("Inglés intermedio — B1/B2 en un solo
+ * video"), su bloque de gramática (concepto 1). Cubre los cuatro pares
+ * tiempo simple / tiempo continuo: pasado, futuro, presente perfecto y
+ * pasado perfecto. El resto del bloque de gramática (condicionales,
+ * modales, voz pasiva, preposiciones) vive en en.b2.js, bloques 06-10.
  */
 export const EN_B1_PHRASES = [
   {
@@ -134,6 +141,158 @@ export const EN_B1_PHRASES = [
         q: 'Un amigo te propone salir, pero prefieres quedarte tranquilo en casa, ¿qué dices?',
         a: "I'd rather stay home.",
         note: "I'd rather + verbo base, sin to."
+      }
+    ]
+  },
+  {
+    num: '06',
+    title: 'Pasado simple vs. pasado continuo',
+    items: [
+      { en: 'I visited my grandmother yesterday.', es: 'Visité a mi abuela ayer.', ej: 'I visited my grandmother yesterday and we had lunch together.', tip: 'Pasado simple: acción terminada en un momento concreto del pasado, sin importar cuánto duró.', re: ["That's so nice, how is she?", 'Qué bonito, ¿cómo está ella?'] },
+      { en: 'She finished the report last night.', es: 'Ella terminó el informe anoche.', ej: 'She finished the report last night, right before midnight.', tip: 'Pasado simple para hechos completados, aunque no se diga la duración.', re: ["Good, right on time.", 'Bien, justo a tiempo.'] },
+      { en: 'He bought a new car last week.', es: 'Él compró un coche nuevo la semana pasada.', ej: 'He bought a new car last week and he loves it.', tip: 'Bought es el pasado irregular de buy; no sigue la regla de agregar -ed.', re: ["What color did he get?", '¿De qué color lo consiguió?'] },
+      { en: 'I was reading a book when the phone rang.', es: 'Estaba leyendo un libro cuando sonó el teléfono.', ej: 'I was reading a book when the phone rang and startled me.', tip: 'Pasado continuo (was/were + verbo-ing) para una acción en progreso interrumpida por otra.', re: ["What a bad time to call.", 'Qué mal momento para llamar.'] },
+      { en: 'They were playing football when it started to rain.', es: 'Ellos estaban jugando al fútbol cuando empezó a llover.', ej: 'They were playing football when it started to rain, so they went home.', tip: 'Were se usa con they/we; was se usa con I/he/she/it.', re: ["Did they finish the game?", '¿Terminaron el partido?'] },
+      { en: 'She was studying all afternoon yesterday.', es: 'Ella estuvo estudiando toda la tarde ayer.', ej: 'She was studying all afternoon yesterday for her exam.', tip: 'En inglés no existe la distinción entre pretérito e imperfecto; was studying cubre ambos matices.', re: ["I hope it pays off.", 'Espero que dé sus frutos.'] },
+      { en: 'We were watching TV when the lights went out.', es: 'Estábamos viendo la televisión cuando se fue la luz.', ej: 'We were watching TV when the lights went out, right in the middle of the movie.', tip: 'Go out (irregular: went out) es un verbo frasal que significa apagarse.', re: ["That's the worst timing.", 'Es el peor momento.'] },
+      { en: 'She was cooking dinner when the power went out.', es: 'Ella estaba cocinando la cena cuando se fue la luz.', ej: 'She was cooking dinner when the power went out, so we ordered pizza.', tip: "Power went out es otra forma común de decir 'se fue la luz'.", re: ["Pizza saves the day.", 'La pizza salva el día.'] },
+      { en: 'I was walking home when I saw the accident.', es: 'Estaba caminando a casa cuando vi el accidente.', ej: 'I was walking home when I saw the accident on the corner.', tip: 'El pasado continuo describe el fondo de la escena; el pasado simple describe lo que la interrumpió.', re: ["Was anyone hurt?", '¿Alguien salió herido?'] },
+      { en: 'He studied all night for the exam.', es: 'Él estudió toda la noche para el examen.', ej: 'He studied all night for the exam and passed with a good grade.', tip: 'Cuando un verbo termina en consonante + y, el pasado se forma con -ied: study → studied.', re: ["All that work paid off.", 'Todo ese trabajo dio frutos.'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'estaba leyendo un libro cuando sonó el teléfono'?",
+        a: 'I was reading a book when the phone rang.',
+        note: 'Pasado continuo para una acción en progreso interrumpida por otra.'
+      },
+      {
+        q: "¿Cómo dices 'ellos estaban jugando al fútbol cuando empezó a llover'?",
+        a: 'They were playing football when it started to rain.',
+        note: 'Were se usa con they/we; was con I/he/she/it.'
+      },
+      {
+        q: "¿Cómo dices 'ella terminó el informe anoche', hablando de un hecho ya completado?",
+        a: 'She finished the report last night.',
+        note: 'Pasado simple para una acción terminada, sin importar cuánto duró.'
+      },
+      {
+        q: "¿Cómo dices 'estábamos viendo la televisión cuando se fue la luz'?",
+        a: 'We were watching TV when the lights went out.',
+        note: 'Go out (went out) es un verbo frasal que significa apagarse.'
+      }
+    ]
+  },
+  {
+    num: '07',
+    title: 'Futuro simple vs. futuro continuo',
+    items: [
+      { en: 'I will call you tomorrow.', es: 'Te llamaré mañana.', ej: 'I will call you tomorrow to confirm the details.', tip: 'Futuro simple (will + verbo base) para decisiones espontáneas o promesas.', re: ["I'll be waiting for it.", 'Estaré esperándola.'] },
+      { en: 'They will arrive at 8 pm.', es: 'Ellos llegarán a las 8 pm.', ej: "They will arrive at 8 pm, so let's have dinner ready.", tip: 'Will también se usa para predicciones sobre el futuro.', re: ["I'll set the table.", 'Pongo la mesa.'] },
+      { en: 'It will rain later today.', es: 'Lloverá más tarde hoy.', ej: 'It will rain later today, according to the forecast.', tip: 'Will + verbo base, sin necesidad de un plan previo.', re: ["I'll bring an umbrella.", 'Llevo un paraguas.'] },
+      { en: 'I will be working at 9 am tomorrow.', es: 'Estaré trabajando a las 9 am mañana.', ej: 'I will be working at 9 am tomorrow, so call me after that.', tip: 'Futuro continuo (will be + verbo-ing) describe algo en progreso en un momento futuro concreto.', re: ["Got it, I'll call at 10.", 'Entendido, llamo a las 10.'] },
+      { en: 'They will be traveling to Spain next week.', es: 'Ellos estarán viajando a España la próxima semana.', ej: 'They will be traveling to Spain next week for a conference.', tip: 'El verbo be no se conjuga aquí porque will ya es el auxiliar de futuro.', re: ["Have a great trip, then.", 'Que tengan buen viaje, entonces.'] },
+      { en: 'She will be studying when you arrive.', es: 'Ella estará estudiando cuando llegues.', ej: "She will be studying when you arrive, so keep it quiet.", tip: 'Futuro continuo para una acción que estará en curso en un momento futuro específico.', re: ["I'll try not to disturb her.", 'Trataré de no molestarla.'] },
+      { en: 'We will be having dinner at 7 pm.', es: 'Estaremos cenando a las 7 pm.', ej: 'We will be having dinner at 7 pm, come join us.', tip: "Have dinner es la expresión fija para 'cenar'.", re: ["I'll be there.", 'Ahí estaré.'] },
+      { en: 'I will eat dinner at 7 pm.', es: 'Cenaré a las 7 pm.', ej: 'I will eat dinner at 7 pm today.', tip: 'Futuro simple: solo indica que la acción ocurrirá, sin enfatizar el proceso.', re: ["Sounds like a plan.", 'Suena bien.'] },
+      { en: 'They will finish the report tomorrow.', es: 'Ellos terminarán el informe mañana.', ej: 'They will finish the report tomorrow, before the deadline.', tip: 'Futuro simple para algo que se completará en un punto futuro.', re: ["Good, right on schedule.", 'Bien, según lo previsto.'] },
+      { en: 'They will be finishing the report tomorrow.', es: 'Ellos estarán terminando el informe mañana.', ej: 'They will be finishing the report tomorrow afternoon.', tip: 'Futuro continuo enfatiza que la acción estará en proceso, no que estará completa.', re: ["I'll check in with them then.", 'Los contacto entonces.'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'te llamaré mañana', como una promesa?",
+        a: 'I will call you tomorrow.',
+        note: 'Will + verbo base para decisiones espontáneas o promesas.'
+      },
+      {
+        q: "¿Cómo dices 'estaré trabajando a las 9 am mañana'?",
+        a: 'I will be working at 9 am tomorrow.',
+        note: 'Futuro continuo (will be + verbo-ing) para algo en progreso en un momento futuro concreto.'
+      },
+      {
+        q: "¿Cómo dices 'ella estará estudiando cuando llegues'?",
+        a: 'She will be studying when you arrive.',
+        note: 'Futuro continuo para una acción que estará en curso en un momento futuro específico.'
+      },
+      {
+        q: "¿Cómo dices 'estaremos cenando a las 7 pm'?",
+        a: 'We will be having dinner at 7 pm.',
+        note: "Have dinner es la expresión fija para 'cenar'."
+      }
+    ]
+  },
+  {
+    num: '08',
+    title: 'Presente perfecto simple vs. continuo',
+    items: [
+      { en: 'I have finished my homework.', es: 'He terminado mi tarea.', ej: 'I have finished my homework, so I can relax now.', tip: "Have aquí significa 'haber', no 'tener'; have + participio es el presente perfecto simple.", re: ["Great, you deserve a break.", 'Genial, te mereces un descanso.'] },
+      { en: 'She has traveled to Spain three times.', es: 'Ella ha viajado a España tres veces.', ej: 'She has traveled to Spain three times, and she loves it.', tip: "Has se usa con he/she/it, igual que cuando have significa 'tener'.", re: ["What's her favorite city there?", '¿Cuál es su ciudad favorita ahí?'] },
+      { en: 'They have lived here for five years.', es: 'Ellos han vivido aquí durante cinco años.', ej: 'They have lived here for five years and know the area well.', tip: 'For + duración se usa con el presente perfecto para señalar cuánto tiempo lleva algo.', re: ["That explains it, they know it well.", 'Eso lo explica, la conocen bien.'] },
+      { en: 'We have already eaten.', es: 'Ya hemos comido.', ej: "We have already eaten, so you don't need to cook for us.", tip: 'Already refuerza que la acción ya se completó.', re: ["Okay, I'll cook less then.", 'Vale, entonces cocino menos.'] },
+      { en: 'I have been studying for hours.', es: 'He estado estudiando durante horas.', ej: 'I have been studying for hours and I need a break.', tip: 'Presente perfecto continuo (have been + verbo-ing) enfatiza la duración de una acción reciente.', re: ["Take a walk, it'll help.", 'Ve a caminar, te ayudará.'] },
+      { en: 'She has been working on this project all day.', es: 'Ella ha estado trabajando en este proyecto todo el día.', ej: 'She has been working on this project all day without a break.', tip: 'Been describe la continuidad; en inglés hablado el sonido de la t entre vocales suena casi como una d.', re: ["She should rest soon.", 'Debería descansar pronto.'] },
+      { en: 'They have been waiting for the bus since 8 am.', es: 'Ellos han estado esperando el autobús desde las 8 am.', ej: "They have been waiting for the bus since 8 am, but it hasn't come yet.", tip: 'Since + un punto en el tiempo indica cuándo empezó la acción continua.', re: ["That's a really long wait.", 'Es una espera muy larga.'] },
+      { en: 'I have read that book.', es: 'He leído ese libro.', ej: "I have read that book, it's one of my favorites.", tip: "Read (participio) se escribe igual que el presente, pero se pronuncia como 'red'.", re: ["What did you think of the ending?", '¿Qué te pareció el final?'] },
+      { en: 'I have been reading that book for hours.', es: 'He estado leyendo ese libro durante horas.', ej: "I have been reading that book for hours and I can't put it down.", tip: 'El continuo enfatiza que la actividad sigue en curso o acaba de parar.', re: ["It must be a good one.", 'Debe ser bueno.'] },
+      { en: 'She has visited her grandmother.', es: 'Ella ha visitado a su abuela.', ej: "She has visited her grandmother, so she knows how she's doing.", tip: 'El simple enfatiza el hecho completado, no la duración.', re: ["How is she doing?", '¿Cómo está ella?'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'he terminado mi tarea'?",
+        a: 'I have finished my homework.',
+        note: "Have + participio es el presente perfecto simple; have significa 'haber' aquí, no 'tener'."
+      },
+      {
+        q: "¿Cómo dices 'he estado estudiando durante horas', enfatizando la duración?",
+        a: 'I have been studying for hours.',
+        note: 'Presente perfecto continuo (have been + verbo-ing) enfatiza la duración de una acción reciente.'
+      },
+      {
+        q: "¿Cómo dices 'ellos han estado esperando el autobús desde las 8 am'?",
+        a: 'They have been waiting for the bus since 8 am.',
+        note: 'Since + un punto en el tiempo indica cuándo empezó la acción continua.'
+      },
+      {
+        q: "¿Cómo dices 'ellos han vivido aquí durante cinco años'?",
+        a: 'They have lived here for five years.',
+        note: 'For + duración se usa con el presente perfecto para señalar cuánto tiempo lleva algo.'
+      }
+    ]
+  },
+  {
+    num: '09',
+    title: 'Pasado perfecto simple vs. continuo',
+    items: [
+      { en: 'I had finished the report before the meeting started.', es: 'Había terminado el informe antes de que empezara la reunión.', ej: 'I had finished the report before the meeting started, so I was ready.', tip: 'Pasado perfecto (had + participio) para una acción anterior a otra en el pasado.', re: ["Good, you were prepared.", 'Bien, estabas preparado.'] },
+      { en: 'She had left when I arrived.', es: 'Ella se había ido cuando llegué.', ej: 'She had left when I arrived, so I missed her.', tip: 'Left es el pasado y participio irregular de leave.', re: ["What a shame.", 'Qué lástima.'] },
+      { en: 'They had visited that museum before.', es: 'Ellos ya habían visitado ese museo antes.', ej: 'They had visited that museum before, so they skipped it this time.', tip: 'Had + participio con verbos regulares sigue el mismo patrón.', re: ["Makes sense, they'd already seen it.", 'Tiene sentido, ya lo habían visto.'] },
+      { en: 'We had eaten dinner when she called.', es: 'Habíamos cenado cuando ella llamó.', ej: 'We had eaten dinner when she called, so we chatted for a while.', tip: 'Pasado perfecto simple enfatiza que la acción ya estaba completa.', re: ["What did she want?", '¿Qué quería?'] },
+      { en: 'I had been studying for two hours when the power went out.', es: 'Había estado estudiando durante dos horas cuando se fue la luz.', ej: 'I had been studying for two hours when the power went out.', tip: 'Pasado perfecto continuo (had been + verbo-ing) enfatiza la duración de una acción anterior a otra en el pasado.', re: ["That's terrible timing.", 'Qué mal momento.'] },
+      { en: 'She had been working there for five years before she got promoted.', es: 'Ella había estado trabajando ahí durante cinco años antes de que la ascendieran.', ej: 'She had been working there for five years before she got promoted.', tip: "Get promoted significa 'ser ascendido'.", re: ["Well deserved.", 'Bien merecido.'] },
+      { en: 'We had been waiting for an hour when the bus finally arrived.', es: 'Habíamos estado esperando durante una hora cuando el autobús finalmente llegó.', ej: 'We had been waiting for an hour when the bus finally arrived.', tip: 'El continuo pone el foco en cuánto tiempo duró la espera.', re: ["That's a long wait.", 'Es una larga espera.'] },
+      { en: 'We had been discussing the problem for days before we found a solution.', es: 'Habíamos estado discutiendo el problema durante días antes de encontrar una solución.', ej: 'We had been discussing the problem for days before we found a solution.', tip: "Found es el pasado irregular de find, no 'finded'.", re: ["Glad you figured it out.", 'Qué bueno que lo resolvieron.'] },
+      { en: 'They had finished the project before the deadline.', es: 'Ellos habían terminado el proyecto antes de la fecha límite.', ej: 'They had finished the project before the deadline, with time to spare.', tip: 'The deadline es la fecha límite.', re: ["Impressive planning.", 'Buena planificación.'] },
+      { en: 'They had been working on the project for weeks before the deadline.', es: 'Ellos habían estado trabajando en el proyecto durante semanas antes de la fecha límite.', ej: 'They had been working on the project for weeks before the deadline.', tip: 'El continuo describe el proceso; el simple describe el resultado.', re: ["That effort really shows.", 'Ese esfuerzo se nota.'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'había terminado el informe antes de que empezara la reunión'?",
+        a: 'I had finished the report before the meeting started.',
+        note: 'Pasado perfecto (had + participio) para una acción anterior a otra en el pasado.'
+      },
+      {
+        q: "¿Cómo dices 'había estado estudiando durante dos horas cuando se fue la luz'?",
+        a: 'I had been studying for two hours when the power went out.',
+        note: 'Pasado perfecto continuo (had been + verbo-ing) enfatiza la duración de la acción anterior.'
+      },
+      {
+        q: "¿Cómo dices 'ella se había ido cuando llegué'?",
+        a: 'She had left when I arrived.',
+        note: 'Left es el pasado y participio irregular de leave.'
+      },
+      {
+        q: "¿Cómo dices 'ellos habían terminado el proyecto antes de la fecha límite'?",
+        a: 'They had finished the project before the deadline.',
+        note: 'The deadline es la fecha límite.'
       }
     ]
   }

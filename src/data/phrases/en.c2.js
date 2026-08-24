@@ -2,165 +2,135 @@
  * LinguaTales — Frases hechas · Inglés C2
  * src/data/phrases/en.c2.js
  *
- * Segunda mitad de "NIVEL 3: Frases Avanzadas" del curso (bloques 06-11 del
- * antiguo en.b1.js, renumerados 01-06 aquí; el último conserva sus 7 ítems)
- * — la primera mitad vive en en.c1.js. Cierra el reparto de las 300+ frases
- * a lo largo de los seis niveles de la app.
+ * Gramática avanzada catalogada por TIPO DE FRASE, cierre del concepto 1
+ * ("Gramática avanzada") del curso de C1/C2 de Cale Anders: las tres
+ * estructuras más sofisticadas del temario — inversión en condicionales,
+ * oraciones relativas en registro formal y oraciones hendidas (cleft
+ * sentences) para dar énfasis. La primera mitad (los cuatro tiempos
+ * perfectos) vive en en.c1.js.
  *
- * `ej` y `tip` van verbatim del material del curso cuando el curso los
- * trae; donde no daba `tip`, se ha escrito uno corto en la misma voz. `re`
- * (la contestación) no viene del curso — es invención propia en todos los
- * bloques, coherente con el registro de cada frase.
+ * Los ejemplos en inglés (`en`) y las explicaciones (`tip`) están tomados o
+ * adaptados del material del curso. La traducción (`es`), el ejemplo en
+ * contexto (`ej`) y la contestación (`re`) son redacción propia, coherente
+ * con el registro de cada bloque.
  *
  * Nota: todavía no hay ningún relato C2 en el catálogo (src/data/stories),
  * así que este nivel no es alcanzable aún desde ninguna ruta de la app —
- * misma situación que B1/B2/C1 y los conectores de niveles altos añadidos
- * en sesiones anteriores. Los datos están listos para cuando exista esa
- * historia.
+ * misma situación que B1/B2/C1. Los datos están listos para cuando exista
+ * esa historia.
  */
 export const EN_C2_PHRASES = [
   {
     num: '01',
-    title: 'Naturaleza',
+    title: 'Inversión en condicionales',
     items: [
-      { en: 'The forest is quiet.', es: 'El bosque es tranquilo.', ej: "The forest is quiet. It's perfect for meditation.", tip: 'Quiet describe silencio y calma a la vez.', re: ['Sounds like the perfect getaway.', 'Suena a la escapada perfecta.'] },
-      { en: "It's snowing.", es: 'Está nevando.', ej: "It's snowing heavily. Be careful driving.", tip: 'Heavily intensifica el verbo, "con fuerza".', re: ["I'll drive slowly.", 'Conduciré despacio.'] },
-      { en: 'Look at the stars.', es: 'Mira las estrellas.', ej: 'Look at the stars. The Big Dipper.', tip: 'The Big Dipper es la constelación conocida como "la Osa Mayor".', re: ['Wow, so many tonight.', 'Vaya, cuántas esta noche.'] },
-      { en: 'The sunset is amazing.', es: 'El atardecer es increíble.', ej: "The sunset is amazing tonight. Let's watch it together.", tip: 'Sunset (atardecer) y sunrise (amanecer) no se confunden entre sí.', re: ["I wouldn't miss it.", 'No me lo perdería.'] },
-      { en: "Don't litter.", es: 'No tires basura.', ej: "Don't litter. Let's keep this place clean.", tip: 'Litter significa tirar basura al suelo.', re: ["You're right, let's clean up.", 'Tienes razón, limpiemos.'] },
-      { en: 'I updated the app.', es: 'Actualicé la aplicación.', ej: 'I updated the app. Now it works much better.', tip: 'Update es "actualizar"; upgrade es "mejorar de versión".', re: ["Good, glad it's fixed.", 'Bien, me alegra que esté arreglado.'] },
-      { en: 'The screen is frozen.', es: 'La pantalla está congelada.', ej: 'The screen is frozen. I need to restart my phone.', tip: 'Frozen aquí significa "bloqueada", no literalmente helada.', re: ['Try turning it off and on.', 'Intenta apagarlo y encenderlo.'] },
-      { en: 'Restart your device.', es: 'Reinicia tu dispositivo.', ej: 'Restart your device. That usually fixes the problem.', tip: 'Usually fixes the problem es el consejo clásico de soporte técnico.', re: ['Okay, restarting now.', 'Vale, reiniciando ahora.'] },
-      { en: "It's downloading.", es: 'Está descargando.', ej: "It's downloading. It will take about five minutes.", tip: 'Download (descargar) vs upload (subir).', re: ["I'll wait, no rush.", 'Espero, no hay prisa.'] },
-      { en: 'The battery is low.', es: 'La batería está baja.', ej: 'The battery is low. I need to find a charger.', tip: 'Low battery es la expresión estándar, no small battery.', re: ["There's a charger in my bag.", 'Hay un cargador en mi bolso.'] }
+      { en: 'Should you arrive early, call me.', es: 'Si llegas temprano, llámame.', ej: 'Should you arrive early, call me and I\'ll meet you outside.', tip: 'Inversión de primer condicional: should + sujeto + verbo, en vez de "if you arrive early". Suena más formal.', re: ['Will do, see you soon.', 'Hecho, nos vemos pronto.'] },
+      { en: 'Were I you, I would take the job.', es: 'Si yo fuera tú, aceptaría el trabajo.', ej: "Were I you, I would take the job without hesitation.", tip: 'Inversión de segundo condicional: were + sujeto, sin "if", para situaciones hipotéticas en presente.', re: ["I think you're right.", 'Creo que tienes razón.'] },
+      { en: 'Had I known the truth, I would have done something different.', es: 'Si hubiera sabido la verdad, habría hecho algo diferente.', ej: "Had I known the truth, I would have done something different from the start.", tip: 'Inversión de tercer condicional: had + sujeto + participio, para condiciones no cumplidas en el pasado.', re: ["It's understandable, no one blames you.", 'Es comprensible, nadie te culpa.'] },
+      { en: 'Should she call, let me know.', es: 'Si ella llama, avísame.', ej: "Should she call, let me know right away.", tip: 'Should + sujeto en primer condicional invertido suena natural en contextos de trabajo.', re: ["Of course, I'll tell you immediately.", 'Claro, te aviso de inmediato.'] },
+      { en: 'Were we younger, we would travel more.', es: 'Si fuéramos más jóvenes, viajaríamos más.', ej: 'Were we younger, we would travel more often.', tip: 'Were funciona para todas las personas en la inversión del segundo condicional (were I, were we, were they).', re: ["Age shouldn't stop you, though.", 'La edad no debería detenerte, de todos modos.'] },
+      { en: 'Had you told me, I would have helped.', es: 'Si me lo hubieras dicho, habría ayudado.', ej: 'Had you told me, I would have helped you move.', tip: 'Had + sujeto + participio + would have + participio: estructura fija de la inversión del tercer condicional.', re: ["I know, I should have asked.", 'Lo sé, debí haber preguntado.'] },
+      { en: 'Should it rain, we will cancel the trip.', es: 'Si llueve, cancelaremos el viaje.', ej: 'Should it rain, we will cancel the trip and reschedule.', tip: 'Después de should, el verbo va en infinitivo sin "to" (rain, no rains).', re: ["Let's hope for good weather, then.", 'Esperemos buen clima, entonces.'] },
+      { en: 'Had they prepared better, they would have won the match.', es: 'Si se hubieran preparado mejor, habrían ganado el partido.', ej: 'Had they prepared better, they would have won the match easily.', tip: 'Muy común en textos académicos y literarios; en conversación normal se sigue prefiriendo "if".', re: ["That's a tough lesson to learn.", 'Es una lección difícil de aprender.'] },
+      { en: "Were I in your place, I wouldn't do it.", es: 'Si yo estuviera en tu lugar, no lo haría.', ej: "Were I in your place, I wouldn't do it, honestly.", tip: 'In your place = "en tu lugar".', re: ["That's fair, I'll reconsider.", 'Tiene sentido, lo voy a reconsiderar.'] },
+      { en: "Should you need anything, don't hesitate to call me.", es: 'Si necesitas algo, no dudes en llamarme.', ej: "Should you need anything, don't hesitate to call me anytime.", tip: 'Don\'t hesitate to + verbo es una expresión formal de cortesía.', re: ['Thank you, I really appreciate that.', 'Gracias, lo aprecio mucho.'] }
     ],
     tests: [
       {
-        q: 'Tu móvil no tiene batería y necesitas encontrar dónde cargarlo, ¿qué dices?',
-        a: 'The battery is low.',
-        note: 'Low battery es la expresión estándar, no small battery.'
+        q: '¿Cómo dirías con inversión formal "si ella llama, avísame"?',
+        a: 'Should she call, let me know.',
+        note: 'Should + sujeto reemplaza a "if" en el primer condicional formal.'
+      },
+      {
+        q: '¿Cómo dirías con inversión formal "si hubiera sabido la verdad, habría hecho algo diferente"?',
+        a: 'Had I known the truth, I would have done something different.',
+        note: 'Had + sujeto + participio es la inversión del tercer condicional.'
+      },
+      {
+        q: '¿Cómo dirías con inversión formal "si yo estuviera en tu lugar, no lo haría"?',
+        a: "Were I in your place, I wouldn't do it.",
+        note: 'Were + sujeto reemplaza a "if" en el segundo condicional, sin importar la persona.'
+      },
+      {
+        q: '¿Cómo dirías con inversión formal "si necesitas algo, no dudes en llamarme"?',
+        a: "Should you need anything, don't hesitate to call me.",
+        note: 'Después de should, el verbo va en infinitivo sin "to".'
       }
     ]
   },
   {
     num: '02',
-    title: 'Tecnología y quedadas',
+    title: 'Oraciones relativas avanzadas',
     items: [
-      { en: 'The app keeps crashing.', es: 'La app se sigue cerrando.', ej: 'The app keeps crashing every time I open it.', tip: 'Keep + -ing describe algo que se repite, aquí de forma molesta.', re: ['Try reinstalling it.', 'Intenta reinstalarla.'] },
-      { en: 'Turn on Bluetooth.', es: 'Enciende el Bluetooth.', ej: 'Turn on Bluetooth so we can connect.', tip: 'Turn on/off funciona igual para cualquier función del móvil.', re: ['Done, can you see my device?', 'Listo, ¿ves mi dispositivo?'] },
-      { en: 'I forgot my password.', es: 'Olvidé mi contraseña.', ej: 'I forgot my password. How can I reset it?', tip: 'Reset a password es "restablecer una contraseña".', re: ["Click 'forgot password' below.", "Haz clic en 'olvidé mi contraseña' abajo."] },
-      { en: "The file won't open.", es: 'El archivo no se abre.', ej: "The file won't open. Maybe it's corrupted.", tip: 'Won\'t es la contracción de will not, indica una negativa persistente.', re: ['Try a different program.', 'Prueba con otro programa.'] },
-      { en: 'Check your internet connection.', es: 'Revisa tu conexión a internet.', ej: "Check your internet connection. It isn't loading.", tip: 'Isn\'t loading es "no está cargando".', re: ['Good idea, let me check.', 'Buena idea, déjame revisar.'] },
-      { en: "Let's grab a coffee.", es: 'Tomemos un café.', ej: "Let's grab a coffee and catch up on everything.", tip: 'Los nativos usan "grab" (Let\'s grab lunch / a beer) todo el tiempo. Es pura magia social.', re: ["I'd love that, when works for you?", 'Me encantaría, ¿cuándo te viene bien?'] },
-      { en: 'Want to hang out?', es: '¿Quieres salir?', ej: 'Want to hang out this weekend? We could go to the movies.', tip: 'Hang out es un plan informal, sin nada específico planeado.', re: ['Sure, sounds fun.', 'Claro, suena divertido.'] },
-      { en: 'I had a great conversation.', es: 'Tuve una gran conversación.', ej: 'I had a great conversation with my neighbor today.', tip: 'Have a conversation, no make a conversation.', re: ["That's always a nice surprise.", 'Eso siempre es una bonita sorpresa.'] },
-      { en: "I don't feel like going out.", es: 'No tengo ganas de salir.', ej: "I don't feel like going out tonight. Let's stay in.", tip: 'Feel like + -ing expresa ganas (o falta de ganas) de hacer algo.', re: ["That's fine, let's stay in then.", 'Está bien, quedémonos entonces.'] },
-      { en: 'We should meet more often.', es: 'Deberíamos vernos más seguido.', ej: "We should meet more often, it's been too long.", tip: 'Should suaviza una sugerencia, no es una orden.', re: ['I completely agree.', 'Estoy totalmente de acuerdo.'] }
+      { en: 'The book that you gave me is interesting.', es: 'El libro que me diste es interesante.', ej: "The book that you gave me is interesting. I can't put it down.", tip: 'Relativa restrictiva: sin comas, esencial para saber de qué libro hablamos.', re: ["I'm glad you like it.", 'Me alegra que te guste.'] },
+      { en: 'My car, which I bought last year, is very fast.', es: 'Mi coche, que compré el año pasado, es muy rápido.', ej: 'My car, which I bought last year, is very fast on the highway.', tip: 'Relativa no restrictiva: lleva comas y añade información extra, no esencial. En inglés solo se usa which, nunca that.', re: ["I'd love to see it sometime.", 'Me encantaría verlo algún día.'] },
+      { en: 'The man whose car is parked outside is my neighbor.', es: 'El hombre cuyo coche está aparcado afuera es mi vecino.', ej: 'The man whose car is parked outside is my neighbor, actually.', tip: 'Whose indica posesión y sirve tanto para personas como para cosas.', re: ["Small world, I know him too.", 'Qué casualidad, yo también lo conozco.'] },
+      { en: 'The company for which I work is very successful.', es: 'La empresa para la que trabajo es muy exitosa.', ej: 'The company for which I work is very successful in this industry.', tip: 'Colocar la preposición antes del pronombre relativo (for which) es más formal que dejarla al final (which I work for).', re: ["That's impressive, congratulations.", 'Es impresionante, felicidades.'] },
+      { en: 'The woman whom I met yesterday is very kind.', es: 'La mujer a quien conocí ayer es muy amable.', ej: 'The woman whom I met yesterday is very kind and generous.', tip: 'Whom se usa para personas como objeto de la oración; en inglés cotidiano se sustituye por who.', re: ['She sounds lovely.', 'Suena encantadora.'] },
+      { en: 'The man with whom she was talking is my boss.', es: 'El hombre con quien ella estaba hablando es mi jefe.', ej: 'The man with whom she was talking is my boss, believe it or not.', tip: 'Preposición + whom es un registro formal típico de textos académicos.', re: ["I wouldn't have guessed that.", 'No lo hubiera imaginado.'] },
+      { en: 'The city in which I grew up has changed a lot.', es: 'La ciudad en la que crecí ha cambiado mucho.', ej: 'The city in which I grew up has changed a lot over the years.', tip: 'In which equivale a "donde" cuando hablamos de lugares en registro formal.', re: ['Change can be bittersweet.', 'El cambio puede ser agridulce.'] },
+      { en: 'The dog whose owner is away keeps barking.', es: 'El perro cuyo dueño está fuera sigue ladrando.', ej: 'The dog whose owner is away keeps barking all night.', tip: 'Whose + sustantivo funciona igual que "cuyo/cuya" en español.', re: ["Poor thing, it must be lonely.", 'Pobrecito, debe sentirse solo.'] },
+      { en: 'The actor whom everyone admires is here.', es: 'El actor a quien todos admiran está aquí.', ej: 'The actor whom everyone admires is here for the premiere.', tip: 'En una conversación normal dirías simplemente "the actor who".', re: ["I can't wait to see him.", 'No puedo esperar a verlo.'] },
+      { en: 'The restaurant we went to last night was fantastic.', es: 'El restaurante al que fuimos anoche fue fantástico.', ej: 'The restaurant we went to last night was fantastic, we should go back.', tip: 'En inglés hablado se puede omitir el pronombre relativo cuando es objeto: "the restaurant (that) we went to".', re: ["Definitely, let's book a table.", 'Claro, reservemos mesa.'] }
     ],
     tests: [
       {
-        q: 'Quieres proponerle a un amigo un plan informal para verse pronto, ¿qué dices?',
-        a: 'Want to hang out?',
-        note: 'Súper casual, perfecta para amigos cercanos.'
+        q: '¿Cómo dices "el hombre cuyo coche está aparcado afuera es mi vecino"?',
+        a: 'The man whose car is parked outside is my neighbor.',
+        note: 'Whose indica posesión, igual para personas que para cosas.'
       },
       {
-        q: 'Quieres quedar con un amigo para charlar y ponerte al día, ¿qué le dices?',
-        a: "Let's grab a coffee.",
-        note: 'Los nativos usan "grab" (Let\'s grab lunch / a beer) todo el tiempo. Es pura magia social.'
+        q: '¿Cómo dices, en registro formal, "la empresa para la que trabajo es muy exitosa"?',
+        a: 'The company for which I work is very successful.',
+        note: 'Colocar la preposición antes de which suena más formal que dejarla al final.'
+      },
+      {
+        q: '¿Cómo dices, en registro formal, "la mujer a quien conocí ayer es muy amable"?',
+        a: 'The woman whom I met yesterday is very kind.',
+        note: 'Whom es el objeto de personas en registro formal; en conversación se sustituye por who.'
+      },
+      {
+        q: '¿Cómo dices "la ciudad en la que crecí ha cambiado mucho", en registro formal?',
+        a: 'The city in which I grew up has changed a lot.',
+        note: 'In which equivale a "donde" en un registro formal.'
       }
     ]
   },
   {
     num: '03',
-    title: 'Metas y sueños',
+    title: 'Oraciones hendidas (cleft sentences)',
     items: [
-      { en: 'Do you want to come over?', es: '¿Quieres venir a mi casa?', ej: "Do you wanna come over? I'm making dinner.", tip: 'Come over significa "venir a casa de alguien".', re: ["I'd love to, what time?", 'Me encantaría, ¿a qué hora?'] },
-      { en: 'It was nice seeing you.', es: 'Fue un gusto verte.', ej: "It was nice seeing you. Let's do this again soon.", tip: 'Frase de despedida cálida, típica al terminar un plan.', re: ['Likewise, take care.', 'Igualmente, cuídate.'] },
-      { en: "Let's keep in touch.", es: 'Mantengámonos en contacto.', ej: "Let's keep in touch. Here's my number.", tip: 'Keep in touch es "mantener el contacto", no keep contact.', re: ["Definitely, I'll text you.", 'Por supuesto, te escribo.'] },
-      { en: "That's hilarious.", es: 'Eso es divertidísimo.', ej: "That's hilarious. You always make me laugh.", tip: 'Hilarious es más fuerte que funny.', re: ['Glad I could make you laugh.', 'Me alegra haberte hecho reír.'] },
-      { en: 'I totally agree.', es: 'Estoy totalmente de acuerdo.', ej: 'I totally agree. That movie was incredible.', tip: 'Totally intensifica el acuerdo, muy común en habla informal.', re: ["Great, glad we're on the same page.", 'Genial, me alegra que pensemos igual.'] },
-      { en: 'I have big dreams.', es: 'Tengo sueños grandes.', ej: "I have big dreams and I'm working hard to achieve them.", tip: 'Big dreams transmite ambición genuina.', re: ["I believe you'll achieve them.", 'Creo que los lograrás.'] },
-      { en: "I'm working hard.", es: 'Estoy trabajando duro.', ej: "I'm working hard to improve my English skills.", tip: 'Work hard, no work hardly (que significaría "apenas trabajar").', re: ["It's paying off, keep going.", 'Está dando frutos, sigue así.'] },
-      { en: 'I want to succeed.', es: 'Quiero tener éxito.', ej: 'I want to succeed in my new business.', tip: 'Succeed es el verbo; success es el sustantivo.', re: ['You will, I have no doubt.', 'Lo lograrás, no tengo duda.'] },
-      { en: 'I need to stay focused.', es: 'Necesito mantenerme enfocado.', ej: 'I need to stay focused on my goals.', tip: 'Stay + adjetivo describe mantener un estado.', re: ["You're doing a great job at that.", 'Lo estás haciendo genial en eso.'] },
-      { en: "I'm not giving up.", es: 'No me voy a rendir.', ej: "I'm not giving up even though it's difficult.", tip: 'Give up es "rendirse"; nunca lo confundas con give in (ceder).', re: ["That's the spirit.", 'Ese es el espíritu.'] }
+      { en: 'It was Maria who gave me the book.', es: 'Fue María quien me dio el libro.', ej: 'It was Maria who gave me the book, not John.', tip: 'It was/is + elemento enfatizado + who/that: destaca quién hizo la acción.', re: ["I didn't know that.", 'No lo sabía.'] },
+      { en: 'It was last week when we went to the movies.', es: 'Fue la semana pasada cuando fuimos al cine.', ej: 'It was last week when we went to the movies together.', tip: 'Enfatiza el momento, no el hecho en sí.', re: ["Time flies, it feels like yesterday.", 'El tiempo vuela, se siente como ayer.'] },
+      { en: 'What I need is a break.', es: 'Lo que necesito es un descanso.', ej: 'What I need is a break from all this stress.', tip: 'What + sujeto + verbo + is + elemento enfatizado: pone el foco en la necesidad.', re: ["You've earned one.", 'Te lo has ganado.'] },
+      { en: 'What bothers me is his attitude.', es: 'Lo que me molesta es su actitud.', ej: "What bothers me is his attitude, not what he actually said.", tip: 'What bothers me is... para señalar la causa de una molestia.', re: ['I noticed that too.', 'Yo también lo noté.'] },
+      { en: 'All I want is some peace.', es: 'Todo lo que quiero es un poco de paz.', ej: 'All I want is some peace and quiet tonight.', tip: 'All + sujeto + verbo + is: da a entender que es la única cosa importante.', re: ["I'll leave you be, then.", 'Entonces te dejo tranquilo.'] },
+      { en: 'All we need is time.', es: 'Todo lo que necesitamos es tiempo.', ej: 'All we need is time, and everything will work out.', tip: 'No repitas is dos veces: "all we need is time", no "all we need is is time".', re: ["I agree, let's be patient.", 'Estoy de acuerdo, seamos pacientes.'] },
+      { en: 'The thing that surprised me was his reaction.', es: 'Lo que me sorprendió fue su reacción.', ej: 'The thing that surprised me was his reaction to the news.', tip: 'The thing that + verbo + was: otra forma muy natural de enfatizar.', re: ['Was it a good surprise?', '¿Fue una sorpresa buena?'] },
+      { en: 'The thing that matters most is family.', es: 'Lo que más importa es la familia.', ej: 'At the end of the day, the thing that matters most is family.', tip: 'Matters most = "importa más".', re: ["Couldn't agree more.", 'No podría estar más de acuerdo.'] },
+      { en: 'It was the weather that ruined our plans.', es: 'Fue el clima lo que arruinó nuestros planes.', ej: 'It was the weather that ruined our plans for the weekend.', tip: 'It was + causa + that + consecuencia: enfatiza la causa de algo.', re: ["That's so frustrating.", 'Eso es muy frustrante.'] },
+      { en: 'What I love most is traveling.', es: 'Lo que más me gusta es viajar.', ej: 'What I love most is traveling to new places every year.', tip: 'What I love most is + gerundio para hablar de gustos con énfasis.', re: ["We should plan a trip together.", 'Deberíamos planear un viaje juntos.'] }
     ],
     tests: [
       {
-        q: 'Un amigo se despide después de un buen rato juntos, ¿qué le dices?',
-        a: 'It was nice seeing you.',
-        note: 'Frase de despedida cálida, típica al terminar un plan.'
-      }
-    ]
-  },
-  {
-    num: '04',
-    title: 'Avanzando',
-    items: [
-      { en: 'One step at a time.', es: 'Un paso a la vez.', ej: "One step at a time. You'll get there eventually.", tip: 'Frase motivacional muy usada para bajar la presión de un objetivo grande.', re: ["You're right, no need to rush.", 'Tienes razón, no hay que apresurarse.'] },
-      { en: 'I believe in myself.', es: 'Creo en mí mismo.', ej: 'I believe in myself, even when things get hard.', tip: 'Believe in myself/yourself/himself cambia según la persona.', re: ["That confidence will take you far.", 'Esa confianza te llevará lejos.'] },
-      { en: "I'm setting new goals.", es: 'Estoy estableciendo nuevas metas.', ej: "I'm setting new goals for the next year.", tip: 'Set a goal es la colocación fija para "fijar una meta".', re: ["That's a great way to start the year.", 'Es una gran forma de empezar el año.'] },
-      { en: 'Keep pushing forward.', es: 'Sigue avanzando.', ej: "Keep pushing forward. You're almost there.", tip: 'Push forward transmite esfuerzo constante hacia adelante.', re: ['Thanks, I needed that push.', 'Gracias, necesitaba ese empujón.'] },
-      { en: "I'm proud of my progress.", es: 'Estoy orgulloso de mi progreso.', ej: "I'm proud of my progress in learning English.", tip: 'Progress es incontable, no se dice a progress.', re: ["You should be, you've come far.", 'Deberías estarlo, has avanzado mucho.'] },
-      { en: "Let's circle back.", es: 'Volvamos a esto después.', ej: 'Let\'s circle back on this topic next week.', tip: 'Es súper elegante, como de CEO. En lugar del aburrido let\'s talk about this later.', re: ["Sounds good, I'll note it down.", 'Suena bien, lo anoto.'] },
-      { en: "That's not allowed.", es: 'Eso no está permitido.', ej: "That's not allowed in this building. Sorry.", tip: 'Allowed es "permitido"; su opuesto es forbidden o prohibited.', re: ['Got it, sorry about that.', 'Entendido, perdón por eso.'] },
-      { en: "It's up to you.", es: 'Depende de ti.', ej: "It's up to you. I'm fine with either option.", tip: 'Up to you deja la decisión completamente en manos del otro.', re: ['Okay, let me think about it.', 'Vale, déjame pensarlo.'] },
-      { en: "Let's wait and see.", es: 'Esperemos a ver.', ej: "Let's wait and see how the weather turns out.", tip: 'Wait and see es una expresión fija para "ser paciente".', re: ['Good idea, no rush.', 'Buena idea, sin prisa.'] },
-      { en: "Time's up.", es: 'Se acabó el tiempo.', ej: "Time's up. Please submit your answers.", tip: 'Time\'s up es la contracción de Time is up.', re: ['Already? That went fast.', '¿Ya? Qué rápido pasó.'] }
-    ],
-    tests: [
-      {
-        q: 'Estás animando a alguien que se siente abrumado por una meta grande, ¿qué le dices?',
-        a: 'One step at a time.',
-        note: 'Frase motivacional muy usada para bajar la presión de un objetivo grande.'
+        q: '¿Cómo dices con énfasis "fue María quien me dio el libro"?',
+        a: 'It was Maria who gave me the book.',
+        note: 'It was + persona + who destaca quién hizo la acción.'
       },
       {
-        q: '¿Cómo dices que algo no está permitido de manera educada?',
-        a: "That's not allowed.",
-        note: 'Allowed es "permitido"; su opuesto es forbidden o prohibited.'
-      }
-    ]
-  },
-  {
-    num: '05',
-    title: 'Últimos detalles',
-    items: [
-      { en: "That's enough.", es: 'Ya es suficiente.', ej: "That's enough. Let's stop arguing.", tip: 'Frase firme para poner fin a algo, sin sonar agresiva.', re: ["You're right, let's stop.", 'Tienes razón, paremos.'] },
-      { en: 'Be careful.', es: 'Ten cuidado.', ej: "Be careful with that glass. It's fragile.", tip: 'Be careful with + objeto específico.', re: ['I will, thanks for the warning.', 'Lo tendré, gracias por avisar.'] },
-      { en: 'Watch your step.', es: 'Mira por dónde caminas.', ej: 'Watch your step. The floor is wet.', tip: 'Watch your step es una advertencia común en lugares públicos.', re: ['Thanks for the heads up.', 'Gracias por el aviso.'] },
-      { en: "I'm almost done.", es: 'Ya casi termino.', ej: "I'm almost done with this report. Five more minutes.", tip: 'Almost done indica que falta muy poco.', re: ['No rush, take your time.', 'Sin prisa, tómate tu tiempo.'] },
-      { en: "I'm running late.", es: 'Estoy llegando tarde.', ej: "I'm running late. Can we reschedule?", tip: 'Running late es más natural que I\'m late a secas.', re: ["No worries, let's push it back.", 'No pasa nada, lo posponemos.'] },
-      { en: "I'm ready.", es: 'Estoy listo o lista.', ej: "I'm ready. Let's go.", tip: 'Frase corta y directa antes de empezar algo.', re: ["Great, let's head out.", 'Genial, vámonos.'] },
-      { en: "Let's get started.", es: 'Vamos a comenzar.', ej: "Let's get started. We have a lot to cover today.", tip: 'Get started es más dinámico que simplemente start.', re: ['Sounds good, where do we begin?', 'Suena bien, ¿por dónde empezamos?'] },
-      { en: "That's interesting.", es: 'Eso es interesante.', ej: "That's interesting. Tell me more about it.", tip: 'Tell me more about it invita a seguir la conversación.', re: ['Sure, let me explain.', 'Claro, déjame explicarte.'] },
-      { en: 'That makes sense.', es: 'Eso tiene sentido.', ej: 'That makes sense. Now I understand better.', tip: 'Make sense es "tener sentido", no make sentido.', re: ["Glad it's clearer now.", 'Me alegra que esté más claro ahora.'] },
-      { en: 'Just a moment.', es: 'Solo un momento.', ej: 'Just a moment. Let me check my calendar.', tip: 'Just a moment es más formal que un segundo (one sec).', re: ['Take your time.', 'Tómate tu tiempo.'] }
-    ],
-    tests: [
+        q: '¿Cómo dices con énfasis "lo que necesito es un descanso"?',
+        a: 'What I need is a break.',
+        note: 'What + sujeto + verbo + is enfatiza lo que se necesita.'
+      },
       {
-        q: 'Vas a llegar tarde a una cita y quieres avisar, ¿qué dices?',
-        a: "I'm running late.",
-        note: "Running late es más natural que I'm late a secas."
-      }
-    ]
-  },
-  {
-    num: '06',
-    title: 'Para cerrar',
-    items: [
-      { en: 'I changed my mind.', es: 'Cambié de opinión.', ej: "I changed my mind. Let's go to the other restaurant.", tip: 'Change my mind, no change my opinion, cuando hablas de decisiones.', re: ["No problem, let's go there instead.", 'Sin problema, vayamos allí entonces.'] },
-      { en: 'Let me think.', es: 'Déjame pensar.', ej: "Let me think about it. I'll get back to you.", tip: 'I\'ll get back to you significa "te contesto luego".', re: ['Take all the time you need.', 'Tómate todo el tiempo que necesites.'] },
-      { en: "It's not a big deal.", es: 'No es gran cosa.', ej: "It's not a big deal. We can fix it easily.", tip: 'Quita presión sin sonar cortante.', re: ['Okay, thanks for understanding.', 'Vale, gracias por entenderlo.'] },
-      { en: "I'm in a hurry.", es: 'Tengo prisa.', ej: "I'm in a hurry. Can we talk later?", tip: 'In a hurry es "con prisa"; hurry up es "date prisa".', re: ['Sure, go ahead, we\'ll talk later.', 'Claro, ve, hablamos luego.'] },
-      { en: "That's strange.", es: 'Eso es extraño.', ej: "That's strange. It was working fine yesterday.", tip: 'Strange y weird son casi intercambiables en este uso.', re: ['Yeah, that is odd.', 'Sí, es raro.'] },
-      { en: "You're doing great.", es: 'Lo estás haciendo muy bien.', ej: "You're doing great. Keep up the good work.", tip: 'Keep up the good work anima a seguir con el mismo esfuerzo.', re: ['Thank you, that means a lot.', 'Gracias, significa mucho.'] },
-      { en: "I'm all ears.", es: 'Te escucho completamente.', ej: "You want to talk? I'm all ears.", tip: 'Es visual y amigable. Siente la gente que realmente te importa lo que van a decir.', re: ["Okay, here's what happened.", 'Vale, esto es lo que pasó.'] }
-    ],
-    tests: [
+        q: '¿Cómo dices con énfasis "todo lo que necesitamos es tiempo"?',
+        a: 'All we need is time.',
+        note: 'All + sujeto + verbo + is: da a entender que es la única cosa importante, sin repetir is.'
+      },
       {
-        q: 'Quieres tranquilizar a alguien que se disculpa demasiado por un error pequeño, ¿qué dices?',
-        a: "It's not a big deal.",
-        note: 'Quita presión sin sonar cortante.'
+        q: '¿Cómo dices con énfasis "lo que me molesta es su actitud"?',
+        a: 'What bothers me is his attitude.',
+        note: 'What bothers me is + causa de la molestia.'
       }
     ]
   }

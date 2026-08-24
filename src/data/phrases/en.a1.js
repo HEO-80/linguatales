@@ -13,9 +13,16 @@
  * Las 300+ frases del curso se reparten ahora a lo largo de los seis
  * niveles de la app (A1→C2), no solo en los tres primeros: cada nivel del
  * curso ("NIVEL 1/2/3") se divide en dos mitades de ~50 frases cada una.
- * Este archivo es la primera mitad de NIVEL 1 (Frases Esenciales) — bloques
- * 01-05, incluidas las 20 frases esenciales originales (01-02). La segunda
- * mitad de NIVEL 1 vive en en.a2.js.
+ * Bloques 01-05 son la primera mitad de NIVEL 1 (Frases Esenciales),
+ * incluidas las 20 frases esenciales originales (01-02). La segunda mitad
+ * de NIVEL 1 vive en en.a2.js.
+ *
+ * Bloques 06-09: gramática básica catalogada por TIPO DE FRASE, tomada del
+ * segundo curso de Cale Anders ("Inglés básico — vocabulario, pronunciación
+ * y gramática en un solo video"), su bloque de gramática. Cubre el verbo to
+ * be, los artículos, los plurales y las preposiciones de lugar — la mitad
+ * más elemental del temario. La otra mitad (presente simple y pronombres)
+ * vive en en.a2.js, bloques 06-08.
  */
 export const EN_A1_PHRASES = [
   {
@@ -128,6 +135,138 @@ export const EN_A1_PHRASES = [
         q: '¿Cómo preguntas el precio de algo?',
         a: 'How much does it cost?',
         note: 'También puedes decir How much is this? — la primera es más formal, la segunda más casual.'
+      }
+    ]
+  },
+  {
+    num: '06',
+    title: 'El verbo to be',
+    items: [
+      { en: 'I am a student.', es: 'Yo soy un estudiante.', ej: 'I am a student at this school.', tip: 'Am se usa solo con el sujeto I (yo).', re: ["Nice, what are you studying?", 'Qué bien, ¿qué estudias?'] },
+      { en: 'I am at home.', es: 'Estoy en casa.', ej: 'I am at home right now.', tip: 'El verbo to be significa tanto "ser" como "estar"; el inglés no distingue entre los dos.', re: ["Okay, I'll call you later.", 'Vale, te llamo luego.'] },
+      { en: "I am tired.", es: 'Estoy cansado.', ej: "I am tired after a long day.", tip: 'Usa am siempre que el sujeto sea I.', re: ['You should get some rest.', 'Deberías descansar.'] },
+      { en: 'He is a doctor.', es: 'Él es doctor.', ej: 'He is a doctor at the hospital.', tip: 'Is se usa con he, she o it.', re: ["That's a great career.", 'Es una gran carrera.'] },
+      { en: 'She is at school.', es: 'Ella está en la escuela.', ej: 'She is at school until 3 pm.', tip: 'Is combina con she para "ella es/está".', re: ["I'll pick her up then.", 'La recojo entonces.'] },
+      { en: 'It is cold outside.', es: 'Hace frío afuera.', ej: 'It is cold outside today, bring a jacket.', tip: 'En inglés los objetos y el clima no tienen género, por eso usamos it.', re: ["Thanks for the warning.", 'Gracias por avisar.'] },
+      { en: 'You are my friend.', es: 'Tú eres mi amigo.', ej: 'You are my friend, I trust you.', tip: 'Are se usa con you, we y they.', re: ["You're my friend too.", 'Tú también eres mi amigo.'] },
+      { en: 'We are in the park.', es: 'Estamos en el parque.', ej: 'We are in the park with the kids.', tip: 'Are + lugar describe dónde está un grupo.', re: ["Have fun out there.", 'Que se diviertan ahí.'] },
+      { en: 'They are teachers.', es: 'Ellos son profesores.', ej: 'They are teachers at the same school.', tip: 'Are también se usa con they.', re: ["That's a wonderful job.", 'Es un trabajo maravilloso.'] },
+      { en: 'We are from Argentina.', es: 'Somos de Argentina.', ej: 'We are from Argentina, but we live here now.', tip: 'From + país indica el origen.', re: ["Welcome to the neighborhood.", 'Bienvenidos al vecindario.'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'yo soy un estudiante'?",
+        a: 'I am a student.',
+        note: 'Am se usa solo con el sujeto I.'
+      },
+      {
+        q: "¿Cómo dices 'él es doctor'?",
+        a: 'He is a doctor.',
+        note: 'Is se usa con he, she o it.'
+      },
+      {
+        q: "¿Cómo dices 'tú eres mi amigo'?",
+        a: 'You are my friend.',
+        note: 'Are se usa con you, we y they.'
+      }
+    ]
+  },
+  {
+    num: '07',
+    title: 'Artículos: a, an, the',
+    items: [
+      { en: 'I saw a cat.', es: 'Vi un gato.', ej: 'I saw a cat in the garden.', tip: 'A se usa antes de un sonido consonante cuando hablamos de algo no específico.', re: ["Was it a stray?", '¿Era callejero?'] },
+      { en: 'She has a dog.', es: 'Ella tiene un perro.', ej: 'She has a dog and a cat.', tip: 'A dog: sonido consonante, sin n.', re: ["What breed is it?", '¿De qué raza es?'] },
+      { en: 'He wants a sandwich.', es: 'Él quiere un sándwich.', ej: 'He wants a sandwich for lunch.', tip: 'A + sustantivo singular no específico.', re: ["I'll make him one.", 'Le hago uno.'] },
+      { en: 'I ate an apple.', es: 'Comí una manzana.', ej: 'I ate an apple this morning.', tip: 'An se usa antes de un sonido vocal; se añade la n para que suene fluido.', re: ["Good, healthy snack.", 'Bien, un bocadillo saludable.'] },
+      { en: 'She is reading an interesting book.', es: 'Ella está leyendo un libro interesante.', ej: 'She is reading an interesting book about history.', tip: 'Usamos an porque interesting empieza con sonido vocal, no book.', re: ["What's it about?", '¿De qué trata?'] },
+      { en: 'He saw an owl in the tree.', es: 'Él vio un búho en el árbol.', ej: 'He saw an owl in the tree last night.', tip: 'Owl empieza con sonido vocal, así que usamos an.', re: ["That's a rare sight.", 'Eso es raro de ver.'] },
+      { en: 'The sun is shining.', es: 'El sol está brillando.', ej: 'The sun is shining today.', tip: 'The se usa para algo específico o ya conocido por ambos.', re: ["Perfect day for a walk.", 'Día perfecto para caminar.'] },
+      { en: 'I visited the museum yesterday.', es: 'Visité el museo ayer.', ej: 'I visited the museum yesterday with my family.', tip: 'The museum: un museo específico del que ya se habla.', re: ["Did you like it?", '¿Te gustó?'] },
+      { en: 'The cat is sleeping on the sofa.', es: 'El gato está durmiendo en el sofá.', ej: 'The cat is sleeping on the sofa right now.', tip: 'The + sustantivo cuando el oyente ya sabe de cuál hablamos.', re: ["Let her rest.", 'Déjala descansar.'] },
+      { en: 'I want to buy an orange.', es: 'Quiero comprar una naranja.', ej: 'I want to buy an orange at the market.', tip: 'Orange empieza con sonido vocal: an orange, nunca a orange.', re: ["They're fresh today.", 'Están frescas hoy.'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'comí una manzana'?",
+        a: 'I ate an apple.',
+        note: 'An se usa antes de un sonido vocal, como en apple.'
+      },
+      {
+        q: "¿Cómo dices 'vi un gato'?",
+        a: 'I saw a cat.',
+        note: 'A se usa antes de un sonido consonante, como en cat.'
+      },
+      {
+        q: "¿Cómo dices 'el gato está durmiendo en el sofá', hablando de un gato específico?",
+        a: 'The cat is sleeping on the sofa.',
+        note: 'The se usa para algo específico o ya mencionado.'
+      }
+    ]
+  },
+  {
+    num: '08',
+    title: 'Plurales básicos y excepciones',
+    items: [
+      { en: 'There are two dogs in the yard.', es: 'Hay dos perros en el jardín.', ej: 'There are two dogs in the yard, barking loudly.', tip: 'Regla general: se agrega -s al sustantivo (dog → dogs).', re: ["Are they friendly?", '¿Son amistosos?'] },
+      { en: 'I have three books to read.', es: 'Tengo tres libros para leer.', ej: 'I have three books to read this month.', tip: 'Book → books, plural regular con -s.', re: ["Which one first?", '¿Cuál primero?'] },
+      { en: 'The boxes are on the table.', es: 'Las cajas están sobre la mesa.', ej: 'The boxes are on the table, ready to ship.', tip: 'Si el sustantivo termina en x, z, ch o sh, se agrega -es: box → boxes.', re: ["I'll help you move them.", 'Te ayudo a moverlas.'] },
+      { en: 'The churches in this town are beautiful.', es: 'Las iglesias en este pueblo son hermosas.', ej: 'The churches in this town are beautiful and old.', tip: 'Church termina en ch, así que el plural es churches.', re: ["I'd love to see them.", 'Me encantaría verlas.'] },
+      { en: 'The babies are sleeping.', es: 'Los bebés están durmiendo.', ej: 'The babies are sleeping in the other room.', tip: 'Si el sustantivo termina en y precedida de consonante, cambia a -ies: baby → babies.', re: ["Let's keep our voices down.", 'Bajemos la voz.'] },
+      { en: 'The cities are very crowded.', es: 'Las ciudades están muy concurridas.', ej: 'The cities are very crowded during the holidays.', tip: 'City → cities, misma regla que baby → babies.', re: ["Especially around the holidays.", 'Especialmente en las fiestas.'] },
+      { en: 'The children are playing in the park.', es: 'Los niños están jugando en el parque.', ej: 'The children are playing in the park after school.', tip: 'Child → children es un plural irregular, no se agrega -s.', re: ["I can hear them laughing.", 'Los escucho reír.'] },
+      { en: 'We saw two men in the park.', es: 'Vimos a dos hombres en el parque.', ej: 'We saw two men in the park this morning.', tip: 'Man → men es otro plural irregular.', re: ["Did you know them?", '¿Los conocías?'] },
+      { en: 'The women are talking outside.', es: 'Las mujeres están hablando afuera.', ej: 'The women are talking outside the office.', tip: 'Woman → women; se pronuncia distinto: /ˈwʊmən/ → /ˈwɪmɪn/.', re: ["I'll join them.", 'Me uno a ellas.'] },
+      { en: 'The mice are in the kitchen.', es: 'Los ratones están en la cocina.', ej: 'The mice are in the kitchen again.', tip: 'Mouse → mice, plural irregular que no sigue ninguna regla fija.', re: ["We need a trap.", 'Necesitamos una trampa.'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'hay dos perros en el jardín'?",
+        a: 'There are two dogs in the yard.',
+        note: 'Regla general: se agrega -s (dog → dogs).'
+      },
+      {
+        q: "¿Cómo dices 'los niños están jugando en el parque'?",
+        a: 'The children are playing in the park.',
+        note: 'Child → children es un plural irregular.'
+      },
+      {
+        q: "¿Cómo dices 'las cajas están sobre la mesa'?",
+        a: 'The boxes are on the table.',
+        note: 'Si el sustantivo termina en x, se agrega -es: box → boxes.'
+      }
+    ]
+  },
+  {
+    num: '09',
+    title: 'Preposiciones de lugar: in, on, under',
+    items: [
+      { en: 'The book is in the box.', es: 'El libro está en la caja.', ej: 'The book is in the box, under the desk.', tip: 'In se usa para lugares cerrados.', re: ["I'll get it for you.", 'Te lo alcanzo.'] },
+      { en: 'I live in a big city.', es: 'Vivo en una ciudad grande.', ej: 'I live in a big city with lots of traffic.', tip: 'In también se usa para áreas grandes, como una ciudad.', re: ["That sounds exciting.", 'Suena emocionante.'] },
+      { en: 'I am in the car.', es: 'Estoy en el coche.', ej: 'I am in the car, on my way home.', tip: 'Car es un lugar cerrado, por eso usamos in.', re: ["Drive safe.", 'Conduce con cuidado.'] },
+      { en: 'The cup is on the table.', es: 'La taza está sobre la mesa.', ej: 'The cup is on the table, next to the plate.', tip: 'On se usa para superficies.', re: ["I see it now.", 'Ya la veo.'] },
+      { en: 'She put the keys on the shelf.', es: 'Ella puso las llaves en la estantería.', ej: 'She put the keys on the shelf by the door.', tip: 'On + superficie, como shelf, table o desk.', re: ["Good, easy to find.", 'Bien, fácil de encontrar.'] },
+      { en: 'The book is on the desk.', es: 'El libro está sobre el escritorio.', ej: 'The book is on the desk, right where I left it.', tip: 'On the desk: sobre una superficie.', re: ["Thanks, I was looking for it.", 'Gracias, lo estaba buscando.'] },
+      { en: 'The dog is under the chair.', es: 'El perro está debajo de la silla.', ej: 'The dog is under the chair, hiding from the storm.', tip: 'Under se usa para algo debajo de otro objeto.', re: ["Poor thing, it's scared.", 'Pobrecito, está asustado.'] },
+      { en: 'The shoes are under the bed.', es: 'Los zapatos están debajo de la cama.', ej: 'The shoes are under the bed, out of sight.', tip: 'Under the bed: justo debajo del objeto.', re: ["I'll grab them.", 'Los agarro.'] },
+      { en: 'The cat is under the bed.', es: 'El gato está debajo de la cama.', ej: 'The cat is under the bed, sleeping quietly.', tip: 'Under también funciona con animales, no solo objetos.', re: ["Let her nap.", 'Déjala dormir.'] },
+      { en: 'There is a picture on the wall.', es: 'Hay una foto en la pared.', ej: 'There is a picture on the wall in the living room.', tip: 'Aunque wall es vertical, sigue siendo una superficie, así que usamos on.', re: ["I love that photo.", 'Me encanta esa foto.'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'el libro está en la caja'?",
+        a: 'The book is in the box.',
+        note: 'In se usa para lugares cerrados.'
+      },
+      {
+        q: "¿Cómo dices 'la taza está sobre la mesa'?",
+        a: 'The cup is on the table.',
+        note: 'On se usa para superficies.'
+      },
+      {
+        q: "¿Cómo dices 'el perro está debajo de la silla'?",
+        a: 'The dog is under the chair.',
+        note: 'Under se usa para algo debajo de otro objeto.'
       }
     ]
   }

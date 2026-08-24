@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { parseLangSlug, parseLevelSlug, toLangSlug, toLevelSlug } from "@/lib/routes/langLevel";
 import { storiesOf } from "@/data/stories";
-import ComingSoonPanel from "@/components/ComingSoon/ComingSoonPanel";
+import LevelPreviewPage from "@/components/ComingSoon/LevelPreviewPage";
 
 export default async function LevelPage({ params }: PageProps<"/[lang]/[level]">) {
   const { lang, level } = await params;
@@ -11,11 +11,7 @@ export default async function LevelPage({ params }: PageProps<"/[lang]/[level]">
 
   const stories = storiesOf(langCode, levelCode);
   if (stories.length === 0) {
-    return (
-      <section style={{ maxWidth: 1440, margin: "24px auto 0", padding: "0 32px" }}>
-        <ComingSoonPanel message={`Todavía no hay relatos de ${langCode} en ${levelCode}.`} />
-      </section>
-    );
+    return <LevelPreviewPage lang={langCode} level={levelCode} />;
   }
 
   redirect(`/${toLangSlug(langCode)}/${toLevelSlug(levelCode)}/story/${stories[0].num}`);

@@ -11,6 +11,14 @@
  * trae; donde no daba `tip`, se ha escrito uno corto en la misma voz. `re`
  * (la contestación) no viene del curso — es invención propia en todos los
  * bloques, coherente con el registro de cada frase.
+ *
+ * Bloques 06-08: gramática básica catalogada por TIPO DE FRASE, segunda
+ * mitad del bloque de gramática del segundo curso de Cale Anders ("Inglés
+ * básico — vocabulario, pronunciación y gramática en un solo video").
+ * Cubre presente simple (afirmaciones, negaciones y preguntas) y los
+ * pronombres sujeto/objeto — la mitad más avanzada del temario. La otra
+ * mitad (to be, artículos, plurales, preposiciones) vive en en.a1.js,
+ * bloques 06-09.
  */
 export const EN_A2_PHRASES = [
   {
@@ -130,6 +138,115 @@ export const EN_A2_PHRASES = [
         q: 'Ves que alguien se ha hecho daño y necesita ayuda médica urgente, ¿qué dices?',
         a: 'Call an ambulance.',
         note: 'En una emergencia real en EE. UU., marca 911.'
+      }
+    ]
+  },
+  {
+    num: '06',
+    title: 'Presente simple: afirmaciones y negaciones',
+    items: [
+      { en: 'I like coffee.', es: 'Me gusta el café.', ej: 'I like coffee in the morning.', tip: 'Presente simple con I: usa el verbo base, sin -s.', re: ["Me too, every morning.", 'Yo también, todas las mañanas.'] },
+      { en: 'She works every day.', es: 'Ella trabaja todos los días.', ej: 'She works every day except Sunday.', tip: 'Con he/she/it se agrega -s al verbo: work → works.', re: ["That's a busy schedule.", 'Es un horario ocupado.'] },
+      { en: 'They play soccer on weekends.', es: 'Ellos juegan fútbol los fines de semana.', ej: 'They play soccer on weekends at the park.', tip: 'Con they no se agrega -s: play, no plays.', re: ["Can I join sometime?", '¿Puedo unirme algún día?'] },
+      { en: 'He likes to read books.', es: 'A él le gusta leer libros.', ej: 'He likes to read books before bed.', tip: 'Like → likes con he/she/it.', re: ["What's his favorite genre?", '¿Cuál es su género favorito?'] },
+      { en: "I don't like tea.", es: 'No me gusta el té.', ej: "I don't like tea, but I love coffee.", tip: 'Negativo con I/you/we/they: don\'t + verbo base.', re: ["I'll make you coffee, then.", 'Entonces te hago café.'] },
+      { en: "She doesn't play tennis.", es: 'Ella no juega al tenis.', ej: "She doesn't play tennis, she prefers swimming.", tip: 'Negativo con he/she/it: doesn\'t + verbo base (la -s desaparece).', re: ["Swimming is great exercise too.", 'Nadar también es buen ejercicio.'] },
+      { en: "They don't watch TV.", es: 'Ellos no ven la televisión.', ej: "They don't watch TV during the week.", tip: 'Don\'t + verbo base con they.', re: ["What do they do instead?", '¿Qué hacen en su lugar?'] },
+      { en: "We don't have time.", es: 'No tenemos tiempo.', ej: "We don't have time to finish this today.", tip: 'Don\'t have es la forma negativa de have en presente simple.', re: ["Let's finish it tomorrow, then.", 'Entonces lo terminamos mañana.'] },
+      { en: "He doesn't eat meat.", es: 'Él no come carne.', ej: "He doesn't eat meat, he's vegetarian.", tip: 'Doesn\'t quita la -s: eats → doesn\'t eat.', re: ["I'll cook something vegetarian.", 'Cocino algo vegetariano.'] },
+      { en: 'We watch TV at night.', es: 'Vemos televisión en la noche.', ej: 'We watch TV at night before bed.', tip: 'Forma afirmativa simple con we: verbo base sin -s.', re: ["What do you usually watch?", '¿Qué suelen ver?'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'ella trabaja todos los días'?",
+        a: 'She works every day.',
+        note: 'Con he/she/it se agrega -s al verbo.'
+      },
+      {
+        q: "¿Cómo dices 'no me gusta el té'?",
+        a: "I don't like tea.",
+        note: 'Negativo con I: don\'t + verbo base.'
+      },
+      {
+        q: "¿Cómo dices 'ella no juega al tenis'?",
+        a: "She doesn't play tennis.",
+        note: 'Negativo con he/she/it: doesn\'t + verbo base, sin la -s.'
+      }
+    ]
+  },
+  {
+    num: '07',
+    title: 'Preguntas en presente simple',
+    items: [
+      { en: 'Do you like coffee?', es: '¿Te gusta el café?', ej: 'Do you like coffee or tea?', tip: 'Do se usa con I, you, we y they.', re: ["I prefer tea, actually.", 'Prefiero el té, la verdad.'] },
+      { en: 'Do they play soccer?', es: '¿Ellos juegan al fútbol?', ej: 'Do they play soccer every weekend?', tip: 'Do + they + verbo base para preguntar.', re: ["Yes, every Saturday.", 'Sí, todos los sábados.'] },
+      { en: 'Do you like tea?', es: '¿Te gusta el té?', ej: 'Do you like tea in the afternoon?', tip: 'Do you like...? es una de las preguntas más comunes en presente simple.', re: ["Yes, especially green tea.", 'Sí, sobre todo el té verde.'] },
+      { en: 'Do they speak English?', es: '¿Ellos hablan inglés?', ej: 'Do they speak English at home?', tip: 'Do + they para preguntar sobre un grupo.', re: ["Yes, and Spanish too.", 'Sí, y también español.'] },
+      { en: 'Do we need to study?', es: '¿Necesitamos estudiar?', ej: "Do we need to study for tomorrow's test?", tip: 'Do we...? pregunta por una acción que incluye al hablante.', re: ["Yes, we do.", 'Sí, necesitamos.'] },
+      { en: 'Does he play the guitar?', es: '¿Él toca la guitarra?', ej: 'Does he play the guitar or the piano?', tip: 'Does se usa con he, she o it.', re: ["He plays both, actually.", 'Toca ambos, en realidad.'] },
+      { en: 'Does she like pizza?', es: '¿A ella le gusta la pizza?', ej: 'Does she like pizza with extra cheese?', tip: 'Does she...? y el verbo se queda en su forma base: like, no likes.', re: ["She loves it.", 'Le encanta.'] },
+      { en: 'Does she work here?', es: '¿Ella trabaja aquí?', ej: 'Does she work here on weekends too?', tip: 'Does + she + verbo base, la -s se va al does.', re: ["Yes, she's here every day.", 'Sí, está aquí todos los días.'] },
+      { en: 'Does he play basketball?', es: '¿Él juega al baloncesto?', ej: 'Does he play basketball on Fridays?', tip: 'Does he...? sigue el mismo patrón que does she.', re: ["Every Friday afternoon.", 'Todos los viernes por la tarde.'] },
+      { en: 'Do we have homework?', es: '¿Tenemos tarea?', ej: 'Do we have homework for Monday?', tip: 'Do we...? es la forma de preguntar por algo compartido.', re: ["Yes, a short essay.", 'Sí, un ensayo corto.'] }
+    ],
+    tests: [
+      {
+        q: '¿Cómo preguntas si a alguien le gusta el café?',
+        a: 'Do you like coffee?',
+        note: 'Do se usa con I, you, we y they.'
+      },
+      {
+        q: '¿Cómo preguntas si él toca la guitarra?',
+        a: 'Does he play the guitar?',
+        note: 'Does se usa con he, she o it.'
+      },
+      {
+        q: '¿Cómo preguntas si a ella le gusta la pizza?',
+        a: 'Does she like pizza?',
+        note: 'Con does, el verbo se queda en su forma base: like, no likes.'
+      },
+      {
+        q: '¿Cómo preguntas si tenemos tarea?',
+        a: 'Do we have homework?',
+        note: 'Do we...? pregunta por algo que incluye al hablante.'
+      }
+    ]
+  },
+  {
+    num: '08',
+    title: 'Pronombres sujeto y objeto',
+    items: [
+      { en: 'I love him.', es: 'Yo lo amo.', ej: 'I love him more than anything.', tip: 'Him es el pronombre objeto para "él" (a él, lo, le).', re: ["That's beautiful.", 'Eso es hermoso.'] },
+      { en: 'She gave me the book.', es: 'Ella me dio el libro.', ej: 'She gave me the book yesterday.', tip: 'Me es el pronombre objeto de I (me, a mí).', re: ["That was nice of her.", 'Qué amable de su parte.'] },
+      { en: 'They invited us to the party.', es: 'Ellos nos invitaron a la fiesta.', ej: 'They invited us to the party on Saturday.', tip: 'Us es el pronombre objeto de we (nos, a nosotros).', re: ["Are you going?", '¿Van a ir?'] },
+      { en: 'He loves her.', es: 'Él la ama.', ej: 'He loves her more every day.', tip: 'Her es el pronombre objeto para "ella" (la, le, a ella).', re: ["They make a great couple.", 'Hacen una gran pareja.'] },
+      { en: 'We saw them yesterday.', es: 'Los vimos ayer.', ej: 'We saw them yesterday at the mall.', tip: 'Them es el pronombre objeto de they (los, las, les).', re: ["How were they doing?", '¿Cómo estaban?'] },
+      { en: 'I like him.', es: 'Él me agrada.', ej: "I like him, he's a good friend.", tip: 'Him también se usa para expresar que alguien te agrada.', re: ["He's a great guy.", 'Es un buen tipo.'] },
+      { en: 'I work with them.', es: 'Yo trabajo con ellos.', ej: 'I work with them every day.', tip: 'With them: preposición + pronombre objeto.', re: ["What's the team like?", '¿Cómo es el equipo?'] },
+      { en: "I'm reading it.", es: 'Lo estoy leyendo.', ej: "This is my book. I'm reading it right now.", tip: 'It es el pronombre objeto para cosas u objetos.', re: ["Is it any good?", '¿Es bueno?'] },
+      { en: 'Come with us.', es: 'Ven con nosotros.', ej: "We're going to the park. Come with us.", tip: 'With us: invitación usando el pronombre objeto de we.', re: ["I'd love to.", 'Me encantaría.'] },
+      { en: 'I talked to her.', es: 'Hablé con ella.', ej: 'I saw her at the store and talked to her.', tip: 'Talk to her: her como objeto después de una preposición.', re: ["What did she say?", '¿Qué dijo?'] }
+    ],
+    tests: [
+      {
+        q: "¿Cómo dices 'ella me dio el libro'?",
+        a: 'She gave me the book.',
+        note: 'Me es el pronombre objeto de I.'
+      },
+      {
+        q: "¿Cómo dices 'ellos nos invitaron a la fiesta'?",
+        a: 'They invited us to the party.',
+        note: 'Us es el pronombre objeto de we.'
+      },
+      {
+        q: "¿Cómo dices 'los vimos ayer'?",
+        a: 'We saw them yesterday.',
+        note: 'Them es el pronombre objeto de they.'
+      },
+      {
+        q: "¿Cómo dices 'lo estoy leyendo', hablando de un libro?",
+        a: "I'm reading it.",
+        note: 'It es el pronombre objeto para cosas u objetos.'
       }
     ]
   }
