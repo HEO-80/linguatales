@@ -79,7 +79,7 @@ export default function LanguageBar() {
 
         <div style={{ width: 1, height: 32, background: surface.border, flexShrink: 0 }} />
 
-        <div style={{ position: 'relative' }}>
+        <div>
           <button
             ref={levelBtnRef}
             onClick={() => setLevelOpen((o) => !o)}

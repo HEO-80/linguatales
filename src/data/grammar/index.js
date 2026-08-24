@@ -321,6 +321,97 @@ export const GRAMMAR_DETAIL = {
       { en: 'Then, she bought tomatoes, garlic, and fresh basil.', es: 'Luego, compró tomates, ajo y albahaca fresca.' },
       { en: 'Finally, she cooked the pasta and added the sauce.', es: 'Finalmente, cocinó la pasta y añadió la salsa.' }
     ]
+  },
+
+  'Oraciones hendidas (cleft sentences)': {
+    role: 'verb',
+    intro:
+      'Oraciones hendidas: it is/was + elemento enfatizado + that + resto de la oración. Destacan qué o quién hizo algo, poniendo el foco donde el hablante quiere — muy propias del ensayo y el registro literario.',
+    forms: [
+      { label: 'Afirmativa', value: 'It is often in the struggle that we are formed. (it is + foco + that + resto)' },
+      { label: 'Con persona', value: 'It was Maria who called.' },
+      { label: 'Dos elementos contrastados', value: 'it is X, and not Y, that Z — foco doble antes de that, registro formal' }
+    ],
+    caution:
+      'El fallo típico: usar what en vez de that para cerrar la oración hendida (it is X what Y ✗) — that es la partícula correcta aquí, distinta de las hendidas que empiezan con what (what I need is...), que son otra estructura.',
+    examples: [
+      { en: 'It is often in the struggle, and not the solution, that we are formed.', es: 'Es a menudo en la lucha, y no en la solución, donde nos formamos.' },
+      { en: 'It was Maria who gave me the book.', es: 'Fue María quien me dio el libro.' },
+      { en: 'It is trust, not talent, that makes a team work.', es: 'Es la confianza, no el talento, lo que hace funcionar a un equipo.' }
+    ]
+  },
+
+  'Voz pasiva': {
+    role: 'verb',
+    intro:
+      'Convierte el objeto de la acción en el sujeto de la oración — be + participio pasado. Se usa cuando quién hace la acción no importa, no se sabe, o interesa más el resultado que el actor.',
+    forms: [
+      { label: 'Presente', value: 'We are told that... (are + participio)' },
+      { label: 'Pasado', value: 'It was never designed to bear that. (was + participio)' },
+      { label: 'Tras un modal', value: 'What cannot be measured... (modal + be + participio)' }
+    ],
+    caution:
+      'El fallo típico: olvidar el verbo be y dejar solo el participio (We told that... ✗) — la pasiva siempre necesita be conjugado, nunca el participio suelto.',
+    examples: [
+      { en: 'We are told that hard work guarantees success.', es: 'Nos dicen que el trabajo duro garantiza el éxito.' },
+      { en: 'It was never designed to bear that pressure.', es: 'Nunca fue diseñada para soportar esa presión.' },
+      { en: 'What cannot be measured tends to become invisible.', es: 'Lo que no se puede medir tiende a volverse invisible.' }
+    ]
+  },
+
+  'Cláusulas relativas libres con what': {
+    role: 'pron',
+    intro:
+      'What puede funcionar como pronombre relativo sin antecedente — significa "lo que", e introduce toda una cláusula que actúa como sujeto u objeto de la oración principal.',
+    forms: [
+      { label: 'Como sujeto', value: 'What sounds wise can prove disastrous. (what + verbo, sujeto de toda la oración)' },
+      { label: 'Como objeto', value: 'I know what you mean.' },
+      { label: 'No confundir con', value: 'that/which (relativos CON antecedente: the book that I read, nunca what I read el libro)' }
+    ],
+    caution:
+      'El fallo típico: usar what con un antecedente explícito (the book what I read ✗) — what solo funciona sin antecedente; con un sustantivo delante hace falta that o which.',
+    examples: [
+      { en: 'What sounds wise over coffee can prove disastrous in a crisis.', es: 'Lo que suena sabio tomando un café puede resultar desastroso en una crisis.' },
+      { en: 'What we rarely notice is the skill quietly eroding underneath.', es: 'Lo que rara vez notamos es la habilidad que se erosiona silenciosamente por debajo.' },
+      { en: "I don't understand what she wants.", es: 'No entiendo lo que ella quiere.' }
+    ]
+  },
+
+  'Subjuntivo: as though + pasado': {
+    role: 'verb',
+    intro:
+      'As though (o as if) + pasado simple describe una comparación hipotética o irreal — algo se presenta como si fuera cierto, aunque no lo sea. Were se usa para todas las personas, igual que en el segundo condicional.',
+    forms: [
+      { label: 'Con were', value: 'We speak of our tools as though they were neutral. (were, no was, aunque sea singular)' },
+      { label: 'Con pasado simple normal', value: 'He acted as though he understood everything.' },
+      { label: 'Registro más informal', value: 'as though + presente: a veces se usa cuando la comparación es menos hipotética' }
+    ],
+    caution:
+      'El fallo típico: usar was en vez de were tras as though/as if (as though it was true ✗ en registro formal) — were es la forma preferida, sobre todo por escrito.',
+    examples: [
+      { en: 'We speak of our tools as though they were neutral instruments.', es: 'Hablamos de nuestras herramientas como si fueran instrumentos neutrales.' },
+      { en: 'She acts as though she were in charge.', es: 'Actúa como si estuviera al mando.' },
+      { en: 'He looked at me as though I had said something strange.', es: 'Me miró como si hubiera dicho algo extraño.' }
+    ]
+  },
+
+  'Nominalización abstracta': {
+    role: 'noun',
+    intro:
+      'Convierte un adjetivo o un verbo en un sustantivo abstracto — legible se vuelve legibility, fluent se vuelve fluency, understand se vuelve understanding. Es una marca típica del registro académico y ensayístico: en vez de decir que algo es legible, se habla de la legibilidad de algo.',
+    forms: [
+      { label: 'Adjetivo + -ity', value: 'legible → legibility' },
+      { label: 'Adjetivo + -cy', value: 'fluent → fluency' },
+      { label: 'Verbo + -ing como sustantivo', value: 'understand → understanding' },
+      { label: 'Adjetivo + -ness', value: 'aware → awareness' }
+    ],
+    caution:
+      'El fallo típico: quedarse siempre en el adjetivo cuando el registro formal pide el sustantivo abstracto (the system is very legible en vez de the legibility of the system) — los dos son correctos, pero el sustantivo abstracto es el que domina en el ensayo.',
+    examples: [
+      { en: 'But legibility casts its own shadows.', es: 'Pero la legibilidad proyecta sus propias sombras.' },
+      { en: 'To stay suspicious of our own fluency.', es: 'Mantenerse receloso de nuestra propia fluidez.' },
+      { en: 'The goal is a plea for awareness.', es: 'El objetivo es un llamado a la conciencia.' }
+    ]
   }
 };
 

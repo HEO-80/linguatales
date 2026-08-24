@@ -683,6 +683,23 @@ export const PHRASAL_DETAIL = {
       { en: "Don't put off until tomorrow what you can do today.", es: 'No dejes para mañana lo que puedas hacer hoy.' },
       { en: 'They put off the decision for another week.', es: 'Pospusieron la decisión otra semana.' }
     ]
+  },
+
+  'leave out': {
+    literal: 'leave (dejar) + out',
+    register: 'neutro, algo formal en el sentido de omitir',
+    pattern: 'leave something out (transitivo, separable)',
+    separableNote: 'Separable, y con pronombres SIEMPRE separado: leave it out, nunca leave out it.',
+    related: [
+      { verb: 'omit', mean: 'omitir, más formal y sin partícula' },
+      { verb: 'skip', mean: 'saltarse algo, más informal' },
+      { verb: 'exclude', mean: 'excluir, más formal' }
+    ],
+    examples: [
+      { en: 'To keep asking what the model leaves out.', es: 'Seguir preguntándose qué deja fuera el modelo.' },
+      { en: "Don't leave out any details.", es: 'No dejes fuera ningún detalle.' },
+      { en: 'I think we left something out of the report.', es: 'Creo que dejamos algo fuera del informe.' }
+    ]
   }
 };
 

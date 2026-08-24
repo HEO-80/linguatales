@@ -28,9 +28,11 @@
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { storyKey as buildStoryKey } from '@/lib/routes/storyKey';
 import { useProgressSnapshot, recordGameResult, EMPTY_STORY } from '@/state/progress';
-import { useSrsSnapshot, grade as srsGrade, advanceDay as srsAdvanceDay, cardsOf as srsCardsOf, getSrsSnapshot } from '@/state/srs';
+import { useSrsSnapshot, grade as srsGrade, cardsOf as srsCardsOf, getSrsSnapshot } from '@/state/srs';
 import { rankByWeight } from '@/lib/srs';
-import { subscribeReaderNav, emitReaderView } from '@/state/readerNavBus';
+import { subscribeReaderNav, emitReaderView, emitReaderToggles } from '@/state/readerNavBus';
+import { GRAMMAR_DETAIL } from '@/data/grammar';
+import { PHRASAL_DETAIL } from '@/data/idioms';
 
 const ReaderContext = createContext(null);
 
@@ -40,6 +42,15 @@ export function ReaderProvider({ story, lang, level, children }) {
   const [roleFilter, setRoleFilter] = useState([]);
   const [game, setGame] = useState(null);
   const [detail, setDetail] = useState(null); // { kind: 'g' | 'p', key } | null
+
+  // ── ajustes de Herramientas (§4 tres-barras-spec) — flags de este relato,
+  // se resetean al remontar como todo lo demás de este contexto. El popover
+  // que los edita vive en AppHeader, fuera de este árbol: se reflejan por
+  // readerNavBus (emitReaderToggles) y se cambian con acciones del nav
+  // (toggle-showTr / toggle-micro / toggle-srsMarks), nunca por escritura
+  // directa desde fuera.
+  const [microOff, setMicroOff] = useState(false);
+  const [srsMarksOff, setSrsMarksOff] = useState(false);
 
   // ── vista exclusiva ────────────────────────────────────────────────
   const [view, setView] = useState('story'); // 'story' | 'phrases' | 'linkers' | 'game' | 'srs'
@@ -128,40 +139,51 @@ export function ReaderProvider({ story, lang, level, children }) {
     setMicroCount((prev) => {
       const next = prev + 1;
       if (next < 6) return next;
-      const freshSnapshot = getSrsSnapshot();
-      const freshCards = srsCardsOf(lang, level, freshSnapshot);
-      const candidates = Object.keys(freshCards)
-        .filter((k) => k !== cardKey)
-        .map((k) => ({ srsKey: k }));
-      const picked = rankByWeight(candidates, freshCards, freshSnapshot.day)
-        .slice(0, 3)
-        .map((c) => c.srsKey);
-      if (picked.length > 0) {
-        setMicroCards(picked);
-        setMicroActive(true);
+      // microOff (Herramientas): sigue contando en silencio, pero nunca
+      // dispara la tanda — el flag se respeta aquí, no solo en el switch.
+      if (!microOff) {
+        const freshSnapshot = getSrsSnapshot();
+        const freshCards = srsCardsOf(lang, level, freshSnapshot);
+        const candidates = Object.keys(freshCards)
+          .filter((k) => k !== cardKey)
+          .map((k) => ({ srsKey: k }));
+        const picked = rankByWeight(candidates, freshCards, freshSnapshot.day)
+          .slice(0, 3)
+          .map((c) => c.srsKey);
+        if (picked.length > 0) {
+          setMicroCards(picked);
+          setMicroActive(true);
+        }
       }
       return 0;
     });
     return card;
   };
   const dismissMicro = () => setMicroActive(false);
-  const advanceSrsDay = () => srsAdvanceDay();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { recordResult('read', { seen: true }); }, [key]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (showTr) recordResult('read', { translationUsed: true }); }, [showTr, key]);
 
-  // El nav secundario (AppHeader) vive fuera de este árbol y marca en
-  // negrita la sección abierta a partir de `view` — se lo emitimos por el
-  // bus cada vez que cambia, y 'story' al desmontar para no dejarlo
-  // marcando una sección de un relato que ya no está en pantalla.
+  // El nav secundario (barra de secciones) vive fuera de este árbol y marca
+  // en negrita la sección abierta a partir de `view` y `detail` (Gramática/
+  // Phrasal Verbs se iluminan con su ficha abierta, no solo con view ===
+  // 'story') — se emiten los dos por el bus cada vez que cambian, y
+  // 'story'/null al desmontar para no dejar marcada una sección de un
+  // relato que ya no está en pantalla.
   useEffect(() => {
-    emitReaderView(view);
-  }, [view]);
+    emitReaderView(view, detail);
+  }, [view, detail]);
   useEffect(() => {
-    return () => emitReaderView('story');
+    return () => emitReaderView('story', null);
   }, []);
+
+  // El popover de Herramientas (AppHeader) vive fuera de este árbol y
+  // refleja estos tres flags — se emiten por el bus cada vez que cambian.
+  useEffect(() => {
+    emitReaderToggles({ showTr, microOff, srsMarksOff });
+  }, [showTr, microOff, srsMarksOff]);
 
   /** Reinicia solo el estado EN CURSO de los juegos de frases (índices,
    * elección, test, ronda de hablar) — nunca el registro de aciertos
@@ -268,14 +290,40 @@ export function ReaderProvider({ story, lang, level, children }) {
     setView('srs');
   };
 
+  /** Pastillas "Gramática" / "Phrasal Verbs" de la barra de secciones (§4
+   * tres-barras-spec): vuelven al relato y abren la primera ficha de esa
+   * sección — la primera regla/phrasal verb que de verdad tiene entrada en
+   * el diccionario (GRAMMAR_DETAIL/PHRASAL_DETAIL), igual que filtra
+   * GrammarCard/IdiomCard al pintar. Si el relato no tiene ninguna con
+   * ficha, detail queda en null y solo se vuelve al relato — nunca se deja
+   * la pastilla pulsable sin destino. */
+  const goToGrammarFirst = () => {
+    setWord(null);
+    const first = (story.grammar || []).find((g) => !!GRAMMAR_DETAIL[g.name]);
+    setDetail(first ? { kind: 'g', key: first.name } : null);
+    setView('story');
+  };
+  const goToIdiomFirst = () => {
+    setWord(null);
+    const first = (story.phrasals || []).find((p) => !!PHRASAL_DETAIL[p.verb]);
+    setDetail(first ? { kind: 'p', key: first.verb } : null);
+    setView('story');
+  };
+
   useEffect(() => {
     return subscribeReaderNav((action) => {
       if (action === 'story') goToStory();
       if (action === 'phrases') goToPhrases();
+      if (action === 'grammar') goToGrammarFirst();
+      if (action === 'idiom') goToIdiomFirst();
       if (action === 'linkers') goToLinkers();
       if (action === 'games') goToGames();
       if (action === 'srs') goToSrs();
+      if (action === 'toggle-showTr') setShowTr((v) => !v);
+      if (action === 'toggle-micro') setMicroOff((v) => !v);
+      if (action === 'toggle-srsMarks') setSrsMarksOff((v) => !v);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const markPhraseDone = (blockNum, index) => {
@@ -307,9 +355,10 @@ export function ReaderProvider({ story, lang, level, children }) {
     roleFilter, setRoleFilter,
     game, setGame,
     detail, setDetail,
+    microOff, srsMarksOff,
 
     view, setView,
-    openGame, goToStory, goToPhrases, goToLinkers, goToGames, goToSrs,
+    openGame, goToStory, goToPhrases, goToGrammarFirst, goToIdiomFirst, goToLinkers, goToGames, goToSrs,
 
     playing, setPlaying,
 
@@ -337,7 +386,7 @@ export function ReaderProvider({ story, lang, level, children }) {
     cxPick, setCxPick,
     cxDone, markLinkerDone,
 
-    srsCards, srsDay, gradeSrs, gradeSrsRaw, advanceSrsDay,
+    srsCards, srsDay, gradeSrs, gradeSrsRaw,
     srsIdx, setSrsIdx,
     srsShown, setSrsShown,
 

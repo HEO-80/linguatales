@@ -12,8 +12,6 @@ const CYAN = SRS_STATUS_COLOR.learning; // '#0e7490' — también el botón "Bie
 const GREEN = SRS_STATUS_COLOR.mastered; // '#0f766e' — también el botón "Fácil"
 const CRIMSON = '#e11d48'; // solo el botón "Fallé"/"No la sabía" — no es un color de estado
 
-const IS_DEV = process.env.NODE_ENV !== 'production';
-
 function relDue(due, day) {
   const rel = due - day;
   return rel <= 0 ? 'hoy' : `en ${rel}d`;
@@ -37,7 +35,7 @@ function relDue(due, day) {
 export default function SrsView() {
   const { surface, text, font, shadow } = useTheme();
   const {
-    srsCards, srsDay, gradeSrsRaw, advanceSrsDay,
+    srsCards, srsDay, gradeSrsRaw,
     srsIdx, setSrsIdx, srsShown, setSrsShown
   } = useReader();
 
@@ -156,26 +154,6 @@ export default function SrsView() {
           <span style={{ fontFamily: font.display, fontSize: 20, fontWeight: 600, color: text.ink }}>
             Repaso de hoy
           </span>
-          {IS_DEV && (
-            <button
-              onClick={advanceSrsDay}
-              style={{
-                fontFamily: font.mono,
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: '0.6px',
-                textTransform: 'uppercase',
-                color: fg(AMBER, surface.cream, 4.6),
-                background: surface.cream,
-                border: `1px solid ${pastel(AMBER, 0.5)}`,
-                borderRadius: 4,
-                padding: '6px 12px',
-                cursor: 'pointer'
-              }}
-            >
-              ▸ Avanzar un día (dev)
-            </button>
-          )}
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>

@@ -68,7 +68,7 @@ export default function Rail() {
           overflowY: 'auto'
         }}
       >
-      <div style={{ position: 'relative' }}>
+      <div>
         <button
           ref={langBtnRef}
           onClick={() => setLangOpen((o) => !o)}
@@ -106,7 +106,7 @@ export default function Rail() {
 
       <span style={{ width: 30, height: 1, background: surface.border, margin: '2px 0' }} />
 
-      <div style={{ position: 'relative' }}>
+      <div>
         <button
           ref={levelBtnRef}
           onClick={() => setLevelOpen((o) => !o)}

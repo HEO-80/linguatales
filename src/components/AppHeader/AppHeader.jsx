@@ -1,40 +1,66 @@
 'use client';
 
-import { useState, useEffect, useSyncExternalStore } from 'react';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useState, useRef, useSyncExternalStore } from 'react';
+import { pastel } from '@/theme/color';
 import { useTheme } from '@/theme/ThemeContext';
 import { useAuth } from '@/state/AuthContext';
 import { useLangCode, useLevelCode, DEFAULT_LEVEL } from '@/lib/routes/useRouteCodes';
-import { toLangSlug, toLevelSlug } from '@/lib/routes/langLevel';
 import { subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot } from '@/lib/storage/progressStore';
-import { emitReaderNav, subscribeReaderView } from '@/state/readerNavBus';
-import { subscribeToSrs, getSrsSnapshot, getSrsServerSnapshot, cardsOf } from '@/state/srs';
-import { deriveSrsQueue } from '@/lib/srs';
+import LanguagePopover from '@/components/Rail/LanguagePopover';
+import LevelPopover from '@/components/Rail/LevelPopover';
+import ToolsPopover from './ToolsPopover';
 import AuthModal from '../Auth/AuthModal';
 import UserMenu from '../Auth/UserMenu';
 
-const SECTIONS = [
-  { key: 'stories', label: 'Historias', anchor: '#reader', nav: 'story' },
-  { key: 'phrases', label: 'Frases', anchor: '#reader', nav: 'phrases' },
-  { key: 'grammar', label: 'Gramática', anchor: '#grammar', nav: null },
-  { key: 'idiom', label: null /* dinámico: lang.navIdiom */, anchor: '#idiom', nav: null },
-  { key: 'linkers', label: 'Conectores', anchor: '#reader', nav: 'linkers' },
-  { key: 'games', label: 'Juegos', anchor: '#games', nav: 'games' },
-  { key: 'srs', label: null /* dinámico: Repaso · N */, anchor: '#reader', nav: 'srs' }
-];
+/** Pastilla del header: altura fija (36px, box-sizing: border-box) para las
+ * tres por igual — antes, sin altura fija, la de Herramientas quedaba 4px
+ * más baja que las otras dos por no llevar chip de valor (§1
+ * tres-barras-spec). Activa (su popover abierto): fondo crema y borde;
+ * inactiva: transparente; hover: fondo crema en los dos casos. */
+function HeaderPill({ innerRef, active, onClick, chip, label, ariaLabel }) {
+  const { surface, text, font } = useTheme();
+  const [hover, setHover] = useState(false);
+  const filled = active || hover;
 
-/** `view` del lector ('story'|'phrases'|'linkers'|'game'|'srs') → sección
- * del nav secundario que debe marcarse (§4 linguatales-conectores-spec.md,
- * ampliada en linguatales-srs-spec.md). Gramática y Phrasal Verbs/Expresiones
- * no tienen `view` propio — viven dentro de view === 'story', así que caen
- * en "Historias", igual que el resto. */
-function sectionForView(view) {
-  if (view === 'phrases') return 'phrases';
-  if (view === 'linkers') return 'linkers';
-  if (view === 'game') return 'games';
-  if (view === 'srs') return 'srs';
-  return 'stories';
+  return (
+    <button
+      ref={innerRef}
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      aria-label={ariaLabel}
+      style={{
+        height: 36,
+        boxSizing: 'border-box',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '0 12px',
+        background: filled ? surface.cream : 'transparent',
+        border: filled ? `1px solid ${surface.border}` : '1px solid transparent',
+        borderRadius: 6,
+        cursor: 'pointer'
+      }}
+    >
+      <span style={{ fontFamily: font.body, fontSize: 13, fontWeight: 600, color: text.ink }}>{label}</span>
+      {chip && (
+        <span
+          style={{
+            fontFamily: font.mono,
+            fontSize: 10.5,
+            fontWeight: 700,
+            color: text.onCream,
+            background: pastel(text.ink, 0.9),
+            borderRadius: 3,
+            padding: '2px 6px'
+          }}
+        >
+          {chip}
+        </span>
+      )}
+      <span style={{ fontFamily: font.mono, fontSize: 9, color: text.onTint }}>▾</span>
+    </button>
+  );
 }
 
 /** Días consecutivos con actividad real (hoy o ayer hacia atrás), a partir
@@ -59,31 +85,35 @@ function computeStreakDays(progress) {
   return streak;
 }
 
+/**
+ * src/components/AppHeader/AppHeader.jsx
+ * Barra superior: solo ajustes globales (§1 tres-barras-spec) — Idioma,
+ * Nivel y Herramientas. Las siete secciones del nivel (Historias, Frases,
+ * Gramática...) bajaron a SectionsBar, justo debajo de LanguageBar: son
+ * sitios de esta página, no ajustes globales, y no comparten pastilla con
+ * ellos.
+ */
 export default function AppHeader() {
   const theme = useTheme();
-  const { lang, surface, accent, text, font, shadow } = theme;
-  // Se deriva de `view` (emitido por ReaderProvider vía readerNavBus, ver
-  // §4 linguatales-conectores-spec.md) — no de qué se pulsó por última vez.
-  // Fuera de la página de un relato nadie emite, y se queda en 'stories'.
-  const [active, setActive] = useState('stories');
-  useEffect(() => subscribeReaderView((view) => setActive(sectionForView(view))), []);
+  const { surface, accent, text, font, shadow } = theme;
   const [authOpen, setAuthOpen] = useState(false);
   const { user, loading } = useAuth();
   const progress = useSyncExternalStore(subscribeToProgress, getProgressSnapshot, getProgressServerSnapshot);
   const streak = user ? computeStreakDays(progress) : 0;
   const langCode = useLangCode();
   const levelCode = useLevelCode();
-  const srsSnapshot = useSyncExternalStore(subscribeToSrs, getSrsSnapshot, getSrsServerSnapshot);
-  const srsDueCount =
-    langCode && levelCode
-      ? deriveSrsQueue(cardsOf(langCode, levelCode, srsSnapshot), srsSnapshot.day).dueCount
-      : 0;
-  const srsLabel = srsDueCount > 0 ? `Repaso · ${srsDueCount}` : 'Repaso';
-  const langSlug = toLangSlug(langCode);
-  const levelSlug = toLevelSlug(levelCode ?? DEFAULT_LEVEL);
-  const params = useParams();
-  const num = params?.num;
-  const base = num ? `/${langSlug}/${levelSlug}/story/${num}` : `/${langSlug}/${levelSlug}`;
+
+  const [langOpen, setLangOpen] = useState(false);
+  const [levelOpen, setLevelOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const langBtnRef = useRef(null);
+  const levelBtnRef = useRef(null);
+  const toolsBtnRef = useRef(null);
+
+  // Un popover a la vez: abrir uno cierra los otros dos.
+  const openLang = () => { setLangOpen((o) => !o); setLevelOpen(false); setToolsOpen(false); };
+  const openLevel = () => { setLevelOpen((o) => !o); setLangOpen(false); setToolsOpen(false); };
+  const openTools = () => { setToolsOpen((o) => !o); setLangOpen(false); setLevelOpen(false); };
 
   return (
     <header
@@ -127,83 +157,105 @@ export default function AppHeader() {
           </span>
         </div>
 
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-          {SECTIONS.map((s) => {
-            const label = s.key === 'idiom' ? lang.navIdiom : s.key === 'srs' ? srsLabel : s.label;
-            const isActive = active === s.key;
-            return (
-              <Link
-                key={s.key}
-                href={`${base}${s.anchor}`}
-                onClick={() => {
-                  if (s.nav) emitReaderNav(s.nav);
-                }}
-                style={{
-                  fontFamily: font.body,
-                  fontSize: 13.5,
-                  color: isActive ? text.ink : text.onTint,
-                  fontWeight: isActive ? 700 : 500,
-                  textDecoration: 'none',
-                  paddingBottom: 4,
-                  borderBottom: isActive ? `2px solid ${accent.secondary}` : '2px solid transparent'
-                }}
-              >
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {user && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '6px 12px',
-                borderRadius: 4,
-                background: surface.cream,
-                border: `1px solid ${surface.border}`,
-                boxShadow: shadow.sm
-              }}
-            >
-              <span style={{ fontFamily: font.mono, fontSize: 13, fontWeight: 700, color: text.primaryOnTint }}>
-                🔥 {streak}
-              </span>
-              <span
-                style={{
-                  fontFamily: font.mono,
-                  fontSize: 9.5,
-                  letterSpacing: '1.4px',
-                  textTransform: 'uppercase',
-                  color: text.onCream
-                }}
-              >
-                días
-              </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div>
+              <HeaderPill
+                innerRef={langBtnRef}
+                active={langOpen}
+                onClick={openLang}
+                label="Idioma"
+                chip={langCode}
+                ariaLabel="Cambiar idioma"
+              />
+              {langOpen && (
+                <LanguagePopover levelCode={levelCode} anchorRef={langBtnRef} onClose={() => setLangOpen(false)} />
+              )}
             </div>
-          )}
 
-          {!loading && (user ? (
-            <UserMenu />
-          ) : (
-            <button
-              onClick={() => setAuthOpen(true)}
-              style={{
-                background: surface.solid,
-                color: '#fffdf7',
-                fontFamily: font.body,
-                fontSize: 13,
-                fontWeight: 600,
-                borderRadius: 5,
-                padding: '8px 14px',
-                boxShadow: shadow.sm
-              }}
-            >
-              Iniciar sesión
-            </button>
-          ))}
+            <div>
+              <HeaderPill
+                innerRef={levelBtnRef}
+                active={levelOpen}
+                onClick={openLevel}
+                label="Nivel"
+                chip={levelCode ?? DEFAULT_LEVEL}
+                ariaLabel="Cambiar nivel"
+              />
+              {levelOpen && (
+                <LevelPopover
+                  langCode={langCode}
+                  activeLevel={levelCode ?? DEFAULT_LEVEL}
+                  anchorRef={levelBtnRef}
+                  onClose={() => setLevelOpen(false)}
+                />
+              )}
+            </div>
+
+            <div>
+              <HeaderPill
+                innerRef={toolsBtnRef}
+                active={toolsOpen}
+                onClick={openTools}
+                label="Herramientas"
+                chip={null}
+                ariaLabel="Ajustes de herramientas"
+              />
+              {toolsOpen && <ToolsPopover anchorRef={toolsBtnRef} onClose={() => setToolsOpen(false)} />}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {user && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '6px 12px',
+                  borderRadius: 4,
+                  background: surface.cream,
+                  border: `1px solid ${surface.border}`,
+                  boxShadow: shadow.sm
+                }}
+              >
+                <span style={{ fontFamily: font.mono, fontSize: 13, fontWeight: 700, color: text.primaryOnTint }}>
+                  🔥 {streak}
+                </span>
+                <span
+                  style={{
+                    fontFamily: font.mono,
+                    fontSize: 9.5,
+                    letterSpacing: '1.4px',
+                    textTransform: 'uppercase',
+                    color: text.onCream
+                  }}
+                >
+                  días
+                </span>
+              </div>
+            )}
+
+            {!loading && (user ? (
+              <UserMenu />
+            ) : (
+              <button
+                onClick={() => setAuthOpen(true)}
+                style={{
+                  background: surface.solid,
+                  color: '#fffdf7',
+                  fontFamily: font.body,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  borderRadius: 5,
+                  padding: '8px 14px',
+                  boxShadow: shadow.sm
+                }}
+              >
+                Iniciar sesión
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

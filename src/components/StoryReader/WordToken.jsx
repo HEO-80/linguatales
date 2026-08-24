@@ -14,7 +14,7 @@ export const WORD_PADDING_X = 7;
 /** Una palabra (o phrasal verb, un solo token) del texto del relato. */
 export default function WordToken({ token, paraIndex, tokenIndex }) {
   const { font } = useTheme();
-  const { roleFilter, word, setWord, showTr, srsCards, srsDay } = useReader();
+  const { roleFilter, word, setWord, showTr, srsCards, srsDay, srsMarksOff } = useReader();
 
   const role = token[TOKEN.ROLE];
   const color = ROLES[role].color;
@@ -34,11 +34,12 @@ export default function WordToken({ token, paraIndex, tokenIndex }) {
     background = 'rgba(255,255,255,.35)';
     borderBottom = '2.5px solid rgba(255,255,255,.4)';
     textColor = '#8d8674';
-  } else {
+  } else if (!srsMarksOff) {
     // Marcado SRS (§5 linguatales-srs-spec.md): solo el filete inferior, sin
     // tocar fondo ni color de rol — y nunca sobre una palabra ya atenuada
     // por el filtro de rol, para no competir con esa señal. "Sin ver" no
-    // cambia nada (deja el filete pastel del rol tal cual).
+    // cambia nada (deja el filete pastel del rol tal cual). Herramientas
+    // puede apagar este marcado del todo (§4 tres-barras-spec: srsMarksOff).
     const status = srsStatus(srsCards[`w:${token[TOKEN.TEXT].toLowerCase()}`], srsDay);
     if (status === SRS_STATUS.DUE) borderBottom = `2.5px solid ${SRS_STATUS_COLOR.due}`;
     else if (status === SRS_STATUS.LEARNING) borderBottom = `2.5px solid ${SRS_STATUS_COLOR.learning}`;
