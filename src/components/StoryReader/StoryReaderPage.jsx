@@ -7,6 +7,8 @@ import StoryStub from './StoryStub';
 import StoryFacts from '@/components/StoryFacts/StoryFacts';
 import PhrasesSection from '@/components/Phrases/PhrasesSection';
 import ConnectorsSection from '@/components/Connectors/ConnectorsSection';
+import GrammarSection from '@/components/Grammar/GrammarSection';
+import IdiomsSection from '@/components/Idioms/IdiomsSection';
 import GameTabs from '@/components/Games/GameTabs/GameTabs';
 import SrsView from '@/components/Srs/SrsView';
 
@@ -19,7 +21,10 @@ import SrsView from '@/components/Srs/SrsView';
  * PhrasesSection/ConnectorsSection y las pestañas de GameTabs siempre están
  * visibles — son la navegación — pero su contenido (panel de bloque / grupo /
  * cuerpo del juego) solo se monta con la vista activa. SrsView no tiene chip
- * propio: se abre solo desde el nav ("Repaso").
+ * propio: se abre solo desde el nav ("Repaso"). GrammarSection/IdiomsSection
+ * son material de NIVEL, no de relato (grammarOf/idiomsOf en src/data) — van
+ * siempre visibles, con su propio estado local de apertura, sin competir por
+ * la vista exclusiva.
  */
 function StoryReaderBody() {
   const { view } = useReader();
@@ -41,6 +46,8 @@ function StoryReaderBody() {
 
       <PhrasesSection />
       <ConnectorsSection />
+      <GrammarSection />
+      <IdiomsSection />
       {view === 'srs' && <SrsView />}
       <GameTabs />
     </>

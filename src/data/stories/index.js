@@ -12,11 +12,15 @@
 
 import { EN_A1 } from './en.a1.js';
 import { EN_A2 } from './en.a2.js';
+import { EN_B1 } from './en.b1.js';
+import { EN_B2 } from './en.b2.js';
 
 export const STORIES = {
   'EN/A1': EN_A1,
-  'EN/A2': EN_A2
-  // 'EN/B1': …, 'PT/A1': …  ← al añadirlas, los selectores las habilitan
+  'EN/A2': EN_A2,
+  'EN/B1': EN_B1,
+  'EN/B2': EN_B2
+  // 'PT/A1': …  ← al añadirlas, los selectores las habilitan
 };
 
 const key = (lang, level) => `${lang}/${level}`;

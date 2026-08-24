@@ -58,6 +58,44 @@ export const GRAMMAR_DETAIL = {
     ]
   },
 
+  'Past Continuous': {
+    role: 'verb',
+    intro:
+      'Describe una acción que estaba en progreso en un momento del pasado — el "fondo" de la escena, frente a la acción puntual del pasado simple que la interrumpe o le sigue.',
+    forms: [
+      { label: 'Afirmativa (I / he / she / it)', value: 'He was speaking fast. (was + verbo-ing)' },
+      { label: 'Afirmativa (you / we / they)', value: 'They were nodding. (were + verbo-ing)' },
+      { label: 'Negativa', value: "Marco wasn't nodding." },
+      { label: 'Pregunta', value: 'Was he speaking?' }
+    ],
+    caution:
+      'El fallo típico: usar was con you/we/they o were con I/he/she/it — was y were se reparten igual que en el verbo be normal, nunca al revés.',
+    examples: [
+      { en: 'His manager was speaking fast.', es: 'Su jefe hablaba rápido.' },
+      { en: 'Everyone around the table kept nodding.', es: 'Todos alrededor de la mesa seguían asintiendo.' },
+      { en: "Marco wasn't nodding. He was lost.", es: 'Marco no estaba asintiendo. Estaba perdido.' }
+    ]
+  },
+
+  'Past Perfect Continuous': {
+    role: 'verb',
+    intro:
+      'Describe una acción que ya llevaba tiempo ocurriendo antes de otro momento del pasado — pone el foco en la duración, no solo en el hecho de que ya había pasado (eso es el past perfect simple).',
+    forms: [
+      { label: 'Afirmativa', value: 'He had been studying for three years. (had been + verbo-ing)' },
+      { label: 'Negativa', value: "He hadn't been sleeping well." },
+      { label: 'Pregunta', value: 'Had he been studying alone?' },
+      { label: 'No cambia con la persona', value: 'had been, siempre had (nunca has been ni have been en pasado)' }
+    ],
+    caution:
+      'El fallo típico: confundirlo con el past perfect simple (had studied) — had been studying insiste en cuánto tiempo llevaba pasando, no solo en que ya había pasado.',
+    examples: [
+      { en: 'He had been studying like this for three years.', es: 'Había estado estudiando así durante tres años.' },
+      { en: 'She had been waiting for an hour when the bus arrived.', es: 'Había estado esperando durante una hora cuando llegó el autobús.' },
+      { en: 'They had been working on the project for weeks.', es: 'Habían estado trabajando en el proyecto durante semanas.' }
+    ]
+  },
+
   'Artículos a / the': {
     role: 'art',
     intro:
@@ -187,6 +225,86 @@ export const GRAMMAR_DETAIL = {
     ]
   },
 
+  'Used to': {
+    role: 'verb',
+    intro:
+      'Habla de un hábito o estado del pasado que ya no es cierto — used to + verbo base, sin importar la persona. Para el presente simplemente se deja de usar.',
+    forms: [
+      { label: 'Afirmativa', value: 'Mine used to be curly. (used to + verbo base)' },
+      { label: 'Negativa', value: "I didn't use to like coffee. (sin la d en use)" },
+      { label: 'Pregunta', value: 'Did you use to live here?' },
+      { label: 'No confundir con', value: 'be used to + -ing (estar acostumbrado a algo), estructura distinta' }
+    ],
+    caution:
+      'El fallo típico: mantener la d en negativas y preguntas (didn\'t used to ✗, didn\'t use to ✓) — el did ya carga el pasado, así que use vuelve a su forma base.',
+    examples: [
+      { en: 'Mine used to be curly like that.', es: 'El mío solía ser rizado así.' },
+      { en: 'We used to live in a small town.', es: 'Solíamos vivir en un pueblo pequeño.' },
+      { en: "She didn't use to like spicy food.", es: 'Antes no le gustaba la comida picante.' }
+    ]
+  },
+
+  'Wish + pasado simple': {
+    role: 'verb',
+    intro:
+      'Expresa un deseo sobre algo que no es cierto ahora mismo — wish + pasado simple, aunque hable del presente, no del pasado.',
+    forms: [
+      { label: 'Afirmativa', value: 'I wish I had more space. (no I have)' },
+      { label: 'Con were (todas las personas)', value: 'I wish I were taller. (were, no was, igual que en el condicional)' },
+      { label: 'Sobre el pasado: wish + had + participio', value: 'I wish I had studied more. (arrepentimiento por algo pasado)' }
+    ],
+    caution:
+      'El fallo típico: usar el presente después de wish (I wish I have ✗) — wish siempre retrocede un tiempo, igual que en el segundo condicional.',
+    examples: [
+      { en: 'I wish I had more space.', es: 'Desearía tener más espacio.' },
+      { en: 'She wishes she spoke French.', es: 'Ella desearía hablar francés.' },
+      { en: 'I wish I were on vacation right now.', es: 'Desearía estar de vacaciones ahora mismo.' }
+    ]
+  },
+
+  'Condicionales': {
+    role: 'verb',
+    intro:
+      'Los condicionales conectan una condición con su resultado. Los tres tipos clásicos varían según qué tan real o probable es la condición, y hay formas más formales o alternativas a if para expresar lo mismo.',
+    forms: [
+      { label: 'Tipo 1 — futuro real', value: 'if + presente simple, will/can + verbo base' },
+      { label: 'Tipo 2 — irreal en presente', value: 'if + pasado simple, would + verbo base' },
+      { label: 'Tipo 3 — irreal en pasado', value: 'if + had + participio, would have + participio' },
+      { label: 'unless', value: 'unless + presente simple = if... not (a menos que)' },
+      { label: 'provided that', value: 'provided that + presente simple (siempre que, con la condición de que)' },
+      { label: 'should you (formal)', value: 'should + sujeto + verbo base = if + sujeto + has/have (registro formal, con inversión)' }
+    ],
+    caution:
+      'El fallo típico: mezclar los tiempos de cada tipo (if we will finish ✗, if we finish ✓ en el tipo 1) — la cláusula con if nunca lleva will, would ni el condicional; ese va solo en la cláusula de resultado.',
+    examples: [
+      { en: 'If we finish today, we can start tomorrow.', es: 'Si terminamos hoy, podemos empezar mañana.' },
+      { en: 'We would travel more if we had more time.', es: 'Viajaríamos más si tuviéramos más tiempo.' },
+      { en: 'If I had known earlier, I would have helped.', es: 'Si lo hubiera sabido antes, habría ayudado.' },
+      { en: "Unless we hurry, we'll miss the train.", es: 'A menos que nos apuremos, perderemos el tren.' },
+      { en: "Provided that everyone agrees, we'll go ahead.", es: 'Siempre que todos estén de acuerdo, seguiremos adelante.' },
+      { en: 'Should you have any questions, please contact us.', es: 'Si tuviera alguna pregunta, por favor contáctenos.' }
+    ]
+  },
+
+  'Estilo indirecto (reported speech)': {
+    role: 'verb',
+    intro:
+      'Cuenta lo que alguien dijo sin repetir sus palabras exactas. El verbo que reporta (told, said) suele ir en pasado, y tell siempre necesita a quién se le dijo algo — say puede ir sin persona.',
+    forms: [
+      { label: 'Directo', value: '"You had the best sales numbers."' },
+      { label: 'Indirecto con tell + persona', value: 'The manager told HR that you had the best sales numbers.' },
+      { label: 'Indirecto con say (sin persona)', value: 'He said that it was a good presentation.' },
+      { label: 'that es opcional', value: 'The manager told HR (that) you had the best numbers.' }
+    ],
+    caution:
+      'El fallo típico: usar tell sin decir a quién (tell that... ✗) — tell siempre lleva a la persona (tell HR that…), mientras que say puede ir sin ella (say that…).',
+    examples: [
+      { en: 'The manager told HR that you had the best sales numbers.', es: 'El gerente le dijo a Recursos Humanos que tenías los mejores números de ventas.' },
+      { en: 'She said that she was tired.', es: 'Dijo que estaba cansada.' },
+      { en: 'He told me he would call later.', es: 'Me dijo que llamaría más tarde.' }
+    ]
+  },
+
   'Palabras de secuencia': {
     role: 'adv',
     intro: 'Ordenan los pasos de una narración — cada una marca su lugar en la secuencia, para no repetir "then" todo el rato.',
@@ -205,3 +323,18 @@ export const GRAMMAR_DETAIL = {
     ]
   }
 };
+
+/**
+ * Fichas de gramática de NIVEL, no de relato — material de referencia suelto
+ * (p. ej. "Condicionales" en B2) que no viene narrado dentro de una historia.
+ * Misma forma de clave que phrases/connectors: IDIOMA/NIVEL. Cada nombre
+ * tiene que existir en GRAMMAR_DETAIL de arriba.
+ */
+const LEVEL_GRAMMAR = {
+  'EN/B2': ['Condicionales']
+};
+
+const levelKey = (lang, level) => `${lang}/${level}`;
+
+/** nombres de reglas de gramática de este idioma y nivel (array vacío si no existe) */
+export const grammarOf = (lang, level) => LEVEL_GRAMMAR[levelKey(lang, level)] || [];

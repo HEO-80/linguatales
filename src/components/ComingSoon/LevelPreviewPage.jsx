@@ -3,14 +3,17 @@
 import { ReaderProvider } from '@/state/ReaderContext';
 import PhrasesSection from '@/components/Phrases/PhrasesSection';
 import ConnectorsSection from '@/components/Connectors/ConnectorsSection';
+import GrammarSection from '@/components/Grammar/GrammarSection';
+import IdiomsSection from '@/components/Idioms/IdiomsSection';
 import ComingSoonPanel from './ComingSoonPanel';
 
 /**
  * src/components/ComingSoon/LevelPreviewPage.jsx
  * Nivel sin relatos todavía (has(lang, level) === false): en vez de dejar
  * el nivel completamente bloqueado en el selector, se puede entrar a ver lo
- * que YA existe para ese nivel — frases hechas y conectores, que son datos
- * de IDIOMA/NIVEL, no de relato — mientras el relato en sí sigue pendiente.
+ * que YA existe para ese nivel — frases hechas, conectores, fichas de
+ * gramática y phrasal verbs de nivel, que son datos de IDIOMA/NIVEL, no de
+ * relato — mientras el relato en sí sigue pendiente.
  *
  * ReaderProvider exige un `story` con `.num` (lo usa para la clave de
  * progreso); como aquí no hay relato real, se le pasa un stub mínimo. Ningún
@@ -30,6 +33,8 @@ export default function LevelPreviewPage({ lang, level }) {
       </section>
       <PhrasesSection />
       <ConnectorsSection />
+      <GrammarSection />
+      <IdiomsSection />
     </ReaderProvider>
   );
 }
