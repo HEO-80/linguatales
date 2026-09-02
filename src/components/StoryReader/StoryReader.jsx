@@ -9,6 +9,7 @@ import { speakSentence, cancelSpeech } from '@/lib/azure/tts';
 import RoleLegend from './RoleLegend';
 import WordToken, { WORD_PADDING_X } from './WordToken';
 import WordCard from './WordCard';
+import ReviewBasket from './ReviewBasket';
 
 const paraText = (p) => p.t.map((t) => t[TOKEN.TEXT]).join(' ');
 
@@ -164,18 +165,26 @@ export default function StoryReader() {
 
         <RoleLegend />
 
-        <div
-          style={{
-            background: surface.cream,
-            borderRadius: 6,
-            border: `1px solid ${surface.border}`,
-            padding: '22px 26px 24px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 18
-          }}
-        >
-          {story.paras.map((para, paraIndex) => {
+        {/* Texto + cesta de repaso (linguatales-cesta-spec §1): el texto se
+         * lleva todo el ancho sobrante, la cesta se queda en su columna fija
+         * y sigue a mano al bajar por un relato largo. */}
+        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+          <div
+            style={{
+              flex: 1,
+              minWidth: 0,
+              background: surface.cream,
+              borderRadius: 6,
+              border: `1px solid ${surface.border}`,
+              padding: '22px 26px 24px',
+              display: 'flex',
+              flexDirection: 'column',
+              // Con la traducción activa, dos líneas por párrafo se pegaban al
+              // siguiente a 18px (§3 linguatales-lectura-color-spec) — sube a 30px.
+              gap: showTr ? 30 : 18
+            }}
+          >
+            {story.paras.map((para, paraIndex) => {
             const isPlaying = playing === paraIndex;
             return (
             <div key={paraIndex} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -212,9 +221,11 @@ export default function StoryReader() {
                 <p
                   style={{
                     fontFamily: font.body,
-                    fontSize: 13.5,
+                    fontSize: 14.5,
                     fontStyle: 'italic',
-                    color: text.onTint,
+                    // Se pinta sobre surface.cream (la caja del párrafo), no
+                    // sobre el tinte — onCream, más oscura que onTint (§3).
+                    color: text.onCream,
                     borderLeft: `${TRANSLATION_BORDER_WIDTH}px solid ${pastel(accent.secondary, 0.55)}`,
                     margin: `0 0 0 ${TRANSLATION_INDENT}px`,
                     padding: `2px 0 2px ${TRANSLATION_PADDING_LEFT}px`
@@ -226,6 +237,9 @@ export default function StoryReader() {
             </div>
             );
           })}
+          </div>
+
+          <ReviewBasket />
         </div>
 
         <WordCard />

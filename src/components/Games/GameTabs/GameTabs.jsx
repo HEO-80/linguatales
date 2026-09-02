@@ -1,174 +1,28 @@
 'use client';
 
-import { useMemo } from 'react';
-import { useTheme } from '@/theme/ThemeContext';
-import { useReader } from '@/state/ReaderContext';
-import { phrasesOf } from '@/data/phrases';
-import { connectorsOf } from '@/data/connectors';
-import { deriveSrsQueue } from '@/lib/srs';
-import { buildLinkerQuestions } from '../LinkerGame/buildLinkerQuestions';
-import { buildWordBank } from '../SelectWordGame/buildWordBank';
-import WordOrderGame from '../WordOrderGame/WordOrderGame';
-import GapFillGame from '../GapFillGame/GapFillGame';
-import MatchIdiomGame from '../MatchIdiomGame/MatchIdiomGame';
-import SelectWordGame from '../SelectWordGame/SelectWordGame';
-import SpeakSentenceGame from '../SpeakSentenceGame/SpeakSentenceGame';
-import PhraseGame from '../PhraseGame/PhraseGame';
-import ConvoGame from '../ConvoGame/ConvoGame';
-import SpeakPhraseGame, { VIOLET } from '../SpeakPhraseGame/SpeakPhraseGame';
-import LinkerGame, { LINKER_COLOR } from '../LinkerGame/LinkerGame';
-import BackTranslateGame, { ROSE } from '../BackTranslateGame/BackTranslateGame';
-import ExamGame, { GOLD } from '../ExamGame/ExamGame';
+import { useGameTabs } from './useGameTabs';
 import MicroRepaso from '../MicroRepaso';
-import TabCard, { mkTab } from './TabCard';
-
-const MATCH_ROUNDS = 2;
-const SPEAK_THRESHOLD = 70;
-const SRS_DUE_COLOR = '#b45309'; // "toca repasar" — mismo color que la card de Repaso
+import TabCard from './TabCard';
 
 /**
  * src/components/Games/GameTabs/GameTabs.jsx
- * Rejilla definitiva de tres filas (§1 linguatales-traduccion-inversa-spec.md):
- * los 5 juegos del relato, los 5 de frases/conectores (incluida la
- * traducción inversa), y Repaso + Examen final. Toda card sale de `mkTab` +
- * TabCard — nada de estilos a mano. Las pestañas siempre están visibles —
- * son la navegación de la vista exclusiva; el cuerpo del juego (o la vista,
- * para Repaso) solo se monta con la vista activa.
+ * Bloque "Practica el nivel" (§2 linguatales-dos-bloques-spec.md): frases,
+ * conectores, traducción inversa, Repaso y Examen final — el material que no
+ * sale de este relato en concreto, se queda al final de la página con su
+ * micro-repaso. El otro bloque, "Practica este relato", vive en
+ * StoryPracticeTabs junto al índice de gramática/phrasal verbs. Toda card
+ * sigue saliendo de `mkTab` + TabCard; la vista exclusiva y el progreso los
+ * calcula useGameTabs sin cambios.
  */
 export default function GameTabs() {
-  const { surface, font, accent, text } = useTheme();
   const {
-    lang, level, story, game, view, setView, openGame, goToSrs, storyProgress,
-    phrBlock, phDoneByBlock, coDoneByBlock, sphBest, cxDone, btDoneByBlock,
-    srsCards, srsDay
-  } = useReader();
+    surface, font, accent, text, game, view,
+    PHRASE_TABS, FINAL_TABS, markers, isTabActive, handleTabClick, ActiveComp
+  } = useGameTabs();
 
-  const bank = useMemo(() => buildWordBank(story), [story]);
-  const matchApplicable = story.phrasals.length >= 3;
-  const wordApplicable = bank.length >= 4;
-  const phraseBlocks = phrasesOf(lang, level);
-  const hasPhrases = phraseBlocks.length > 0;
-  const connectors = connectorsOf(lang, level);
-  const linkerQuestions = useMemo(() => buildLinkerQuestions(connectors), [connectors]);
-  const hasLinkers = linkerQuestions.length > 0;
-  const srsQueue = useMemo(() => deriveSrsQueue(srsCards, srsDay), [srsCards, srsDay]);
+  const activeIsLevel = [...PHRASE_TABS, ...FINAL_TABS].some((t) => isTabActive(t));
 
-  const activeBlockNum = phrBlock != null ? phraseBlocks[phrBlock]?.num : null;
-  const activeBlockTotal = phrBlock != null ? phraseBlocks[phrBlock]?.items.length ?? 10 : 10;
-  const backtransTotal = activeBlockTotal * 2; // dos ítems por frase (§2)
-  const phraseMarker = activeBlockNum ? `${Object.keys(phDoneByBlock[activeBlockNum] || {}).length} / ${activeBlockTotal}` : `0 / ${activeBlockTotal}`;
-  const convoMarker = activeBlockNum ? `${Object.keys(coDoneByBlock[activeBlockNum] || {}).length} / ${activeBlockTotal}` : `0 / ${activeBlockTotal}`;
-  const speakphDoneCount = activeBlockNum
-    ? Object.values(sphBest[activeBlockNum] || {}).filter((s) => s >= SPEAK_THRESHOLD).length
-    : 0;
-  const speakphMarker = `${speakphDoneCount} / ${activeBlockTotal}`;
-  const linkerMarker = `${Object.keys(cxDone).length} / ${linkerQuestions.length}`;
-  const backtransDoneCount = activeBlockNum ? Object.keys(btDoneByBlock[activeBlockNum] || {}).length : 0;
-  const backtransMarker = `${backtransDoneCount} / ${backtransTotal}`;
-
-  const STORY_TABS = useMemo(
-    () =>
-      [
-        mkTab({ key: 'order', label: 'Ordena la frase', color: '#f97316', Comp: WordOrderGame, hidden: story.paras.length < 2 }),
-        mkTab({ key: 'gap', label: 'Elige el hueco', color: '#0891b2', Comp: GapFillGame, hidden: story.gaps.length === 0 }),
-        mkTab({ key: 'match', label: 'Empareja la expresión', color: '#7c3aed', Comp: MatchIdiomGame, hidden: !matchApplicable }),
-        mkTab({ key: 'word', label: 'Selecciona la palabra', color: '#be185d', Comp: SelectWordGame, hidden: !wordApplicable }),
-        mkTab({ key: 'speak', label: 'Habla la frase', color: '#0f766e', Comp: SpeakSentenceGame, hidden: story.paras.length === 0 })
-      ].filter((t) => !t.hidden),
-    [story, matchApplicable, wordApplicable]
-  );
-
-  const PHRASE_TABS = useMemo(
-    () =>
-      [
-        mkTab({
-          key: 'phrase', label: 'Elige la frase', subtitle: 'Cómo se dice en inglés',
-          icon: '✦', color: '#b45309', Comp: PhraseGame, hidden: !hasPhrases
-        }),
-        mkTab({
-          key: 'convo', label: 'Sigue la conversación', subtitle: 'Contesta con la frase justa',
-          icon: '❝', color: '#4338ca', Comp: ConvoGame, hidden: !hasPhrases
-        }),
-        mkTab({
-          key: 'speakph', label: 'Di la frase en voz alta', subtitle: 'Pronuncia las frases hechas',
-          icon: '●', color: VIOLET, Comp: SpeakPhraseGame, hidden: !hasPhrases
-        }),
-        mkTab({
-          key: 'linker', label: 'Elige el conector', subtitle: 'Completa con el conector justo',
-          icon: '↔', color: LINKER_COLOR, Comp: LinkerGame, hidden: !hasLinkers
-        }),
-        mkTab({
-          key: 'backtrans', label: 'Traducción inversa', subtitle: 'Escríbelo en inglés desde cero',
-          icon: '⇄', color: ROSE, Comp: BackTranslateGame, hidden: !hasPhrases
-        })
-      ].filter((t) => !t.hidden),
-    [hasPhrases, hasLinkers]
-  );
-
-  // ── Juego 11 (fuera de numeración) · Examen final (§4): cuenta juegos
-  // completados al 100%, no intentados. Un juego "no aplicable" a este
-  // relato/nivel (match, word, phrase/convo/speakph/backtrans sin bloque de
-  // frases, linker sin conectores) cuenta como resuelto — mismo criterio que
-  // storyComplete() en state/progress.js.
-  const orderOk = storyProgress.order.solved.length === story.paras.length;
-  const gapOk = storyProgress.gap.solved.length === story.gaps.length;
-  const matchOk = !matchApplicable || storyProgress.match.solved.length === MATCH_ROUNDS;
-  const wordOk = !wordApplicable || (storyProgress.word.total > 0 && storyProgress.word.correct === storyProgress.word.total);
-  const speakOk =
-    story.paras.length === 0 ||
-    story.paras.every((_, i) => (storyProgress.speak.best[i] ?? 0) >= SPEAK_THRESHOLD);
-  const phraseOk = !hasPhrases || (!!activeBlockNum && Object.keys(phDoneByBlock[activeBlockNum] || {}).length === activeBlockTotal);
-  const convoOk = !hasPhrases || (!!activeBlockNum && Object.keys(coDoneByBlock[activeBlockNum] || {}).length === activeBlockTotal);
-  const speakphOk = !hasPhrases || (!!activeBlockNum && speakphDoneCount === activeBlockTotal);
-  const linkerOk = !hasLinkers || Object.keys(cxDone).length === linkerQuestions.length;
-  const backtransOk = !hasPhrases || (!!activeBlockNum && backtransDoneCount === backtransTotal);
-  const examCount = [orderOk, gapOk, matchOk, wordOk, speakOk, phraseOk, convoOk, speakphOk, linkerOk, backtransOk].filter(Boolean).length;
-
-  const FINAL_TABS = useMemo(
-    () => [
-      mkTab({
-        key: 'srs', label: 'Repaso', subtitle: 'Lo fallado, antes del examen',
-        icon: '↻', color: SRS_DUE_COLOR, view: 'srs', marker: `${srsQueue.dueCount} hoy`
-      }),
-      mkTab({
-        key: 'exam', label: 'Examen final', subtitle: 'Acaba los 10 juegos',
-        icon: '★', color: GOLD, Comp: ExamGame, marker: `${examCount}/10`, disabled: examCount < 10
-      })
-    ],
-    [srsQueue.dueCount, examCount]
-  );
-
-  const ALL_TABS = useMemo(() => [...STORY_TABS, ...PHRASE_TABS, ...FINAL_TABS], [STORY_TABS, PHRASE_TABS, FINAL_TABS]);
-
-  const markers = {
-    order: `${storyProgress.order.solved.length} / ${story.paras.length}`,
-    gap: `${storyProgress.gap.solved.length} / ${story.gaps.length}`,
-    match: `${storyProgress.match.solved.length} / 2`,
-    word: `${storyProgress.word.correct} / ${bank.length}`,
-    speak: `${Object.keys(storyProgress.speak.best).length} / ${story.paras.length}`,
-    phrase: phraseMarker,
-    convo: convoMarker,
-    speakph: speakphMarker,
-    linker: linkerMarker,
-    backtrans: backtransMarker
-  };
-
-  const isTabActive = (tab) => (tab.view ? view === tab.view : view === 'game' && game === tab.key);
-  // Card de Repaso (§3): alterna igual que las demás — si ya está abierta,
-  // vuelve a view: 'story'; si no, abre la vista (goToSrs ya resetea su
-  // estado efímero, igual que openPhraseBlock/openLinkerGroup).
-  const handleTabClick = (tab) => {
-    if (tab.view) {
-      if (view === tab.view) setView('story');
-      else goToSrs();
-      return;
-    }
-    openGame(tab.key);
-  };
-
-  const ActiveComp = ALL_TABS.find((t) => isTabActive(t))?.Comp;
-
-  if (ALL_TABS.length === 0) return null;
+  if (PHRASE_TABS.length === 0 && FINAL_TABS.length === 0) return null;
 
   return (
     <>
@@ -193,7 +47,10 @@ export default function GameTabs() {
             flexShrink: 0
           }}
         >
-          Practica este relato
+          Practica el nivel
+        </span>
+        <span style={{ fontFamily: font.body, fontSize: 12, fontStyle: 'italic', color: text.onTint, flexShrink: 0 }}>
+          Frases, conectores, repaso y examen del nivel
         </span>
         <div
           style={{
@@ -208,25 +65,8 @@ export default function GameTabs() {
       <MicroRepaso />
 
       <section style={{ maxWidth: 1440, margin: '10px auto 0', padding: '0 32px' }}>
-        <span style={{ fontFamily: font.body, fontSize: 12, fontStyle: 'italic', color: text.onTint }}>
-          Al abrir un juego se esconden el relato, las frases y los conectores.
-        </span>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginTop: 10 }}>
-          {STORY_TABS.map((t) => (
-            <TabCard
-              key={t.key}
-              tab={{ ...t, marker: markers[t.key] }}
-              isActive={isTabActive(t)}
-              onClick={() => handleTabClick(t)}
-              surface={surface}
-              font={font}
-            />
-          ))}
-        </div>
-
         {PHRASE_TABS.length > 0 && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginTop: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10 }}>
             {PHRASE_TABS.map((t) => (
               <TabCard
                 key={t.key}
@@ -254,7 +94,7 @@ export default function GameTabs() {
         </div>
       </section>
 
-      {view === 'game' && ActiveComp && (
+      {view === 'game' && activeIsLevel && ActiveComp && (
         <section id="games" style={{ maxWidth: 1440, margin: '16px auto 0', padding: '0 32px 32px' }}>
           <ActiveComp key={game} />
         </section>

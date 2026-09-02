@@ -28,11 +28,12 @@
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { storyKey as buildStoryKey } from '@/lib/routes/storyKey';
 import { useProgressSnapshot, recordGameResult, EMPTY_STORY } from '@/state/progress';
-import { useSrsSnapshot, grade as srsGrade, cardsOf as srsCardsOf, getSrsSnapshot } from '@/state/srs';
+import { useSrsSnapshot, grade as srsGrade, cardsOf as srsCardsOf, getSrsSnapshot, reviewNow } from '@/state/srs';
 import { rankByWeight } from '@/lib/srs';
 import { subscribeReaderNav, emitReaderView, emitReaderToggles } from '@/state/readerNavBus';
 import { GRAMMAR_DETAIL } from '@/data/grammar';
 import { PHRASAL_DETAIL } from '@/data/idioms';
+import { ROLES } from '@/data/stories';
 
 const ReaderContext = createContext(null);
 
@@ -40,6 +41,20 @@ export function ReaderProvider({ story, lang, level, children }) {
   const [word, setWord] = useState(null);
   const [showTr, setShowTr] = useState(false);
   const [roleFilter, setRoleFilter] = useState([]);
+  // Modo lectura por defecto (linguatales-lectura-color-spec): el relato
+  // arranca en negro y sin filtro — el color se pide con el botón
+  // "Gramática". Apagar el modo limpia el filtro (toggleGramOn), para no
+  // dejar una atenuación activa e invisible cuando se vuelve a encender.
+  const [gramOn, setGramOn] = useState(false);
+
+  // ── cesta de repaso (linguatales-cesta-spec) — palabras arrastradas
+  // mientras se lee, para practicarlas hoy sin esperar a un juego. `dragWord`
+  // guarda el detalle de la palabra que se está arrastrando (WordToken lo
+  // llena en onDragStart y lo limpia en onDragEnd, se lea o no en un drop) —
+  // dataTransfer solo lleva el texto plano, para que un drop fuera de la app
+  // también funcione. Se resetean al remontar como todo lo demás de aquí.
+  const [basket, setBasket] = useState([]);
+  const [dragWord, setDragWord] = useState(null);
   const [game, setGame] = useState(null);
   const [detail, setDetail] = useState(null); // { kind: 'g' | 'p', key } | null
 
@@ -345,6 +360,27 @@ export function ReaderProvider({ story, lang, level, children }) {
     setBtDoneByBlock((prev) => ({ ...prev, [blockNum]: { ...prev[blockNum], [index]: true } }));
   };
 
+  /** Suelta en la cesta (§3 linguatales-cesta-spec): mete la palabra en el
+   * SRS vencida hoy — conservando su historial si ya tenía tarjeta — y la
+   * añade a la lista visible. No duplica: si ya está en la cesta, el drop
+   * no hace nada (ni siquiera vuelve a adelantar el vencimiento). */
+  const addToBasket = ({ w, role, tr }) => {
+    const cardKey = `w:${w.toLowerCase()}`;
+    if (basket.some((b) => b.key === cardKey)) return;
+    reviewNow(lang, level, cardKey, { kind: 'Palabra', q: tr, a: w, hint: ROLES[role]?.label });
+    setBasket((prev) => [...prev, { key: cardKey, w, role, tr }]);
+  };
+  /** Chip de la cesta: la saca de la lista, la tarjeta SRS se queda tal cual. */
+  const removeFromBasket = (cardKey) => setBasket((prev) => prev.filter((b) => b.key !== cardKey));
+
+  const toggleGramOn = () => {
+    setGramOn((v) => {
+      const next = !v;
+      if (!next) setRoleFilter([]);
+      return next;
+    });
+  };
+
   const value = {
     lang, level, story,
     storyKey: key,
@@ -353,6 +389,8 @@ export function ReaderProvider({ story, lang, level, children }) {
     word, setWord,
     showTr, setShowTr,
     roleFilter, setRoleFilter,
+    gramOn, toggleGramOn,
+    basket, addToBasket, removeFromBasket, dragWord, setDragWord,
     game, setGame,
     detail, setDetail,
     microOff, srsMarksOff,

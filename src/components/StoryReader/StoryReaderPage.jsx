@@ -9,22 +9,27 @@ import PhrasesSection from '@/components/Phrases/PhrasesSection';
 import ConnectorsSection from '@/components/Connectors/ConnectorsSection';
 import GrammarSection from '@/components/Grammar/GrammarSection';
 import IdiomsSection from '@/components/Idioms/IdiomsSection';
+import StoryPracticeTabs from '@/components/Games/GameTabs/StoryPracticeTabs';
 import GameTabs from '@/components/Games/GameTabs/GameTabs';
 import SrsView from '@/components/Srs/SrsView';
 
 /**
  * Vista exclusiva (§4 linguatales-frases-spec.md, ampliada en
- * linguatales-conectores-spec.md y linguatales-srs-spec.md): relato, frases,
- * conectores, juego y repaso no se ven nunca a la vez. `view === 'story'`
- * muestra el relato completo + gramática/phrasal verbs; cualquier otro valor
- * deja en su lugar el muñón clicable (StoryStub). Los chips de
- * PhrasesSection/ConnectorsSection y las pestañas de GameTabs siempre están
- * visibles — son la navegación — pero su contenido (panel de bloque / grupo /
- * cuerpo del juego) solo se monta con la vista activa. SrsView no tiene chip
- * propio: se abre solo desde el nav ("Repaso"). GrammarSection/IdiomsSection
- * son material de NIVEL, no de relato (grammarOf/idiomsOf en src/data) — van
- * siempre visibles, con su propio estado local de apertura, sin competir por
- * la vista exclusiva.
+ * linguatales-conectores-spec.md, linguatales-srs-spec.md y
+ * linguatales-dos-bloques-spec.md): relato, frases, conectores, juego y
+ * repaso no se ven nunca a la vez. `view === 'story'` muestra el relato
+ * completo + gramática/phrasal verbs; cualquier otro valor deja en su lugar
+ * el muñón clicable (StoryStub). Los chips de PhrasesSection/ConnectorsSection
+ * y las pestañas de StoryPracticeTabs/GameTabs siempre están visibles — son
+ * la navegación — pero su contenido (panel de bloque / grupo / cuerpo del
+ * juego) solo se monta con la vista activa. Los diez juegos se parten en dos
+ * bloques que comparten toda su lógica (useGameTabs): StoryPracticeTabs (los
+ * cinco del relato) sube junto al índice de gramática/phrasal verbs; GameTabs
+ * (frases, conectores, traducción inversa, Repaso, Examen) se queda al final.
+ * SrsView no tiene chip propio: se abre solo desde el nav ("Repaso").
+ * GrammarSection/IdiomsSection son material de NIVEL, no de relato
+ * (grammarOf/idiomsOf en src/data) — van siempre visibles, con su propio
+ * estado local de apertura, sin competir por la vista exclusiva.
  */
 function StoryReaderBody() {
   const { view } = useReader();
@@ -43,6 +48,8 @@ function StoryReaderBody() {
       ) : (
         <StoryStub />
       )}
+
+      <StoryPracticeTabs />
 
       <PhrasesSection />
       <ConnectorsSection />

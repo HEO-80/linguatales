@@ -137,6 +137,39 @@ export function grade(lang, level, key, meta, q) {
   return card;
 }
 
+/**
+ * Cesta de repaso (§3 linguatales-cesta-spec.md): mete una palabra en el SRS
+ * vencida HOY sin pasar por SM-2 — pedir verla hoy no es graduar. Si ya
+ * tenía tarjeta conserva su historial (ease/reps/interval/lapses/seen) y
+ * solo adelanta due/last; si no, arranca de una tarjeta nueva.
+ */
+export function reviewNow(lang, level, key, meta) {
+  ensureLoaded();
+  const lvKey = levelKey(lang, level);
+  const levelCards = cardsData[lvKey] || {};
+  const prev = levelCards[key];
+  const day = todayInt(devDayOffset);
+
+  const card = {
+    ease: prev?.ease ?? 2.5,
+    reps: prev?.reps ?? 0,
+    interval: prev?.interval ?? 0,
+    lapses: prev?.lapses ?? 0,
+    seen: prev?.seen ?? 0,
+    due: day,
+    last: day,
+    kind: meta.kind,
+    q: meta.q,
+    a: meta.a,
+    hint: meta.hint
+  };
+
+  cardsData = { ...cardsData, [lvKey]: { ...levelCards, [key]: card } };
+  persist();
+  notify();
+  return card;
+}
+
 /** Solo desarrollo: adelanta el día virtual sin tocar el reloj real — el
  * componente que expone el botón se encarga de esconderlo en producción. */
 export function advanceDay() {
