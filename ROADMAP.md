@@ -97,9 +97,23 @@ de expandir al resto de idiomas.
       no solo del nivel) — absorbida por la Fase 3
 - [ ] Fase 5 — Inglés real migrado a su propia ruta, fuera del árbol de
       niveles graduados
-- [ ] Fase 6 — Expansión de contenido al resto de niveles e idiomas (falta:
-      B1 de inglés + los 5 idiomas restantes, todos con el nuevo etiquetado
-      por palabra)
+- [x] Fase 6 (parcial) — Catálogo de inglés completo A1–C2 (B1/B2/C1/C2
+      añadidos tras el pase inicial de la Fase 3, todos con el mismo
+      etiquetado por palabra). Falta expandir a los 5 idiomas restantes
+      (FR/DE/IT/PT + el resto), que hoy no tienen ni un relato
+
+---
+
+## Desplegado 🚀
+
+- [x] Proyecto en Vercel (`linguatales`, conectado al repo de GitHub —
+      cada push a `main` despliega solo) — https://linguatales.vercel.app
+- [ ] Configurar en Supabase el Site URL / Redirect URLs de producción
+      (`https://linguatales.vercel.app` y su `/auth/callback`) — pendiente,
+      hoy el login solo redirige bien en local
+- [ ] Variables de entorno de Supabase en Vercel: cargadas en Production;
+      falta cargarlas también en Preview/Development (bug del CLI de Vercel
+      pidiendo rama git incluso con `--yes`, sin resolver todavía)
 
 ---
 

@@ -282,7 +282,81 @@ export const GRAMMAR_DETAIL = {
       { en: 'If I had known earlier, I would have helped.', es: 'Si lo hubiera sabido antes, habría ayudado.' },
       { en: "Unless we hurry, we'll miss the train.", es: 'A menos que nos apuremos, perderemos el tren.' },
       { en: "Provided that everyone agrees, we'll go ahead.", es: 'Siempre que todos estén de acuerdo, seguiremos adelante.' },
-      { en: 'Should you have any questions, please contact us.', es: 'Si tuviera alguna pregunta, por favor contáctenos.' }
+      { en: 'Should you have any questions, please contact us.', es: 'Si tuviera alguna pregunta, por favor contáctenos.' },
+      { en: "If we had caught this an hour earlier, the client wouldn't be this upset now.", es: 'Si hubiéramos detectado esto una hora antes, el cliente no estaría tan molesto ahora.' }
+    ]
+  },
+
+  'Modales perfectos de deducción': {
+    role: 'verb',
+    intro:
+      'Must have, can\'t have y might have + participio sirven para especular sobre el pasado: qué es casi seguro que pasó, qué es casi imposible que pasara, y qué es solo posible.',
+    forms: [
+      { label: 'Casi seguro — must have', value: 'You must have misunderstood. (must have + participio)' },
+      { label: "Casi imposible — can't have", value: "She can't have applied. (can't have + participio)" },
+      { label: 'Posible — might have', value: 'She might have had connections. (might have + participio, también could have)' }
+    ],
+    caution:
+      "El fallo típico: usar mustn't have para decir \"casi imposible\" — la negación correcta es can't have, no mustn't have, que casi no se usa con este sentido.",
+    examples: [
+      { en: 'You must have misunderstood.', es: 'Debes de haber entendido mal.' },
+      { en: "She can't have applied.", es: 'No puede haber aplicado.' },
+      { en: 'Rebecca might have had connections with the director.', es: 'Rebecca podría haber tenido contactos con el director.' }
+    ]
+  },
+
+  'Inversión enfática': {
+    role: 'verb',
+    intro:
+      'Ciertos adverbios negativos o restrictivos (never, not only, rarely, only then...) al principio de la frase invierten el orden normal de sujeto y verbo, como en una pregunta — un recurso de énfasis típico del registro formal y literario.',
+    forms: [
+      { label: 'Never + had + sujeto + participio', value: 'Never had Tom felt so confident.' },
+      { label: 'Not only + did + sujeto + verbo base', value: 'Not only did she get the promotion, but she also got the office.' },
+      { label: 'Rarely/Only + does/did + sujeto + verbo base', value: 'Rarely does the company get something this wrong.' }
+    ],
+    caution:
+      'El fallo típico: olvidar la inversión y dejar el orden normal (Never Tom had felt ✗) — el adverbio negativo obliga a poner el auxiliar antes del sujeto, igual que en una pregunta.',
+    examples: [
+      { en: 'Never had Tom felt so confident about anything in his life.', es: 'Nunca se había sentido Tom tan seguro de algo en su vida.' },
+      { en: 'Not only did she get the promotion, but she also got your old office.', es: 'No solo consiguió el ascenso, sino que también se quedó con tu antigua oficina.' },
+      { en: 'Only rarely does the company get something this wrong.', es: 'Solo raramente la empresa se equivoca tanto en algo.' }
+    ]
+  },
+
+  'Cláusulas de participio': {
+    role: 'verb',
+    intro:
+      'Having + participio (o un gerundio simple) al principio de la frase resume una acción anterior o simultánea a la principal, sin repetir el sujeto ni usar una conjunción — un recurso muy compacto y propio del registro escrito.',
+    forms: [
+      { label: 'Having + participio (acción anterior)', value: 'Having sent the wrong file, Daniela called her manager.' },
+      { label: 'Gerundio simple (acción simultánea)', value: 'Realizing there was no time to lose, he asked her to send a correction.' },
+      { label: 'El sujeto de la cláusula y de la principal es el mismo', value: 'Having reviewed the email chain, the manager found nothing. (el manager revisó Y el manager encontró)' }
+    ],
+    caution:
+      'El fallo típico: usar la cláusula de participio con un sujeto distinto al de la frase principal (Having sent the file, the manager was angry ✗ si quien envió el archivo no fue el manager) — el sujeto implícito de la cláusula tiene que coincidir con el de la principal.',
+    examples: [
+      { en: 'Having sent the wrong file to the client, Daniela immediately called her manager.', es: 'Habiendo enviado el archivo equivocado al cliente, Daniela llamó de inmediato a su jefe.' },
+      { en: 'Realizing there was no time to lose, he asked her to send a correction right away.', es: 'Dándose cuenta de que no había tiempo que perder, le pidió que enviara una corrección de inmediato.' },
+      { en: 'Having learned this lesson, the team agreed to double-check every file from now on.', es: 'Habiendo aprendido esta lección, el equipo acordó revisar dos veces cada archivo de ahora en adelante.' }
+    ]
+  },
+
+  'Verbos reportantes (admit, deny, insist, claim)': {
+    role: 'verb',
+    intro:
+      'Más allá de say y tell, verbos como admit, deny, insist y claim reportan lo que alguien dijo añadiendo una actitud: admitir algo incómodo, negarlo, insistir en ello, o afirmarlo sin que se sepa si es cierto.',
+    forms: [
+      { label: 'admit + that', value: 'He admitted that he had forgotten. (admitir, reconocer algo)' },
+      { label: 'deny + that', value: 'He denied that he had checked it. (negar haberlo hecho)' },
+      { label: 'insist + that (+ subjuntivo)', value: 'I insisted that someone double-check it. (insistir en que; el verbo que sigue va en base, sin -s)' },
+      { label: 'claim + that', value: 'Marcus claimed that he had insisted. (afirmar algo que puede no ser cierto)' }
+    ],
+    caution:
+      "El fallo típico: tratar insist that como un reported speech normal y conjugar el verbo siguiente (insisted that someone double-checks ✗) — tras insist that, el verbo va en forma base, como un subjuntivo, sin importar la persona.",
+    examples: [
+      { en: 'Marcus denied that he had checked the file before it was sent.', es: 'Marcus negó haber revisado el archivo antes de que se enviara.' },
+      { en: 'Marcus eventually admitted that he had forgotten to check the file at all.', es: 'Marcus finalmente admitió que se había olvidado por completo de revisar el archivo.' },
+      { en: 'I insisted that someone double-check it, Marcus claimed.', es: 'Insistí en que alguien lo revisara dos veces, afirmó Marcus.' }
     ]
   },
 
