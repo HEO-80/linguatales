@@ -16,11 +16,16 @@ import { useTheme } from '@/theme/ThemeContext';
  * ancho de ventana — con `fixed` medido contra el viewport, cualquier ancho
  * distinto del de referencia despega el popover de su pastilla.
  *
- * El ancla real es el trigger (`ref` + `getBoundingClientRect`), convertido
- * a coordenadas de documento sumando el scroll — no un número escrito a
- * mano. Se ancla por debajo del trigger (`rect.bottom`), y por la izquierda
- * o la derecha del propio trigger según `align`, nunca por un borde
- * compartido con los demás popovers.
+ * El ancla real es el trigger (`ref` + `getBoundingClientRect`), medido
+ * contra su propio `offsetParent` — el ancestro que de verdad actúa de
+ * contenedor para este `position: absolute` — nunca contra coordenadas de
+ * documento. `position: sticky` cuenta como "posicionado" igual que
+ * `relative` a efectos de contenedor (lo es para el Rail, cuyo riel interior
+ * es sticky), así que sumar el scroll de la página a mano descuadraba el
+ * popover del Rail: el contenedor real ya se mueve con el sticky, sumar
+ * scroll otra vez lo desplazaba de más. Restar los rects del trigger y de su
+ * offsetParent da la posición correcta sea cual sea el tipo de contenedor
+ * (root relative, sticky, o el propio documento si no hay ninguno).
  */
 export default function Popover({ anchorRef, onClose, fallbackTop = 96, align = 'left', width = 318, children }) {
   const { surface } = useTheme();
@@ -32,15 +37,15 @@ export default function Popover({ anchorRef, onClose, fallbackTop = 96, align = 
   // pintar, así que no hay salto de posición visible.
   const [pos, setPos] = useState({ top: fallbackTop, left: 24 });
   useLayoutEffect(() => {
-    const rect = anchorRef?.current?.getBoundingClientRect();
+    const anchor = anchorRef?.current;
+    const rect = anchor?.getBoundingClientRect();
     if (!rect) return;
-    const scrollX = window.scrollX ?? window.pageXOffset ?? 0;
-    const scrollY = window.scrollY ?? window.pageYOffset ?? 0;
-    const top = rect.bottom + scrollY + 6;
+    const parentRect = (anchor.offsetParent ?? document.documentElement).getBoundingClientRect();
+    const top = rect.bottom - parentRect.top + 6;
     setPos(
       align === 'right'
-        ? { top, right: document.documentElement.scrollWidth - (rect.right + scrollX) }
-        : { top, left: rect.left + scrollX }
+        ? { top, right: parentRect.right - rect.right }
+        : { top, left: rect.left - parentRect.left }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
